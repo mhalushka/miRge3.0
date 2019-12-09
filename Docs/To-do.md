@@ -36,6 +36,9 @@
 - [ ] Interactive or visually appealing outputs 
 - [ ] Docker implementation 
 - [ ] GUI - Beeware or Electron implementaion which ever works best for cross platform
+- [ ] GUI requires an installation of `Windows Subsystem for Linux`
+  - [ ] [Cygwin](https://www.cygwin.com/) for Windows < 10
+  - [ ] [Ubuntu](https://docs.microsoft.com/en-us/windows/wsl/install-win10) for Windows10
 - [ ] `Additional features here`
 
 #### References: 
