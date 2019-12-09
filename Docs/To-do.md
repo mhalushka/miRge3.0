@@ -48,3 +48,11 @@
 - [sRNAtoolbox](https://bioinfo5.ugr.es/srnatoolbox/srnabench/)
 - [Tools4miRs](https://tools4mirs.org/software/isomirs_identification/)
 - [ ] `Additional features here`
+
+## Upcoming events:
+- [COVALENCE CONFERENCE 2020](https://www.covalenceconf.com/)
+  - Date: January 24, 2020. (09:00AM to 07:00PM)
+  - Venue:
+    > Slack HQ, 
+    > 500 Howard St,
+    > San Francisco CA 94105.
