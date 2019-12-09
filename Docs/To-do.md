@@ -13,7 +13,7 @@
 ## Primary functions - Annotation:
 - [ ] Incorporate latest version of cutadapt and its features. 
 - [ ] Keep track to update features of miRge automatically with newer versions of cutadapt.
-- [ ] Bowtie 1.2.3? 
+- [ ] No installation required for [Bowtie 1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/). Use: `\bin\bowtie`
 - [ ] `Additional features here`
 
 ## Secondary functions - Predict:
