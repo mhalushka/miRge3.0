@@ -35,6 +35,7 @@
 - [ ] CPU and GPU switch usage options 
 - [ ] Interactive or visually appealing outputs 
 - [ ] Docker implementation 
+- [ ] Integrates with other high througput Genomics tools, especially having output work in a Bioconductor environment.
 - [ ] GUI - [Beeware](https://beeware.org/project/using/desktop-app/) or [Electron](https://electronjs.org/) implementaion which ever works best for cross platform
 - [ ] GUI requires an installation of `Windows Subsystem for Linux`
   - [ ] [Cygwin](https://www.cygwin.com/) for Windows < 10
