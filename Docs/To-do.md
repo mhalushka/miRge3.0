@@ -1,5 +1,11 @@
 # miRge-Py3
 
+## Main goals
+- [ ] Easy to implement and use
+- [ ] Robust (accurate) data output
+- [ ] Fast and able to run multiple datasets at once
+- [ ] Attractive and meaningful output
+
 ## Basic functions - command line options
 - [ ] User friendly parameters 
 - [ ] `Additional features here`
