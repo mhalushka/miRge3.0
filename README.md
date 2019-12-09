@@ -6,7 +6,7 @@ Links
 -----
 
 * [Documentation](<https://blank.readthedocs.io/>)
-* [Source code](<https://github.com/mhalushka/mirge/>`
-* [Report an issue](<https://github.com/mhalushka/mirge/issues>`
-* [Project page on PyPI](<https://pypi.python.org/pypi/mirge/>`
+* [Source code](<https://github.com/mhalushka/mirge/>)
+* [Report an issue](<https://github.com/mhalushka/mirge/issues>)
+* [Project page on PyPI](<https://pypi.python.org/pypi/mirge/>)
 
