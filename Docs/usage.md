@@ -28,7 +28,7 @@ Options:
   -o <dir>              the directory of the outputs (default: current directory)
 
 Finding adapters:
-  Parameters -a, -g, -b specify adapters to be removed from
+ [REMOVE] Parameters -a, -g, -b specify adapters to be removed from
               each read (or from the first read in a pair if data is paired).
               If specified multiple times, only the best matching adapter is
               trimmed (but see the --times option). When the special notation
@@ -54,21 +54,21 @@ Finding adapters:
                                     as with -a. This option is mostly for rescuing failed library
                                     preparations - do not use if you know which end your adapter was
                                     ligated to!
-  -e RATE, --error-rate RATE
+  [REMOVE] -e RATE, --error-rate RATE
                         Maximum allowed error rate as value between 0 and 1 (no. of
                                     errors divided by length of matching region). Default: 0.1 (=10%)
-  --no-indels           Allow only mismatches in alignments.
+  [REMOVE] --no-indels           Allow only mismatches in alignments.
                                     Default: allow both mismatches and indels
-  -n COUNT, --times COUNT
+  [REMOVE]-n COUNT, --times COUNT
                         Remove up to COUNT adapters from each read. Default: 1
-  -O MINLENGTH, --overlap MINLENGTH
+  [REMOVE]-O MINLENGTH, --overlap MINLENGTH
                         Require MINLENGTH overlap between read and adapter for an adapter
                                     to be found. Default: 3
-  --match-read-wildcards
+  [REMOVE] --match-read-wildcards
                         Interpret IUPAC wildcards in reads. Default: False
-  -N, --no-match-adapter-wildcards
+  [REMOVE] -N, --no-match-adapter-wildcards
                         Do not interpret IUPAC wildcards in adapters.
-  --action {trim,mask,lowercase,none}
+  [REMOVE]--action {trim,mask,lowercase,none}
                         What to do with found adapters.
                                     mask: replace with 'N' characters;
                                     lowercase: convert to lowercase;
@@ -91,7 +91,7 @@ Additional read modifications:
                                     value is given, only the 3' end is trimmed. If two
                                     comma-separated cutoffs are given, the 5' end is trimmed with
                                     the first cutoff, the 3' end with the second.
-  --quality-base N      Assume that quality values in FASTQ are encoded as ascii(quality
+  [REMOVE]--quality-base N      Assume that quality values in FASTQ are encoded as ascii(quality
                                     + N). This needs to be set to 64 for some old Illumina
                                     FASTQ files. Default: 33
   --length LENGTH, -l LENGTH
@@ -99,18 +99,18 @@ Additional read modifications:
                                     while negative ones remove bases at the beginning. This and the
                                     following modifications are applied after adapter trimming.
   --trim-n              Trim N's on ends of reads.
-  --length-tag TAG      Search for TAG followed by a decimal number in the description
+  [REMOVE]--length-tag TAG      Search for TAG followed by a decimal number in the description
                                     field of the read. Replace the decimal number with the correct
                                     length of the trimmed read. For example, use --length-tag 'length='
                                     to correct fields like 'length=123'.
-  --strip-suffix STRIP_SUFFIX
+  [REMOVE]--strip-suffix STRIP_SUFFIX
                         Remove this suffix from read names if present. Can be given multiple times.
-  -x PREFIX, --prefix PREFIX
+  [REMOVE]-x PREFIX, --prefix PREFIX
                         Add this prefix to read names. Use {name} to insert the name of the matching
                                     adapter.
-  -y SUFFIX, --suffix SUFFIX
+  [REMOVE]-y SUFFIX, --suffix SUFFIX
                         Add this suffix to read names; can also include {name}
-  --zero-cap, -z        Change negative quality values to zero.
+  [REMOVE]--zero-cap, -z        Change negative quality values to zero.
 
 Filtering of processed reads:
   Filters are applied after above read modifications.
@@ -119,37 +119,37 @@ Filtering of processed reads:
 
   -m LEN[:LEN2], --minimum-length LEN[:LEN2]
                         Discard reads shorter than LEN. Default: 0
-  -M LEN[:LEN2], --maximum-length LEN[:LEN2]
+  [REMOVE]-M LEN[:LEN2], --maximum-length LEN[:LEN2]
                         Discard reads longer than LEN. Default: no limit
-  --max-n COUNT         Discard reads with more than COUNT 'N' bases. If COUNT is a number
+  [REMOVE]--max-n COUNT         Discard reads with more than COUNT 'N' bases. If COUNT is a number
                                      between 0 and 1, it is interpreted as a fraction of the read length.
-  --discard-trimmed, --discard
+  [REMOVE]--discard-trimmed, --discard
                         Discard reads that contain an adapter. Use also -O to avoid
                                     discarding too many randomly matching reads.
-  --discard-untrimmed, --trimmed-only
+  [REMOVE]--discard-untrimmed, --trimmed-only
                         Discard reads that do not contain an adapter.
-  --discard-casava      Discard reads that did not pass CASAVA filtering (header has :Y:).
+  [REMOVE]--discard-casava      Discard reads that did not pass CASAVA filtering (header has :Y:).
 
 Output:
-  --quiet               Print only error messages.
-  --report {full,minimal}
+  [REMOVE]--quiet               Print only error messages.
+  [REMOVE]--report {full,minimal}
                         Which type of report to print: 'full' or 'minimal'. Default: full
-  --fasta               Output FASTA to standard output even on FASTQ input.
-  -Z                    Use compression level 1 for gzipped output files (faster, but uses more space)
-  --info-file FILE      Write information about each read and its adapter matches into FILE.
+  [REMOVE]--fasta               Output FASTA to standard output even on FASTQ input.
+  [REMOVE]-Z                    Use compression level 1 for gzipped output files (faster, but uses more space)
+  [REMOVE]--info-file FILE      Write information about each read and its adapter matches into FILE.
                                     See the documentation for the file format.
-  -r FILE, --rest-file FILE
+  [REMOVE]-r FILE, --rest-file FILE
                         When the adapter matches in the middle of a read, write the
                                     rest (after the adapter) to FILE.
-  --wildcard-file FILE  When the adapter has N wildcard bases, write adapter bases
+  [REMOVE]--wildcard-file FILE  When the adapter has N wildcard bases, write adapter bases
                                     matching wildcard positions to FILE. (Inaccurate with indels.)
-  --too-short-output FILE
+  [REMOVE]--too-short-output FILE
                         Write reads that are too short (according to length specified by
                                 -m) to FILE. Default: discard reads
-  --too-long-output FILE
+  [REMOVE]--too-long-output FILE
                         Write reads that are too long (according to length specified by
                                 -M) to FILE. Default: discard reads
-  --untrimmed-output FILE
+  [REMOVE]--untrimmed-output FILE
                         Write reads that do not contain any adapter to FILE. Default:
                                     output to same file as trimmed reads
 
