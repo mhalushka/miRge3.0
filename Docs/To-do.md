@@ -1,4 +1,4 @@
-# miRge updates
+# miRge-Py3
 
 ## Basic functions - command line options
 - [ ] User friendly parameters 
@@ -19,7 +19,7 @@
 - [ ] `Add features here`
 
 ## Additional features - Customization of software:
-- [ ] Bowtie to avoid mismatches in the seed region - Interact with **M. pertia**. 
+- [ ] Bowtie to avoid mismatches in the seed region - Interact with **Mihaela Pertea**. 
 - [ ] Software to use .SRA, .fastq.gz and .fastq
 - [ ] `Additional features here`
 
@@ -33,7 +33,8 @@
 
 #### References: 
 - [miRge2.0](https://github.com/mhalushka/miRge)
-- [miRge1.0](https://github.com/mhalushka/miRge-1), [sample_output] (https://baraslab.github.io/miRge/miRge/miRge.exampleOutput/report.html)
+- [miRge1.0](https://github.com/mhalushka/miRge-1) 
+  - [sample_output](https://baraslab.github.io/miRge/miRge/miRge.exampleOutput/report.html)
 - [sRNAtoolbox](https://bioinfo5.ugr.es/srnatoolbox/srnabench/)
-- [Tools4miRs] (https://tools4mirs.org/software/isomirs_identification/)
+- [Tools4miRs](https://tools4mirs.org/software/isomirs_identification/)
 - [ ] `Additional features here`
