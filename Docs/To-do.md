@@ -13,6 +13,7 @@
 ## Secondary functions - Predict:
 - [ ] RNA-fold for novel miRNAs
 - [ ] Correct miRge GFF output
+- [ ] tRNA halve and fragment prediction
 - [ ] SVM re-implementation 
 - [ ] PDF and HTML output
 - [ ] Incorporate SQLite db for quick query and visualization
