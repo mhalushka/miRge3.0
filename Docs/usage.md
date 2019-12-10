@@ -51,10 +51,6 @@ CutAdapt commands:
 Predicting novel miRNAs:
   -ps <dir required>    the path to the system's samtools binary
   -pr <dir required>    the path to the system's rnafold binary
-  -ws <file>            the file containing the overall samples to analysis for novel miRNA prediction. No header, just a list of *.fastq file names in a column.
-                        Names of files can be to your choosing (e.g. filestochecknovel.txt)
-  -minl <int>           the minimum length of the reatined reads for novel miRNA detection (default: 16)
-  -maxl <int>           the maximum length of the reatined reads for novel miRNA detection (default: 25)
   -cc <int>             the maximum read count of the reatined reads for novel miRNA detection (default: 2)
   -ml <int>             the maximum number of mapping loci for the retained reads for novel miRNA detection (default: 3)
   -sl <int>             the seed length when invoking Bowtie for novel miRNA detection (default: 25)
