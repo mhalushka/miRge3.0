@@ -48,6 +48,7 @@
   - [sample_output](https://baraslab.github.io/miRge/miRge/miRge.exampleOutput/report.html)
 - [sRNAtoolbox](https://bioinfo5.ugr.es/srnatoolbox/srnabench/)
 - [Tools4miRs](https://tools4mirs.org/software/isomirs_identification/)
+- [Chimira](http://wwwdev.ebi.ac.uk/enright-dev/chimira/index.php)
 - [Beeware by Russell Keith-Magee](https://www.youtube.com/watch?v=qaPzlIJ57dk) 
 - [ ] `Additional features here`
 
