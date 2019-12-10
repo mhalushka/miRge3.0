@@ -29,27 +29,21 @@ Options:
 
 CutAdapt commands:
   -a ADAPTER, --adapter ADAPTER
-                        Sequence of an adapter ligated to the 3' end. The adapter and subsequent bases are trimmed. If a '$' character is appended ('anchoring'), the adapter is only
-                                    found if it is a suffix of the read.
+                        Sequence of a 3' adapter. The adapter and subsequent bases are trimmed.
   -g ADAPTER, --front ADAPTER
-                        Sequence of an adapter ligated to the 5' end. The adapter and any preceding bases are trimmed. Partial matches at the 5' end are allowed. If a '^' character is
-                                    prepended ('anchoring'), the adapter is only found if it is a prefix of the read.
-  -b ADAPTER, --anywhere ADAPTER
-                        Sequence of an adapter that may be ligated to the 5' or 3' end. Both types of matches as described under -a und -g are allowed. If the first base of the read is
-                                    part of the match, the behavior is as with -g, otherwise as with -a. This option is mostly for rescuing failed library preparations - do not use if you know
-                                    which end your adapter was ligated to!
+                        Sequence of a 5' adapter. The adapter and any preceding bases are trimmed.
   -u LENGTH, --cut LENGTH
-                        Remove bases from each read. If LENGTH is positive, remove bases from the beginning. If LENGTH is negative, remove bases from the end.
-                                    Can be used twice if LENGTHs have different signs. This is applied *before* adapter trimming.
+                        Remove N bases from each read. Positive LENGTH removes bases from the beginning and negative
+                        LENGTH removes bases from the end. 
   --nextseq-trim 3'CUTOFF
                         NextSeq-specific quality trimming (each read). Trims also dark cycles appearing as high-quality G bases.
   -q [5'CUTOFF,]3'CUTOFF, --quality-cutoff [5'CUTOFF,]3'CUTOFF
-                        Trim low-quality bases from 5' and/or 3' ends of each read before adapter removal. Applied to both reads if data is paired. If one
-                                value is given, only the 3' end is trimmed. If two comma-separated cutoffs are given, the 5' end is trimmed with the first cutoff,
-                                the 3' end with the second.
+                        Trim low-quality bases from 5' and/or 3' ends of each read before adapter removal. If one
+                        value is given, only the 3' end is trimmed. If two comma-separated cutoffs are given, the 5' end is
+                        trimmed with the first cutoff, the 3' end with the second.
   --length LENGTH, -l LENGTH
-                        Shorten reads to LENGTH. Positive values remove bases at the end while negative ones remove bases at the beginning. This and the following
-                                modifications are applied after adapter trimming.
+                        Shorten reads to LENGTH. Positive values remove bases at the end while negative ones remove bases
+                        at the beginning. 
   --trim-n              Trim N's on ends of reads.
   -m LEN[:LEN2], --minimum-length LEN[:LEN2]
                         Discard reads shorter than LEN. Default: 0
