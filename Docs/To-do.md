@@ -50,6 +50,7 @@
 - [Tools4miRs](https://tools4mirs.org/software/isomirs_identification/)
 - [Chimira](http://wwwdev.ebi.ac.uk/enright-dev/chimira/index.php)
 - [Beeware by Russell Keith-Magee](https://www.youtube.com/watch?v=qaPzlIJ57dk) 
+- [ViennaRNA 2.0](https://github.com/ViennaRNA/ViennaRNA)
 - [ ] `Additional features here`
 
 ## Upcoming events:
