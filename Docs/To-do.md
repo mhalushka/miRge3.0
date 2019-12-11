@@ -8,6 +8,7 @@
 
 ## Basic functions - command line options
 - [ ] User friendly parameters 
+- [ ] Implement [`Read the docs`](https://readthedocs.org/)
 - [ ] `Additional features here`
 
 ## Primary functions - Annotation:
