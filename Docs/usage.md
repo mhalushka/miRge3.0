@@ -32,9 +32,9 @@ CutAdapt commands:
                         Sequence of a 3' adapter. The adapter and subsequent bases are trimmed.
   -g ADAPTER, --front ADAPTER
                         Sequence of a 5' adapter. The adapter and any preceding bases are trimmed.
-  -u LENGTH, --cut LENGTH
+ __-u LENGTH, --cut LENGTH
                         Remove N bases from each read. Positive LENGTH removes bases from the beginning and negative
-                        LENGTH removes bases from the end. 
+                        LENGTH removes bases from the end.__ 
   --nextseq-trim 3'CUTOFF
                         NextSeq-specific quality trimming (each read). Trims also dark cycles appearing as high-quality G bases.
   -q [5'CUTOFF,]3'CUTOFF, --quality-cutoff [5'CUTOFF,]3'CUTOFF
