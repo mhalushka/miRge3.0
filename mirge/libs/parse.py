@@ -9,45 +9,64 @@ def parseArg():
     if len(sys.argv)==1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    group = parser.add_argument_group("Options")
-    group.add_argument('-s', nargs='*', required=True, dest='sampleList', metavar='samples', help='two options: 1. A file where each row represents one sample name;  2. *.fastq *.fastq ... Or *.fastq.gz *.fastq.gz ...')
-    group.add_argument('-d', default='miRBase',dest='miRNA_database', metavar='<string required>', help="the miRNA database (default: miRBase. miRGeneDB is optional)")
-    group.add_argument('-lib', required=True, dest= 'libraryPath', metavar='<dir required>', help="the path to the miRge libraries" )
-    group.add_argument('-sp', required=True, dest='species', metavar='<string required>', help="the species can be human, mouse, fruitfly, nematode, rat and zebrafish (novel miRNA detection is confined in human and mouse)")
-    group.add_argument('-ex', default='0.1', dest ='canoRatio', metavar='<float>', help='the threshold of the proportion of canonical reads for the miRNAs to determine whether keeping them or not when counting. Users can set it between 0 and 0.5. (default: 0.1)')
-    #group.add_argument('-ad', default='none', dest='adapter', metavar='<string>', help='the adapter need to be removed which could be illumina, ion or a defined sequence (default: none)')
-    group.add_argument('-phred64', action = 'store_true', help='phred64 format (default: 64)')
-    group.add_argument('-spikeIn', dest='spikeIn', action = 'store_true', help="switch to annotate spike-ins if the bowtie index files are loacted at the path of bowtie's index files (default: off)")
-    group.add_argument('-tcf', dest='trimmed_collapsed_fa', action = 'store_true', help='switch to write trimmed and collapsed fasta file (default: off)')
-    group.add_argument('-di', dest='diff_isomirs', action = 'store_true', help='switch to calculate of isomirs entropy (default: off)')
-    group.add_argument('-cpu', dest='cpu', metavar='<int>', default='1', help='the number of processors to use for trimming, qc, and alignment (default: 1)')
-    group.add_argument('-ai', dest='a_to_i', action = 'store_true', help='switch to calculate of A to I editing (default: off)')
-    group.add_argument('-gff', dest='gff_output', action = 'store_true', help='switch to output results in gff format (default: off)')
-    group.add_argument('-trf', dest='trf_output', action = 'store_true', help='switch to analyze tRNA fragment (default: off)')
-    group.add_argument('-o', default="dir_tmp", dest='output_dir', metavar='<dir>', help='the directory of the outputs (default: current directory)')
-    group.add_argument('--version', action='version', version='%s'%(version))
+    parser.add_argument('--version', action='version', version='%s'%(version))
+    group = parser.add_argument_group("Options",description='''-s,    --samples            list of one or more samples separated by comma or a file with list of samples separated by new line (accepts *.fastq, *.fastq.gz) 
+-db,   --mir-DB             the reference database of miRNA. Options: miRBase and miRGeneDB (Default: miRBase) 
+-lib,  --libraries-path     the path to miRge libraries 
+-on,   --organism-name      the organism name can be human, mouse, fruitfly, nematode, rat and zebrafish
+-ex,   --crThreshold        the threshold of the proportion of canonical reads for the miRNAs to retain. Set: ex (0 < ex < 0.5), (Default: 0.1)
+-phr,  --phread64           phred64 format (Default: 64)
+-spk,  --spikeIn            switch to annotate spike-ins if the bowtie index files are loacted at the path of bowtie's index files (Default: off)
+-ie,   --isoform-entropy    switch to calculate isomirs entropy (default: off)
+-cpu,  --threads            the number of processors to use for trimming, qc, and alignment (Default: 1)
+-ai,   --AtoI               switch to calculate of A to I editing (Default: off)
+-tcf   --tcf-out            switch to write trimmed and collapsed fasta file (Default: off)
+-gff   --gff-out            switch to output results in gff format (Default: off) 
+-trf   --tRNA-frag          switch to analyze tRNA fragment (Default: off)
+-o     --outDir             the directory of the outputs (Default: current directory) 
+''')
+    group.add_argument('-s','--samples', nargs='*', required=True, help=argparse.SUPPRESS)
+    group.add_argument('-db', '--mir-DB', default='miRBase', help=argparse.SUPPRESS) 
+    group.add_argument('-lib', '--libraries-path', required=True, help=argparse.SUPPRESS)
+    group.add_argument('-on','--organism-name', required=True, help=argparse.SUPPRESS)
+    group.add_argument('-ex', '--crThreshold', default='0.1', help=argparse.SUPPRESS)
+    group.add_argument('-phr', '--phread64', help=argparse.SUPPRESS)
+    group.add_argument('-spk', '--spikeIn', help=argparse.SUPPRESS)
+    group.add_argument('-ie', '--isoform-entropy', help=argparse.SUPPRESS)
+    group.add_argument('-cpu', '--threads', default='1', help=argparse.SUPPRESS)
+    group.add_argument('-ai', '--AtoI', help=argparse.SUPPRESS)
+    group.add_argument('-tcf', '--tcf-out', help=argparse.SUPPRESS)
+    group.add_argument('-gff', '--gff-out', help=argparse.SUPPRESS)
+    group.add_argument('-trf', '--tRNA-frag', help=argparse.SUPPRESS)
+    group.add_argument('-o', '--outDir', default="dir_tmp", help=argparse.SUPPRESS)
 
-    group1 = parser.add_argument_group("Data pre-processing")
+    group1 = parser.add_argument_group("Data pre-processing", description='''-a,    --adapter            Sequence of a 3' adapter. The adapter and subsequent bases are trimmed
+-g,    --front              Sequence of a 5' adapter. The adapter and any preceding bases are trimmed
+-u,    --cut                Remove bases from each read. If LENGTH is positive, remove bases from the beginning. If LENGTH is negative, remove bases from the end
+-nxt,  --nextseq-trim       NextSeq-specific quality trimming (each read). Trims also dark cycles appearing as high-quality G bases
+-q,    --quality-cutoff     Trim low-quality bases from 5' and/or 3' ends of each read before adapter removal. If one value is given, only the 3' end is trimmed
+                            If two comma-separated cutoffs are given, the 5' end is trimmed with the first cutoff, the 3' end with the second
+-l,    --length             Shorten reads to LENGTH. Positive values remove bases at the end while negative ones remove bases at the beginning. This and the following
+                            modifications are applied after adapter trimming
+-NX,   --trim-n             Trim N's on ends of reads
+-m,    --minimum-length     Discard reads shorter than LEN. (Default: 16)
+
+''')
     group1.add_argument("-a", "--adapter", type=lambda x: ("back", x), action="append",
-        default=[], metavar="ADAPTER", dest="adapters", help="""Sequence of a 3' adapter. The adapter and subsequent bases are trimmed.""")
+        default=[], dest="adapters", help=argparse.SUPPRESS)
     group1.add_argument("-g", "--front", type=lambda x: ("front", x), action="append",
-        default=[], metavar="ADAPTER", dest="adapters", help="""Sequence of a 5' adapter. The adapter and any preceding bases are trimmed.""")
-    group1.add_argument("-u", "--cut", action='append', default=[], type=int, metavar="LENGTH",
-        help="""Remove bases from each read. If LENGTH is positive, remove bases from the beginning. If LENGTH is negative, remove bases from the end.""")
-    group1.add_argument("--nextseq-trim", type=int, default=None, metavar="3'CUTOFF",
-        help="""NextSeq-specific quality trimming (each read). Trims also dark cycles appearing as high-quality G bases.""")
-    group1.add_argument("-q", "--quality-cutoff", default=None, metavar="[5'CUTOFF,]3'CUTOFF",
-        help="""Trim low-quality bases from 5' and/or 3' ends of each read before adapter removal. If one value is given, only the 3' end is trimmed.
-	 If two comma-separated cutoffs are given, the 5' end is trimmed with the first cutoff, the 3' end with the second.""")
-    group1.add_argument("--length", "-l", type=int, default=None, metavar="LENGTH",
-            help="""Shorten reads to LENGTH. Positive values remove bases at the end while negative ones remove bases at the beginning. This and the following 
-	modifications are applied after adapter trimming.""")
-    group1.add_argument("--trim-n", action='store_true', default=False, help="""Trim N's on ends of reads.""")
-    group1.add_argument("-m", "--minimum-length", default=None, metavar="LEN[:LEN2]", help="""Discard reads shorter than LEN. Default: 0""")
-    group1.add_argument('-minl', default='16', dest ='minLength', metavar='<int>', help='the minimum length of the reatined reads for novel miRNA detection (default: 16)')
+        default=[], dest="adapters", help=argparse.SUPPRESS)
+    group1.add_argument("-u", "--cut", action='append', default=[], type=int, metavar="LENGTH", help=argparse.SUPPRESS)
+    group1.add_argument("-nxt","--nextseq-trim", type=int, default=None, metavar="3'CUTOFF", help=argparse.SUPPRESS)
+    group1.add_argument("-q", "--quality-cutoff", default=None, metavar="[5'CUTOFF,]3'CUTOFF", help=argparse.SUPPRESS)
+    group1.add_argument("--length", "-l", type=int, default=None, metavar="LENGTH", help=argparse.SUPPRESS)
+    group1.add_argument("-NX", "--trim-n", action='store_true', default=False,help=argparse.SUPPRESS)
+    group1.add_argument("-m", "--minimum-length", default=None, metavar="LEN[:LEN2]", help=argparse.SUPPRESS)
+    
     ## group - 3 ##
 
-    group2 = parser.add_argument_group('Predicting novel miRNAs',description='''-nmir, --novel_miRNA        include prediction of novel miRNAs
+    group2 = parser.add_argument_group('Predicting novel miRNAs',description='''novel miRNA detection is confined to human and mouse only (with "-on" argument):
+-nmir, --novel_miRNA        include prediction of novel miRNAs
 -c,    --minReadCounts      the minimum read counts supporting novel miRNA detection (default: 2)
 -mloc, --maxMappingLoci     the maximum number of mapping loci for the retained reads for novel miRNA detection (default: 3)
 -sl,   --seedLength         the seed length when invoking Bowtie for novel miRNA detection (default: 25)
@@ -76,3 +95,6 @@ def parseArg():
     
     return parser.parse_args()
 
+    
+
+#group.add_argument('-ad', default='none', dest='adapter', metavar='<string>', help='the adapter need to be removed which could be illumina, ion or a defined sequence (default: none)')
