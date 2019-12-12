@@ -42,13 +42,14 @@ def check_dependencies(args):
     
     
     # Checking RNAfold version #
-    rnafold = subprocess.run(str(rnaFoldCommand), shell=True, capture_output=True, text=True)
-    if rnafold.returncode==0:
-        if float(rnafold.stdout.split('\n')[0].split(' ')[1]) != "2.4.14":
-            print("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>")
-            exit()
+    if args.novel_miRNA: 
+        rnafold = subprocess.run(str(rnaFoldCommand), shell=True, capture_output=True, text=True)
+        if rnafold.returncode==0:
+            if float(rnafold.stdout.split('\n')[0].split(' ')[1]) != "2.4.14":
+                print("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>")
+                exit()
+            else:
+                print("RNAfold version: "+ str(rnafold.stdout.split('\n')[0].split(' ')[1]))
         else:
-            print("RNAfold version: "+ str(rnafold.stdout.split('\n')[0].split(' ')[1]))
-    else:
-        print("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>")
-        exit()
+            print("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>")
+            exit()
