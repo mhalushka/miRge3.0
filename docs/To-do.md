@@ -17,6 +17,7 @@
 - [ ] Incorporate latest version of cutadapt and its features. 
 - [ ] Keep track to update features of miRge automatically with newer versions of cutadapt.
 - [ ] No installation required for [Bowtie 1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/). Use: `\bin\bowtie`
+- [ ] **miRge --paste**. Option to comibne colummns of several \*.csv files into one matrix using panda dataframe 
 - [ ] `Additional features here`
 
 ## Secondary functions - Predict:
