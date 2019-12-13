@@ -5,7 +5,7 @@ import subprocess
 
 def parseArg():
     version = '3.0'
-    parser = argparse.ArgumentParser(description='miRge3.0 (Comprehensive analysis of miRNA sequencing Data)',usage='miRge3.0 [options]',formatter_class=argparse.RawTextHelpFormatter,)
+    parser = argparse.ArgumentParser(description='miRge3.0 (Comprehensive analysis of small RNA sequencing Data)',usage='miRge3.0 [options]',formatter_class=argparse.RawTextHelpFormatter,)
     if len(sys.argv)==1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -13,16 +13,16 @@ def parseArg():
     group = parser.add_argument_group("Options",description='''-s,    --samples            list of one or more samples separated by comma or a file with list of samples separated by new line (accepts *.fastq, *.fastq.gz) 
 -db,   --mir-DB             the reference database of miRNA. Options: miRBase and miRGeneDB (Default: miRBase) 
 -lib,  --libraries-path     the path to miRge libraries 
--on,   --organism-name      the organism name can be human, mouse, fruitfly, nematode, rat and zebrafish
--ex,   --crThreshold        the threshold of the proportion of canonical reads for the miRNAs to retain. Set: ex (0 < ex < 0.5), (Default: 0.1)
--phr,  --phread64           phred64 format (Default: 64)
--spk,  --spikeIn            switch to annotate spike-ins if the bowtie index files are loacted at the path of bowtie's index files (Default: off)
--ie,   --isoform-entropy    switch to calculate isomirs entropy (default: off)
+-on,   --organism-name      the organism name can be human, mouse, fruitfly, nematode, rat or zebrafish
+-ex,   --crThreshold        the threshold of the proportion of canonical reads for the miRNAs to retain. Range for ex (0 - 0.5), (Default: 0.1)
+-phr,  --phred64            phred64 format (Default: 33)
+-spk,  --spikeIn            switch to annotate spike-ins if spike-in bowtie index files are located at the path of bowtie's index files (Default: off)
+-ie,   --isoform-entropy    switch to calculate isomir entropy (default: off)
 -cpu,  --threads            the number of processors to use for trimming, qc, and alignment (Default: 1)
--ai,   --AtoI               switch to calculate of A to I editing (Default: off)
+-ai,   --AtoI               switch to calculate A to I editing (Default: off)
 -tcf   --tcf-out            switch to write trimmed and collapsed fasta file (Default: off)
--gff   --gff-out            switch to output results in gff format (Default: off) 
--trf   --tRNA-frag          switch to analyze tRNA fragment (Default: off)
+-gff   --gff-out            switch to output isomiR results in gff format (Default: off) 
+-trf   --tRNA-frag          switch to analyze tRNA fragment and halves (Default: off)
 -o     --outDir             the directory of the outputs (Default: current directory) 
 ''')
     group.add_argument('-s','--samples', nargs='*', required=True, help=argparse.SUPPRESS)
