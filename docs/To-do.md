@@ -9,6 +9,8 @@
 ## Basic functions - command line options
 - [ ] User friendly parameters 
 - [ ] Implement [`Read the docs`](https://readthedocs.org/)
+  - [ ] Mention file type to use for loading sample information 
+  - [ ] `Additional details to add to docs here`
 - [ ] `Additional features here`
 
 ## Primary functions - Annotation:
