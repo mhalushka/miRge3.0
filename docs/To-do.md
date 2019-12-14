@@ -9,12 +9,15 @@
 ## Basic functions - command line options
 - [ ] User friendly parameters 
 - [ ] Implement [`Read the docs`](https://readthedocs.org/)
+  - [ ] Mention file type to use for loading sample information 
+  - [ ] `Additional details to add to docs here`
 - [ ] `Additional features here`
 
 ## Primary functions - Annotation:
 - [ ] Incorporate latest version of cutadapt and its features. 
 - [ ] Keep track to update features of miRge automatically with newer versions of cutadapt.
 - [ ] No installation required for [Bowtie 1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/). Use: `\bin\bowtie`
+- [ ] **miRge --paste**. Option to comibne colummns of several \*.csv files into one matrix using panda dataframe 
 - [ ] `Additional features here`
 
 ## Secondary functions - Predict:
