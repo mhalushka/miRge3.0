@@ -22,7 +22,6 @@ def check_dependencies(args):
         print("bowtie error!: bowtie, command not found \nUse argument -pbwt <name of the directory>")
         exit()
 
-    """
     # Checking cutadapt version #
     cutadapt = subprocess.run(str(cutadaptCommand), shell=True, capture_output=True, text=True)
     try:
@@ -33,7 +32,6 @@ def check_dependencies(args):
             print("cutadapt version: "+ str(cutadapt.stdout.strip()))
     except ValueError:
         print("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.")
-    """
 
     # Checking samtools version #
     samtools = subprocess.run(str(samtoolsCommand), shell=True, capture_output=True, text=True)

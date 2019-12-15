@@ -3,6 +3,8 @@
 #Built-in libraries 
 from pathlib import Path
 import gzip
+from cutadapt.modifiers import AdapterCutter, QualityTrimmer, UnconditionalCutter, QualityTrimmer
+import cutadapt
 
 #Custom miRge libraries 
 from libs.parse import parseArg
