@@ -59,3 +59,17 @@ def check_dependencies(args):
         else:
             print("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>")
             exit()
+
+def validate_files(in_fileArray, fastq_fullPath):
+    for files in in_fileArray:
+       filetype = ''.join(Path(files).suffixes) if Path(files).suffix == ".gz" else Path(files).suffix
+       if Path(files).exists() and (filetype == ".fastq" or filetype == ".fastq.gz"):
+           fastq_fullPath.append(str(Path(files).resolve()))
+       else:
+           print(f"\nWARNING: File {files} does not exists!") if not Path(files).exists() else print(f"\nWARNING: File {files} is neither fastq or fastq.gz format!")
+           print(f"Omitting file {files}")
+    #Validating files in the list where the list should not be empty:
+    if not fastq_fullPath:
+        print("\nERROR!: No valid input files were available!\nPlease verify miRge -s arguments")
+        exit()
+    return fastq_fullPath
