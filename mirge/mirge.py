@@ -2,6 +2,7 @@
 
 #Built-in libraries 
 from pathlib import Path
+import time
 import gzip
 from cutadapt.modifiers import AdapterCutter, QualityTrimmer, UnconditionalCutter, QualityTrimmer
 import cutadapt
@@ -19,6 +20,11 @@ def main():
     
     #TESTING 
     samples = args.samples
+    tStamp = time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
+    ourDir = "miRge." + tStamp
+    workDir = Path(args.outDir)/ourDir if args.outDir else Path.cwd()/ourDir
+    Path(workDir).mkdir(exist_ok=True)
+
     file_exts = ['.txt', '.csv']
     file_list = samples[0].split(',')
     fastq_fullPath = [] #Initiating an empty list to collect all the fastq or fastq.gz files based on user arguments!
