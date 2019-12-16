@@ -6,6 +6,26 @@
 - [ ] Fast and able to run multiple datasets at once
 - [ ] Attractive and meaningful output
 
+## GitHub Issues 
+- [x] To integrate miRge --build-idx (OK - Should be implemented)
+- [x] Discuss spike-in and how it matters for users! (OK - Should be implemented)
+[Ref1](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5100345/)
+[Ref2](https://www.ncbi.nlm.nih.gov/pubmed/25870415?dopt=Abstract)
+[Ref3](https://www.nature.com/articles/s41598-017-06174-3)
+- [ ] Find data with spike-ins and visualize/interpret the output (Pending)
+- [ ] miRge --update-lib (Issue: #1) (Pending)
+- [ ] miRge --allele-freq (Issue: #3) (Pending)
+- [ ] A zero count and an absent record in miR.Counts.csv (Issue: #20) (Should be implemented)
+- [ ] Option: -ad ion (Issue: #25) - I think its mostly due to the use of different cutadapt version. (I am not sure).  The 11 is defined in the code below. 
+- [ ] Any other type of adapters possible? 
+```
+adapter = args.adapter
+	if adapter == 'illumina':
+		adapter = 'TGGAATTCTCGGGTGCCAAGGAACTCCAG'
+	elif adapter == 'ion':
+		adapter = '11'
+``` 
+
 ## Basic functions - command line options
 - [ ] User friendly parameters 
 - [ ] Implement [`Read the docs`](https://readthedocs.org/)
