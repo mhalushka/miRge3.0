@@ -33,18 +33,17 @@ def main():
 
     file_exts = ['.txt', '.csv']
     file_list = samples[0].split(',')
-    fastq_fullPath = [] #Initiating an empty list to collect all the fastq or fastq.gz files based on user arguments!
     if Path(file_list[0]).is_dir():
         file_list = [str(x) for x in Path(file_list[0]).iterdir() if x.is_file()]
-        fastq_fullPath = validate_files(file_list, fastq_fullPath)
+        fastq_fullPath,base_names = validate_files(file_list)
     elif Path(file_list[0]).exists() and Path(file_list[0]).suffix in file_exts: # READ TXT OR CSV FILE HERE
         with open(file_list[0]) as file:
             lines = [line.strip() for line in file]
-            fastq_fullPath = validate_files(lines, fastq_fullPath)
+            fastq_fullPath, base_names = validate_files(lines)
     else:  # READ FASTQ OR FASTQ.gz FILES HERE
-        fastq_fullPath = validate_files(file_list, fastq_fullPath)
+        fastq_fullPath, base_names = validate_files(file_list)
+    print(f"\nmiRge will process {len(fastq_fullPath)} out of {len(file_list)} input files.")
     print(fastq_fullPath)
-    base_names = [Path(bn).stem for bn in fastq_fullPath]
     print(base_names)
 
 if __name__ == '__main__':
