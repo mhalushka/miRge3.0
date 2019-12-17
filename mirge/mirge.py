@@ -3,7 +3,10 @@
 #Built-in libraries 
 from pathlib import Path
 import time
-import gzip
+import sys
+
+# GitHub libraries
+#import gzip
 from cutadapt.modifiers import AdapterCutter, QualityTrimmer, UnconditionalCutter, QualityTrimmer
 import cutadapt
 
@@ -23,7 +26,10 @@ def main():
     tStamp = time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
     ourDir = "miRge." + tStamp
     workDir = Path(args.outDir)/ourDir if args.outDir else Path.cwd()/ourDir
-    Path(workDir).mkdir(exist_ok=True)
+    Path(workDir).mkdir(exist_ok=True, parents=True)
+    db_keys = {"mirbase":"miRBase", "mirgenedb":"MirGeneDB"}
+    ref_db = db_keys.get(args.mir_DB.lower()) if args.mir_DB.lower() in db_keys else sys.exit("ERROR: Require valid database (-d miRBase or MirGeneDB)")
+    
 
     file_exts = ['.txt', '.csv']
     file_list = samples[0].split(',')
