@@ -30,15 +30,16 @@ def parseArg():
     group.add_argument('-lib', '--libraries-path', required=True, help=argparse.SUPPRESS)
     group.add_argument('-on','--organism-name', required=True, help=argparse.SUPPRESS)
     group.add_argument('-ex', '--crThreshold', default='0.1', help=argparse.SUPPRESS)
-    group.add_argument('-phr', '--phread64', help=argparse.SUPPRESS)
+    group.add_argument('-phr', '--phred64', type=int, default=33, help=argparse.SUPPRESS)
     group.add_argument('-spk', '--spikeIn', help=argparse.SUPPRESS)
     group.add_argument('-ie', '--isoform-entropy', help=argparse.SUPPRESS)
-    group.add_argument('-cpu', '--threads', default='1', help=argparse.SUPPRESS)
+    group.add_argument('-cpu', '--threads', type=int, default='1', help=argparse.SUPPRESS)
     group.add_argument('-ai', '--AtoI', help=argparse.SUPPRESS)
     group.add_argument('-tcf', '--tcf-out', help=argparse.SUPPRESS)
     group.add_argument('-gff', '--gff-out', help=argparse.SUPPRESS)
     group.add_argument('-trf', '--tRNA-frag', help=argparse.SUPPRESS)
     group.add_argument('-o', '--outDir', help=argparse.SUPPRESS)
+    group.add_argument('-shh',"--quiet", default=True, action='store_true', help=argparse.SUPPRESS)
 
     group1 = parser.add_argument_group("Data pre-processing", description='''-a,    --adapter            Sequence of a 3' adapter. The adapter and subsequent bases are trimmed
 -g,    --front              Sequence of a 5' adapter. The adapter and any preceding bases are trimmed
@@ -60,11 +61,25 @@ def parseArg():
     group1.add_argument("-u", "--cut", action='append', default=[], type=int, metavar="LENGTH", help=argparse.SUPPRESS)
     group1.add_argument("-nxt","--nextseq-trim", type=int, default=None, metavar="3'CUTOFF", help=argparse.SUPPRESS)
     group1.add_argument("-q", "--quality-cutoff", default=None, metavar="[5'CUTOFF,]3'CUTOFF", help=argparse.SUPPRESS)
-    group1.add_argument("--length", "-l", type=int, default=None, metavar="LENGTH", help=argparse.SUPPRESS)
+    group1.add_argument("--length", "-l", type=int, default=3, metavar="LENGTH", help=argparse.SUPPRESS)
     group1.add_argument("-NX", "--trim-n", action='store_true', default=False,help=argparse.SUPPRESS)
     group1.add_argument("-m", "--minimum-length", default=None, metavar="LEN[:LEN2]", help=argparse.SUPPRESS)
     group1.add_argument("-umi", "--uniq-mol-ids", default=None, help=argparse.SUPPRESS, action='store_true')
-    
+    #### we use none of the following cutadapt options but are required to pass default values for miRNA and cutadapt pipeline
+    group1.add_argument("-op", "--output", metavar="FILE", help=argparse.SUPPRESS) #"Default: write to standard output"
+    group1.add_argument("--compression-level", type=int, default=6, help=argparse.SUPPRESS)
+    group1.add_argument("--overlap", type=int, metavar="MINLENGTH", default=3, help=argparse.SUPPRESS)
+    group1.add_argument("--error-rate", type=float, default=0.1, metavar="RATE",help=argparse.SUPPRESS)
+    group1.add_argument("--gc-content", type=float, default=50,  help=argparse.SUPPRESS)
+    group1.add_argument("--action", choices=('trim', 'mask', 'lowercase', 'none'), default='trim', help=argparse.SUPPRESS)
+    group1.add_argument("-n", "--times", type=int, metavar="COUNT", default=1, help=argparse.SUPPRESS)
+    group1.add_argument("--match-read-wildcards", action="store_true", default=False,help=argparse.SUPPRESS)
+    group1.add_argument("-N", "--no-match-adapter-wildcards", action="store_false", default=True, dest='match_adapter_wildcards',help=argparse.SUPPRESS)
+    group1.add_argument("--fasta", default=True, action='store_true',help=argparse.SUPPRESS)
+    group1.add_argument("--buffer-size", type=int, default=4000000, help=argparse.SUPPRESS)
+    group1.add_argument("--no-indels", action='store_false', dest='indels', default=True, help=argparse.SUPPRESS)
+    group1.add_argument("-M", "--maximum-length", default=None, type=int, metavar="LEN[:LEN2]", help=argparse.SUPPRESS)
+
     ## group - 3 ##
 
     group2 = parser.add_argument_group('Predicting novel miRNAs',description='''novel miRNA detection is confined to human and mouse only (with "-on" argument):

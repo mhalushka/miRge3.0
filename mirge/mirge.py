@@ -13,7 +13,10 @@ import cutadapt
 #Custom miRge libraries 
 from libs.parse import parseArg
 from libs.miRgeEssential import check_dependencies, validate_files
-
+#from libs.trim_file import *
+#from libs.trim_adapt import *
+#from libs.feeding import *
+from libs.digest import *
 #with gzip.open('/home/joe/file.txt.gz', 'rb') as f:
 
 def main():
@@ -45,6 +48,15 @@ def main():
     print(f"\nmiRge will process {len(fastq_fullPath)} out of {len(file_list)} input files.")
     print(fastq_fullPath)
     print(base_names)
+    print(args)
+    #process_reads(args, fastq_fullPath)
+    baking(args, fastq_fullPath, base_names)
+    adapter = args.adapters
+    numCPU = args.threads 
+    cleanedReads = base_names[0]+'.trim.fastq'
+    #phred, processed_count, kept_count = trim_file(fastq_fullPath[0], adapter, cleanedReads, int(numCPU))
+
+
 
 if __name__ == '__main__':
     main()
