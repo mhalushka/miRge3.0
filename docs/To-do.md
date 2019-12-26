@@ -25,6 +25,27 @@ adapter = args.adapter
 	elif adapter == 'ion':
 		adapter = '11'
 ``` 
+**Adapter sequences**
+
+[Accurate Adapter Information Is Crucial for Reproducibility and Reusability in Small RNA Seq Studies](https://www.mdpi.com/2311-553X/5/4/49).
+[Supplementary](https://www.mdpi.com/2311-553X/5/4/49/s1)
+```
+1. RealSeq®-AC =  TGGAATTCTCGGGTGCCAAGG (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6120088/)
+2. NEBNext® (NEB) =  AGATCGGAAGAGCACACGTCT (New England Biolabs) {SRR6464616,SRR6464623}
+3. TruSeq® (Illumina) = TGGAATTCTCGGGTGCCAAGG {SRR6464662, SRR6464661}
+4. NEXTFlex™ (Bioo Scientific/PerkinElmer) = TGGAATTCTCGGGTGCCAAGG {SRR6464672,SRR6464671}
+5. QIAseq (Qiagen) = AACTGTAGGCACCATCAAT {}
+6. SMARTer (Takara Bio) = AAAAAAAAAA {SRR6464721, SRR6464720}
+(a ligation-free technique that uses poly(A)-tailing and reverse transcriptase (RT) template switching to detect small RNAs)
+7. TailorMix = TGGAATTCTCGGGTGCCAAGG
+8. CleanTag = TGGAATTCTCGGGTGCCAAGG
+9. Lexogen - Small RNA-Seq Library Prep Kit = TGGAATTCTCGGGTGCCAAGGAACTCCAGTCAC
+10. CATS small RNA-seq Kit = GATCGGAAGAGCACACGTCTG {SRR6464674, SRR6464673}
+11. Incorporation of UMIs into TruSeq adapters (TrUMIseq adapters) 
+(https://www.future-science.com/doi/10.2144/000114608?url_ver=Z39.88-2003&rfr_id=ori%3Arid%3Acrossref.org&rfr_dat=cr_pub%3Dwww.ncbi.nlm.nih.gov&)
+Ref: https://github.com/LieberInstitute/miRNA_Kit_Comparison
+Datasets: SRR* for different lib kit and adapters etc: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?study=SRP199350
+```
 
 ## Basic functions - command line options
 - [ ] User friendly parameters 
