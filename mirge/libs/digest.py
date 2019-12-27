@@ -100,31 +100,38 @@ def baking(args, inFileArray, inFileBaseArray):
     global ingredients
     global threads
     global buffer_size
+    global trimmed_reads
     numlines=10000
     threads = args.threads
     buffer_size = args.buffer_size
     ingredients = stipulate(args)
-    for FQfile in inFileArray:
-        readobj=[]
-        with dnaio.open(FQfile, mode='r') as readers:
-            for fqs in readers:
-                readobj.append(fqs)
+    for index, FQfile in enumerate(inFileArray):
+#        readobj=[]
+#            fi = iter(readers)
+#            readobj= list(fi)
+#            print(len(readobj))
+#            for fqs in readers:
+#                readobj.append(fqs)
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
+            with dnaio.open(FQfile, mode='r') as readers:
+                readobj=[]
+                for reads in readers:
+                    readobj.append(reads)
+                    if len(readobj) == 100000:
+                        future = [executor.submit(cutadapt, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)]
+                        readobj=[]
+                        for fqres in concurrent.futures.as_completed(future):
+                #print(f">{fqres.result()}")
+                            for trimout in fqres.result():
+                                print(str(index) + "\t" +trimout)
+                future = [executor.submit(cutadapt, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)]
+                for fqres in concurrent.futures.as_completed(future):
+                    for trimout in fqres.result(): 
+                        print(str(index) + "\t" +trimout)
+                        #print(trimout)
+                readobj=[]
 
-            future = [executor.submit(cutadapt, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)]
-            #future = [executor.submit(distribute, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)]
-#        for re in readobj:
-#            cutadapt(re)
-
-#        print(len(file_chunk_array))
-#        with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
-#            eachFileChunkObject = [executor.submit(readfile, i) for i in file_chunk_array]
-#            for outChunks in concurrent.futures.as_completed(eachFileChunkObject):
-#                for fq in outChunks.result():
-#                    print(fq)
-        
-        
         
     finish = time.perf_counter()
     print(f'Finished in {round(finish-start, 4)} second(s)')
@@ -133,10 +140,12 @@ def baking(args, inFileArray, inFileBaseArray):
 
 # THIS IS WHERE EVERYTHIHNG HAPPENS - Modifiers, filters etc...
 def cutadapt(fq):
-    #print(fq)
+    #print(len(fq))
+    trimmed_reads=[]
     for fqreads in fq:
         matches=[]
         for modifier in ingredients:
             fqreads = modifier(fqreads, matches)
-        print(fqreads.sequence)
-    #return(fq.sequence)
+        #print(fqreads.sequence)
+        trimmed_reads.append(fqreads.sequence)
+    return trimmed_reads
