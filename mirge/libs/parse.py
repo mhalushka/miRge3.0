@@ -63,7 +63,7 @@ def parseArg():
     group1.add_argument("-q", "--quality-cutoff", default=None, metavar="[5'CUTOFF,]3'CUTOFF", help=argparse.SUPPRESS)
     group1.add_argument("--length", "-l", type=int, default=3, metavar="LENGTH", help=argparse.SUPPRESS)
     group1.add_argument("-NX", "--trim-n", action='store_true', default=False,help=argparse.SUPPRESS)
-    group1.add_argument("-m", "--minimum-length", default=None, metavar="LEN[:LEN2]", help=argparse.SUPPRESS)
+    group1.add_argument("-m", "--minimum-length", default=0, help=argparse.SUPPRESS)
     group1.add_argument("-umi", "--uniq-mol-ids", default=None, help=argparse.SUPPRESS, action='store_true')
     #### we use none of the following cutadapt options but are required to pass default values for miRNA and cutadapt pipeline
     group1.add_argument("-op", "--output", metavar="FILE", help=argparse.SUPPRESS) #"Default: write to standard output"
@@ -75,10 +75,12 @@ def parseArg():
     group1.add_argument("-n", "--times", type=int, metavar="COUNT", default=1, help=argparse.SUPPRESS)
     group1.add_argument("--match-read-wildcards", action="store_true", default=False,help=argparse.SUPPRESS)
     group1.add_argument("-N", "--no-match-adapter-wildcards", action="store_false", default=True, dest='match_adapter_wildcards',help=argparse.SUPPRESS)
-    group1.add_argument("--fasta", default=True, action='store_true',help=argparse.SUPPRESS)
+    group1.add_argument("--fasta", default=False, action='store_true',help=argparse.SUPPRESS)
     group1.add_argument("--buffer-size", type=int, default=4000000, help=argparse.SUPPRESS)
     group1.add_argument("--no-indels", action='store_false', dest='indels', default=True, help=argparse.SUPPRESS)
     group1.add_argument("-M", "--maximum-length", default=None, type=int, metavar="LEN[:LEN2]", help=argparse.SUPPRESS)
+    group1.add_argument("--numba-pll", default=None, action='store_false', help=argparse.SUPPRESS)
+    group1.add_argument("--numba-cuda", default=None, action='store_false', help=argparse.SUPPRESS)
 
     ## group - 3 ##
 
