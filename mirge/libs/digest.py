@@ -58,6 +58,7 @@ def add_unconditional_cutters(pipeline_add, cut1):
                 pipeline_add(UnconditionalCutter(c))
 
 
+
 def stipulate(args):
     """
     REQUIRED TO CREATE ITERABLE FUNCTIONS TO RUN IN CUTADAPT 2.7. THIS FUNCTION IS CALLED ONLY ONE TIME. 
@@ -132,7 +133,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                 readobj=[]
 
         finish2 = time.perf_counter()
-        print(f'Cutadapt finished file {inFileBaseArray[index]} in {round(finish2-start, 4)} second(s)')
+        print(f'Cutadapt finished for file {inFileBaseArray[index]} in {round(finish2-start, 4)} second(s)')
         
         if fasta:
             fastaOut.close()
@@ -153,7 +154,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
             collapsed_df = pd.DataFrame() 
         complete_set = complete_set.fillna(0).astype(int)
         finish3 = time.perf_counter()
-        print(f'Collapsing finished file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
+        print(f'Collapsing finished for file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
     #https://stackoverflow.com/questions/24039023/add-column-with-constant-value-to-pandas-dataframe
     initialFlags = ['annotFlag','exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','isomiR miRNA']
     complete_set = complete_set.assign(**dict.fromkeys(initialFlags, '0'))
@@ -164,7 +165,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     #fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
     #complete_set.to_csv(fileToCSV)
     finish4 = time.perf_counter()
-    print(f'Matrix creationg finished in {round(finish4-finish3, 4)} second(s)\n')
+    print(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
     EndTime = time.perf_counter()
     print(f'Completed in {round(EndTime-begningTime, 4)} second(s)\n')
     for temp in inFileBaseArray:
@@ -172,8 +173,6 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         temp = Path(workDir)/temp
         os.remove(temp)
     return(complete_set)
-
-        
 
 
 
@@ -199,4 +198,3 @@ def cutadapt(fq):
         #if int(len(fqreads.sequence)) >= int(min_len):
     #return trimmed_reads
     #return trimmed_seq_dict
-
