@@ -3,11 +3,13 @@ from pathlib import Path
 
 
 def check_dependencies(args):
+    """
+    THIS FUNCTION LOOKS FOR DEPENDENCIES REQUIRED TO EXECUTE miRge3.0. 
+    """
     bwtCommand = Path(args.bowtie_path)/"bowtie --version" if args.bowtie_path else "bowtie --version"
     samtoolsCommand = Path(args.samtools_path)/"samtools --version" if args.samtools_path else "samtools --version"
     cutadaptCommand = "cutadapt --version"
     rnaFoldCommand = Path(args.RNAfold_path)/"RNAfold --version" if args.RNAfold_path else "RNAfold --version"
-    
 
     # Checking bowtie version #
     bowtie = subprocess.run(str(bwtCommand), shell=True, capture_output=True, text=True)
@@ -46,7 +48,9 @@ def check_dependencies(args):
         print("Samtools error!: samtools, command not found\n Use argument -psam <name of the directory>")
         exit()
     
-    
+    """
+    THE CONDITION LOOKS FOR rnaFold PACKAGAE ONLY IF USER WANTS TO PREDICT NOVEL miRNAs
+    """
     # Checking RNAfold version #
     if args.novel_miRNA: 
         rnafold = subprocess.run(str(rnaFoldCommand), shell=True, capture_output=True, text=True)
@@ -60,7 +64,12 @@ def check_dependencies(args):
             print("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>")
             exit()
 
+
+
 def validate_files(in_fileArray, fastq_fullPath=[], base_names=[]):
+    """
+    THIS FUNCTION VERIFIES THE INPUT FILES TO BE RUN FOR EXTENSIONS ENDING WITH EITHER .fastq (OR) .fasta.gz. THERE BY OMIT OTHER FILES FROM RUNNING THROUGH miRge3.0
+    """
     for files in in_fileArray:
        filetype = ''.join(Path(files).suffixes) if Path(files).suffix == ".gz" else Path(files).suffix
        if Path(files).exists() and (filetype == ".fastq" or filetype == ".fastq.gz"):
