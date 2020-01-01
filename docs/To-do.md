@@ -13,9 +13,9 @@
 [Ref2](https://www.ncbi.nlm.nih.gov/pubmed/25870415?dopt=Abstract)
 [Ref3](https://www.nature.com/articles/s41598-017-06174-3)
 - [ ] Find data with spike-ins and visualize/interpret the output (Pending)
-- [ ] miRge --update-lib (Issue: #1) (Pending)
+- [ ] miRge --build-lib (Issue: #1) (Pending)
 - [ ] miRge --allele-freq (Issue: #3) (Pending)
-- [ ] A zero count and an absent record in miR.Counts.csv (Issue: #20) (Should be implemented)
+- [x] A zero count and an absent record in miR.Counts.csv (Issue: #20) (REQUIRE TESTING)
 - [ ] Option: -ad ion (Issue: #25) - I think its mostly due to the use of different cutadapt version. (I am not sure).  The 11 is defined in the code below. 
 - [ ] Any other type of adapters possible? 
 ```
@@ -55,7 +55,7 @@ Datasets: SRR* for different lib kit and adapters etc: https://trace.ncbi.nlm.ni
 - [ ] `Additional features here`
 
 ## Primary functions - Annotation:
-- [ ] Incorporate latest version of cutadapt and its features. 
+- [x] Incorporate latest version of cutadapt and its features. 
 - [ ] Keep track to update features of miRge automatically with newer versions of cutadapt.
 - [ ] No installation required for [Bowtie 1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/). Use: `\bin\bowtie`
 - [ ] **miRge --paste**. Option to comibne colummns of several \*.csv files into one matrix using panda dataframe 
