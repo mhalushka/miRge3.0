@@ -16,6 +16,7 @@ from libs.parse import parseArg
 from libs.miRgeEssential import check_dependencies, validate_files
 #from libs.feeding import *
 from libs.digest import baking 
+from libs.manifoldAlign import bwtAlign
 
 
 def main():
@@ -45,9 +46,11 @@ def main():
     else:  # READ FASTQ OR FASTQ.gz FILES HERE
         fastq_fullPath, base_names = validate_files(file_list)
     print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
+    #baking(args, fastq_fullPath, base_names, workDir)
     pdDataFrame = baking(args, fastq_fullPath, base_names, workDir)
-    fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
-    pdDataFrame.to_csv(fileToCSV)
+    bwtAlign(args,pdDataFrame,workDir)
+    #fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
+    #pdDataFrame.to_csv(fileToCSV)
     
 
 
