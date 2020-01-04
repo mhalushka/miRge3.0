@@ -80,12 +80,12 @@ ___
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) preTrimClusteredSeq.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) preprocess_featureFiles.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) processSam.py
-- [ ] ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) quantReads.py
+- [x] ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) quantReads.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) renameStrFile.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) runAnnotationPipeline.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) screen_precusor_candidates.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) summarize.py
-- [ ] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) trim_file.py
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) trim_file.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) writeDataToCSV.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) write_novel_report.py
 
