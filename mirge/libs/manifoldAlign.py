@@ -77,6 +77,8 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
             #exit()
     finish = time.perf_counter()
     print(f'Alignment completed in {round(finish-begningTime, 4)} second(s)\n')
+    if not args.spikeIn:
+        pdDataFrame = pdDataFrame.drop(columns=['spike-in'])
 
     pdDataFrame = pdDataFrame.fillna('')
     pdMapped = pdDataFrame[pdDataFrame.annotFlag == 1]
