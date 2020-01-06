@@ -26,7 +26,7 @@ def parseArg():
 -o     --outDir             the directory of the outputs (Default: current directory) 
 ''')
     group.add_argument('-s','--samples', nargs='*', required=True, help=argparse.SUPPRESS)
-    group.add_argument('-db', '--mir-DB', default='miRBase', help=argparse.SUPPRESS) 
+    group.add_argument('-db', '--mir-DB', default='miRBase', required=True, help=argparse.SUPPRESS) 
     group.add_argument('-lib', '--libraries-path', required=True, help=argparse.SUPPRESS)
     group.add_argument('-on','--organism-name', required=True, help=argparse.SUPPRESS)
     group.add_argument('-ex', '--crThreshold', default='0.1', help=argparse.SUPPRESS)
@@ -62,7 +62,7 @@ def parseArg():
     group1.add_argument("-nxt","--nextseq-trim", type=int, default=None, metavar="3'CUTOFF", help=argparse.SUPPRESS)
     group1.add_argument("-q", "--quality-cutoff", default=None, metavar="[5'CUTOFF,]3'CUTOFF", help=argparse.SUPPRESS)
     group1.add_argument("--length", "-l", type=int, default=3, metavar="LENGTH", help=argparse.SUPPRESS)
-    group1.add_argument("-NX", "--trim-n", action='store_true', default=False,help=argparse.SUPPRESS)
+    group1.add_argument("-NX", "--trim-n", action='store_true', default=True, help=argparse.SUPPRESS)
     group1.add_argument("-m", "--minimum-length", default=0, help=argparse.SUPPRESS)
     group1.add_argument("-umi", "--uniq-mol-ids", default=None, help=argparse.SUPPRESS, action='store_true')
     #### we use none of the following cutadapt options but are required to pass default values for miRNA and cutadapt pipeline

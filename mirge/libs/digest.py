@@ -161,11 +161,13 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         print(f'Collapsing finished for file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
     
     SeqLength = complete_set.index.str.len().tolist() # adding additional column with len(sequences)
-    initialFlags = ['annotFlag','exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','isomiR miRNA'] # keeping other columns ready for next assignment
-    complete_set = complete_set.assign(**dict.fromkeys(initialFlags, '0'))
+    initialFlags = ['exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','isomiR miRNA','spike-in'] # keeping other columns ready for next assignment
+    complete_set = complete_set.assign(**dict.fromkeys(initialFlags, ''))
+    annotFlags = ['annotFlag']
+    complete_set = complete_set.assign(**dict.fromkeys(annotFlags, '0'))
     complete_set['SeqLength'] = SeqLength 
     lengthCol = ['SeqLength']
-    finalColumns = lengthCol + initialFlags + inFileBaseArray # rearranging the columns as we want  
+    finalColumns = lengthCol + annotFlags +initialFlags + inFileBaseArray # rearranging the columns as we want  
     complete_set = complete_set.reindex(columns=finalColumns)
 
     #fileToCSV = Path(workDir)/"miRge3_collapsed.csv"

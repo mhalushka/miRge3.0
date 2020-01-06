@@ -48,9 +48,9 @@ def main():
     print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
     #baking(args, fastq_fullPath, base_names, workDir)
     pdDataFrame = baking(args, fastq_fullPath, base_names, workDir)
-    bwtAlign(args,pdDataFrame,workDir)
-    #fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
-    #pdDataFrame.to_csv(fileToCSV)
+    bwtAlign(args,pdDataFrame,workDir,ref_db)
+    fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
+    pdDataFrame.to_csv(fileToCSV)
     
 
 
