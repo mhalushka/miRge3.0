@@ -2,6 +2,7 @@ import subprocess
 from pathlib import Path
 import pandas as pd
 import time
+import os
 
 from libs.miRgeEssential import UID
 
@@ -79,7 +80,8 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     print(f'Alignment completed in {round(finish-begningTime, 4)} second(s)\n')
     if not args.spikeIn:
         pdDataFrame = pdDataFrame.drop(columns=['spike-in'])
-
+    
+    os.remove(bwtInput)
     pdDataFrame = pdDataFrame.fillna('')
     pdMapped = pdDataFrame[pdDataFrame.annotFlag == 1]
     pdMapped = pdMapped.drop(columns=['SeqLength'])
