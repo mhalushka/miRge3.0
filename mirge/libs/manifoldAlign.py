@@ -15,8 +15,11 @@ def createFastaInput(SequenceToAlign, bwtInput):
 
 
 def alignPlusParse(bwtExec, iter_number, pdDataFrame):
+    print(iter_number)
     colnames = list(pdDataFrame.columns)
     colToAct = 2 + int(iter_number)
+    if iter_number == 8:
+        print(str(bwtExec))
     bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
     if bowtie.returncode==0:
         bwtOut = bowtie.stdout
@@ -40,13 +43,13 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     bwtInput = Path(workDir)/"bwtInput.fasta"
     #outSam = Path(workDir)/"SeqToAnnot.sam"
     print("Alignment in progress ...")
-    indexNames = ['_mirna_', '_hairpin_', '_mrna', '_mature_trna', '_pre_trna','_snorna','_rrna','_ncrna_others','_genome','_spike-in']
+    indexNames = ['_mirna_', '_hairpin_', '_mrna', '_mature_trna', '_pre_trna','_snorna','_rrna','_ncrna_others','_mirna_','_spike-in']
     parameters = [' -n 0 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -v 1 -f -a --best --strata --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', 
             ' -n 1 -f --norc -S --threads ', ' -n 0 -f --norc -S --threads ', ' -n 0 -f --norc -S --threads ', ' -5 1 -3 2 -v 2 -f --norc --best -S --threads ', ' -n 0 -f --norc -S --threads ']
     if args.spikeIn:
-        iterations = 9
+        iterations = 10
     else:
-        iterations = 8
+        iterations = 9
     for bwt_iter in range(iterations):
         if bwt_iter == 0:
             SequenceToAlign = pdDataFrame[pdDataFrame['SeqLength'] <= 25].index.tolist()
@@ -71,7 +74,10 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
         else:
             SequenceToAlign = pdDataFrame[(pdDataFrame['annotFlag'] == '0')].index.tolist()
             createFastaInput(SequenceToAlign, bwtInput)
-            indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) 
+            if bwt_iter == 8: 
+                indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
+            else:
+                indexName  = str(args.organism_name) + str(indexNames[bwt_iter])
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
             bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame)
