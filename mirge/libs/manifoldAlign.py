@@ -7,6 +7,9 @@ import os
 from libs.miRgeEssential import UID
 
 def createFastaInput(SequenceToAlign, bwtInput):
+    """
+    CREATE FASTA FOR EACH ITERATIONS FOR BOWTIE ALIGNMENT 
+    """
     with open(bwtInput, 'w') as wseq:
         for sequences in SequenceToAlign:
             wseq.write(">"+str(sequences)+"\n")
@@ -15,11 +18,11 @@ def createFastaInput(SequenceToAlign, bwtInput):
 
 
 def alignPlusParse(bwtExec, iter_number, pdDataFrame):
-    print(iter_number)
+    """
+    ALIGN TO BOWTIE, PARSE SAM FILE AND UPDATE THE DATAFRAME
+    """
     colnames = list(pdDataFrame.columns)
     colToAct = 2 + int(iter_number)
-    if iter_number == 8:
-        print(str(bwtExec))
     bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
     if bowtie.returncode==0:
         bwtOut = bowtie.stdout
@@ -29,14 +32,15 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame):
     for nl in sam_rows:
         if nl != ['']:
             if nl[2] != "*":
-                #print(str(iter_number) + "\t" + str(nl))
+                if iter_number == 8:
+                    print(nl)
                 pdDataFrame.at[nl[0], colnames[colToAct]] = nl[2]
                 pdDataFrame.at[nl[0], colnames[1]] = 1
     return pdDataFrame
 
 def bwtAlign(args,pdDataFrame,workDir,ref_db):
     """
-    THIS FUNCTION COLLECTS DATAFRAME AND USER ARGUMENTS TO MAP TO VARIOUS DATABASES USING BOWTIE.
+    THIS FUNCTION COLLECTS DATAFRAME AND USER ARGUMENTS TO MAP TO VARIOUS DATABASES USING BOWTIE. CALLED FIRST AND ONCE. 
     """
     begningTime = time.perf_counter()
     bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
