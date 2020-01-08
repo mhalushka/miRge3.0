@@ -103,3 +103,37 @@ The number of A-to-I editing sites for is less than 10 so that no heatmap is dra
 Summary Complete (47.38 sec)
 Annotation of miRge2.0 Completed (215.99 sec)
 ```
+**SRR77240_456_3x.fastq**
+```
+ls -lh  SRR77240_456_3x.fastq
+-rw-r--r-- 1 ahanuma2 pmi-user 4.6G Jan  2 16:51 SRR77240_456_3x.fastq
+miRge2.0 annotate -s SRR77240_456_3x.fastq -d miRBase -pb ~/Other_softwarePackages/bowtie-1.2.3-linux-x86_64/ -lib /home/ahanuma2/datasets/mirge_data/human -sp human -ad illumina  -cpu 12 -o speedTest_010820 -tcf -di -ai -gff -trf
+Performing quantitation analysis of SRR77240_456_3x.fastq...
+It takes: 221.90s
+
+Performing annotation for all of the collasped sequences...
+I am done with first command/home/ahanuma2/datasets/mirge_data/speedTest_010820/miRge.2020-01-08_13-08-52
+All annotation cycles completed (29.09 sec).
+
+Summarizing and tabulating results...
+The number of A-to-I editing sites for is less than 10 so that no heatmap is drawn.
+Summary Complete (50.34 sec)
+Annotation of miRge2.0 Completed (301.32 sec)
+```
+**SRR649562.fastq**
+```
+ls -lh SRR649562.fastq
+-rw-r--r-- 1 ahanuma2 pmi-user 8.5G Dec  5 12:03 SRR649562.fastq
+miRge2.0 annotate -s SRR649562.fastq -d miRBase -pb ~/Other_softwarePackages/bowtie-1.2.3-linux-x86_64/ -lib /home/ahanuma2/datasets/mirge_data/human -sp human -ad illumina  -cpu 12 -o speedTest_010820 -tcf -di -ai -gff -trf
+Performing quantitation analysis of SRR649562.fastq...
+It takes: 384.91s
+
+Performing annotation for all of the collasped sequences...
+I am done with first command/home/ahanuma2/datasets/mirge_data/speedTest_010820/miRge.2020-01-08_13-14-20
+All annotation cycles completed (79.09 sec).
+
+Summarizing and tabulating results...
+The number of A-to-I editing sites for is less than 10 so that no heatmap is drawn.
+Summary Complete (206.77 sec)
+Annotation of miRge2.0 Completed (670.77 sec)
+```
