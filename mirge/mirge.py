@@ -23,7 +23,7 @@ def main():
     #WORKING 
     args = parseArg()
     check_dependencies(args)
-    
+    globalstart = time.perf_counter()     
     #TESTING 
     samples = args.samples
     tStamp = time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
@@ -48,10 +48,25 @@ def main():
     print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
     #baking(args, fastq_fullPath, base_names, workDir)
     pdDataFrame = baking(args, fastq_fullPath, base_names, workDir)
-    bwtAlign(args,pdDataFrame,workDir,ref_db)
+    pdDataFrame = bwtAlign(args,pdDataFrame,workDir,ref_db)
+    print(f"Summarizing and tabulating results...")
+    summary_Start_time = time.perf_counter()
+    pdMapped = pdDataFrame[pdDataFrame.annotFlag == 1]
+    pdMapped = pdMapped.drop(columns=['SeqLength'])
+    pdUnmapped = pdDataFrame[pdDataFrame.annotFlag == '0']
+    pdUnmapped = pdUnmapped.drop(columns=['SeqLength'])
+
     fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
+    mappedfileToCSV = Path(workDir)/"mapped.csv"
+    unmappedfileToCSV = Path(workDir)/"unmapped.csv"
     pdDataFrame.to_csv(fileToCSV)
-    
+    pdMapped.to_csv(mappedfileToCSV)
+    pdUnmapped.to_csv(unmappedfileToCSV)
+    summary_End_time = time.perf_counter()
+
+    print(f'Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n')     
+    print(f'\nThe analysis completed in {round(summary_End_time-globalstart, 4)} second(s)\n')     
+
 
 
 if __name__ == '__main__':

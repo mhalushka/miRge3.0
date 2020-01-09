@@ -3,8 +3,11 @@ from pathlib import Path
 import pandas as pd
 import time
 import os
+import concurrent.futures
 
 from libs.miRgeEssential import UID
+
+
 
 def createFastaInput(SequenceToAlign, bwtInput):
     """
@@ -17,6 +20,23 @@ def createFastaInput(SequenceToAlign, bwtInput):
     return True
 
 
+
+def parseSAM(sam_rows):
+    """
+    FUNCTION FOR PARALLEL PROCESSING, WHICH OPTIMIZES MEMORY UTILIZATION BY PROCESSING ONLY FEW CHUNKS OF DATA AT ONCE
+    """
+    collective_list=[]
+    for srow in sam_rows:
+        if not srow.startswith('@'):
+            sam_line = srow.split('\t')
+            if sam_line != ['']:
+                if sam_line[2] != "*":
+                    variable_item = [sam_line[0], sam_line[2]]
+                    collective_list.append(variable_item)
+    return collective_list
+
+
+
 def alignPlusParse(bwtExec, iter_number, pdDataFrame):
     """
     ALIGN TO BOWTIE, PARSE SAM FILE AND UPDATE THE DATAFRAME
@@ -27,21 +47,34 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame):
     if bowtie.returncode==0:
         bwtOut = bowtie.stdout
         bwtErr = bowtie.stderr
-    lines = bwtOut.split('\n')
-    sam_rows = [line.split('\t') for line in lines if not line.startswith('@') ]
-    for nl in sam_rows:
-        if nl != ['']:
-            if nl[2] != "*":
-                if iter_number == 8:
-                    print(nl)
-                pdDataFrame.at[nl[0], colnames[colToAct]] = nl[2]
-                pdDataFrame.at[nl[0], colnames[1]] = 1
+    readobj=[]
+    with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
+        for item in bwtOut.split('\n'):
+            readobj.append(item)
+            if len(readobj) == 100000:
+                future = [executor.submit(parseSAM, readobj[i:i+10000]) for i in range(0, len(readobj), 10000)]
+                for sam_match in concurrent.futures.as_completed(future):
+                    for each_list in sam_match.result():
+                        pdDataFrame.at[each_list[0], colnames[colToAct]] = each_list[1]
+                        pdDataFrame.at[each_list[0], colnames[1]] = 1
+                readobj=[]
+        future = [executor.submit(parseSAM, readobj[i:i+10000]) for i in range(0, len(readobj), 10000)]
+        for sam_match in concurrent.futures.as_completed(future):
+            for each_list in sam_match.result():
+                pdDataFrame.at[each_list[0], colnames[colToAct]] = each_list[1]
+                pdDataFrame.at[each_list[0], colnames[1]] = 1
+        
+        readobj=[]
     return pdDataFrame
+
+
 
 def bwtAlign(args,pdDataFrame,workDir,ref_db):
     """
     THIS FUNCTION COLLECTS DATAFRAME AND USER ARGUMENTS TO MAP TO VARIOUS DATABASES USING BOWTIE. CALLED FIRST AND ONCE. 
     """
+    global threads
+    threads = args.threads
     begningTime = time.perf_counter()
     bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
     bwtInput = Path(workDir)/"bwtInput.fasta"
@@ -93,14 +126,4 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     
     os.remove(bwtInput)
     pdDataFrame = pdDataFrame.fillna('')
-    pdMapped = pdDataFrame[pdDataFrame.annotFlag == 1]
-    pdMapped = pdMapped.drop(columns=['SeqLength'])
-    pdUnmapped = pdDataFrame[pdDataFrame.annotFlag == '0']
-    pdUnmapped = pdUnmapped.drop(columns=['SeqLength'])
-    fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
-    mappedfileToCSV = Path(workDir)/"mapped.csv"
-    unmappedfileToCSV = Path(workDir)/"unmapped.csv"
-    pdDataFrame.to_csv(fileToCSV)
-    pdMapped.to_csv(mappedfileToCSV)
-    pdUnmapped.to_csv(unmappedfileToCSV)
-        
+    return pdDataFrame
