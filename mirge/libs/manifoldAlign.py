@@ -3,20 +3,29 @@ from pathlib import Path
 import pandas as pd
 import time
 import os
+import re
 import concurrent.futures
 
 from libs.miRgeEssential import UID
 
 
 
-def createFastaInput(SequenceToAlign, bwtInput):
+def createFastaInput(SequenceToAlign, bwtInput, bwt_iter):
     """
     CREATE FASTA FOR EACH ITERATIONS FOR BOWTIE ALIGNMENT 
     """
     with open(bwtInput, 'w') as wseq:
         for sequences in SequenceToAlign:
-            wseq.write(">"+str(sequences)+"\n")
-            wseq.write(str(sequences)+"\n")
+            if bwt_iter == 3:
+                try:
+                    footer = sequences[:(re.search('T{3,}$', sequences).span(0)[0])]
+                    wseq.write(">"+str(sequences)+"\n")
+                    wseq.write(str(footer)+"\n")
+                except AttributeError:
+                    pass
+            else:
+                wseq.write(">"+str(sequences)+"\n")
+                wseq.write(str(sequences)+"\n")
     return True
 
 
@@ -80,9 +89,8 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     bwtInput = Path(workDir)/"bwtInput.fasta"
     #outSam = Path(workDir)/"SeqToAnnot.sam"
     print("Alignment in progress ...")
-    indexNames = ['_mirna_', '_hairpin_', '_mrna', '_mature_trna', '_pre_trna','_snorna','_rrna','_ncrna_others','_mirna_','_spike-in']
-    parameters = [' -n 0 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -v 1 -f -a --best --strata --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', 
-            ' -n 1 -f --norc -S --threads ', ' -n 0 -f --norc -S --threads ', ' -n 0 -f --norc -S --threads ', ' -5 1 -3 2 -v 2 -f --norc --best -S --threads ', ' -n 0 -f --norc -S --threads ']
+    indexNames = ['_mirna_', '_hairpin_', '_mature_trna', '_pre_trna', '_snorna', '_rrna', '_ncrna_others', '_mrna', '_mirna_', '_spike-in']
+    parameters = [' -n 0 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -v 1 -f -a --best --strata --norc -S --threads ', ' -v 0 -f -a --best --strata --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 0 -f --norc -S --threads ', ' -5 1 -3 2 -v 2 -f --norc --best -S --threads ', ' -n 0 -f --norc -S --threads ']
     if args.spikeIn:
         iterations = 10
     else:
@@ -90,7 +98,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     for bwt_iter in range(iterations):
         if bwt_iter == 0:
             SequenceToAlign = pdDataFrame[pdDataFrame['SeqLength'] <= 25].index.tolist()
-            createFastaInput(SequenceToAlign, bwtInput)
+            createFastaInput(SequenceToAlign, bwtInput, bwt_iter)
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             #indexName  = str(args.organism_name) + "_mirna_"+ str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
@@ -100,7 +108,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
         
         elif bwt_iter == 1:
             SequenceToAlign = pdDataFrame[pdDataFrame['SeqLength'] > 25].index.tolist()
-            createFastaInput(SequenceToAlign, bwtInput)
+            createFastaInput(SequenceToAlign, bwtInput, bwt_iter)
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             #indexName  = str(args.organism_name) + "_hairpin_"+ str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
@@ -110,7 +118,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
 
         else:
             SequenceToAlign = pdDataFrame[(pdDataFrame['annotFlag'] == '0')].index.tolist()
-            createFastaInput(SequenceToAlign, bwtInput)
+            createFastaInput(SequenceToAlign, bwtInput, bwt_iter)
             if bwt_iter == 8: 
                 indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             else:
