@@ -93,8 +93,9 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     THIS FUNCTION IS CALLED FIRST FROM THE miRge3.0. 
     THIS FUNCTION PREPARES FUNCTIONS REQUIRED TO RUN IN CUTADAPT 2.7 AND PARSE ONE FILE AT A TIME. 
     """
-    global ingredients, threads, buffer_size, trimmed_reads, fasta, fileTowriteFasta, min_len
+    global ingredients, threads, buffer_size, trimmed_reads, fasta, fileTowriteFasta, min_len, umi
     numlines=10000
+    umi = args.uniq_mol_ids
     fasta = args.fasta
     threads = args.threads
     buffer_size = args.buffer_size
@@ -103,6 +104,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     df_mirged=pd.DataFrame()
     complete_set=pd.DataFrame()
     begningTime = time.perf_counter()
+    sampleReadCounts={}
     for index, FQfile in enumerate(inFileArray):
         start = time.perf_counter()
         finish2=finish3=finish4=finish5=0
@@ -142,6 +144,8 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         Based on requirement [annotflag]: number of non-zero values accros the column corresponding to each file 
         CREATE A DATAFRAME OF THESE SUMMARY STATISTICS AND RETURN TO MAIN FUNCTION, WHICH CAN BE USED FOR ALIGNMENT SUMMARY AS WELL.
         """
+        inputReadCounts = {inFileBaseArray[index]:count}
+        sampleReadCounts.update(inputReadCounts)
         finish2 = time.perf_counter()
         print(f'Cutadapt finished for file {inFileBaseArray[index]} in {round(finish2-start, 4)} second(s)')
         """
@@ -160,24 +164,29 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         finish3 = time.perf_counter()
         print(f'Collapsing finished for file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
     
-    SeqLength = complete_set.index.str.len().tolist() # adding additional column with len(sequences)
+    #complete_set['SeqLength'] = complete_set.index.str.len()
     initialFlags = ['exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','isomiR miRNA','spike-in'] # keeping other columns ready for next assignment
     complete_set = complete_set.assign(**dict.fromkeys(initialFlags, ''))
     annotFlags = ['annotFlag']
     complete_set = complete_set.assign(**dict.fromkeys(annotFlags, '0'))
-    complete_set['SeqLength'] = SeqLength 
-    lengthCol = ['SeqLength']
-    finalColumns = lengthCol + annotFlags +initialFlags + inFileBaseArray # rearranging the columns as we want  
+    #lengthCol = ['SeqLength']
+    finalColumns = annotFlags +initialFlags + inFileBaseArray # rearranging the columns as we want  
+    #finalColumns = lengthCol + annotFlags +initialFlags + inFileBaseArray # rearranging the columns as we want  
     complete_set = complete_set.reindex(columns=finalColumns)
-
-    #fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
-    #complete_set.to_csv(fileToCSV)
+    complete_set = complete_set.astype({"annotFlag": int})
     finish4 = time.perf_counter()
     print(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
     EndTime = time.perf_counter()
     print(f'Completed in {round(EndTime-begningTime, 4)} second(s)\n')
-    return(complete_set)
+    return(complete_set, sampleReadCounts)
 
+
+def UMIParser(s, n=4):
+    #front = s[:n]
+    center = s[n:-n]
+    #end = s[-n:]
+    return (center)
+    #return (front, center, end)
 
 
 # THIS IS WHERE EVERYTHIHNG HAPPENS - Modifiers, filters etc...
@@ -187,10 +196,22 @@ def cutadapt(fq):
         matches=[]
         for modifier in ingredients:
             fqreads = modifier(fqreads, matches)
-        if int(len(fqreads.sequence)) >= int(min_len):
-            if str(fqreads.sequence) in readDict:
-                readDict[str(fqreads.sequence)]+=1
-            else:
-                readDict[str(fqreads.sequence)]=1
+        if umi:
+            if int(len(fqreads.sequence)) >= int(min_len):
+                #print(str(fqreads.sequence)+"\n")
+                seq = UMIParser(fqreads.sequence, 4)
+                #start,seq,end = UMIParser(fqreads.sequence, 4)
+                #print(str(start)+str(end)+"\n")
+                if int(len(seq)) >= int(min_len):
+                    if str(seq) in readDict:
+                        readDict[str(seq)]+=1
+                    else:
+                        readDict[str(seq)]=1
+        else:
+            if int(len(fqreads.sequence)) >= int(min_len):
+                if str(fqreads.sequence) in readDict:
+                    readDict[str(fqreads.sequence)]+=1
+                else:
+                    readDict[str(fqreads.sequence)]=1
     trimmed_pairs = list(readDict.items())
     return trimmed_pairs
