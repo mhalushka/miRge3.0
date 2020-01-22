@@ -105,7 +105,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, pdUnmapped,sampleReadC
     df.set_index('miRNA',inplace = True)
     df.drop(columns=['exact miRNA'])
     df = df.groupby(['miRNA']).sum()[base_names]
-    df = df.loc[(df.sum(axis=1) != 0)]
+    df = df.loc[(df.sum(axis=1) != 0)] # THIS WILL ELEMINATE ROWS ACCROSS SAMPLES WHO'S SUM IS ZERO
     Filtered_miRNA_Reads = df.sum(axis = 0, skipna = True)[base_names]
     Filtered_miRNA_Reads = Filtered_miRNA_Reads.to_dict()
     miR_RPM = (df.div(df.sum(axis=0))*1000000).round(4)
