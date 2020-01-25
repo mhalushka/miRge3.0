@@ -264,4 +264,61 @@ Fatal error: cannot open file '/home/ahanuma2/miniconda2/lib/python2.7/site-pack
 Summary Complete (2816.79 sec)
 Annotation of miRge2.0 Completed (7982.49 sec)
 ```
+**BASIC RUNS FOR SAMPLES TO TEST A2I EDITING USING miRge3.0**
+```
+python mirge.py -s ../../../datasets/sample/a2i_edit/SRR1646473.fastq,../../../datasets/sample/a2i_edit/SRR1646493.fastq,../../../datasets/sample/a2i_edit/SRR1917324.fastq,../../../datasets/sample/a2i_edit/SRR1917329.fastq,../../../datasets/sample/a2i_edit/SRR1917336.fastq,../../../datasets/sample/a2i_edit/SRR5127219.fastq,../../../datasets/sample/a2i_edit/SRR837839.fastq,../../../datasets/sample/a2i_edit/SRR837842.fastq,../../../datasets/sample/a2i_edit/SRR095854.fastq -lib Libs -on human --threads 12 --adapter illumina -m 16 -db mirbase -o speedTest_012320_a2i
+bowtie version: 1.2.3
+cutadapt version: 2.7
+Samtools version: 1.9
 
+miRge3.0 will process 9 out of 9 input file(s).
+
+Cutadapt finished for file SRR1646473 in 141.9685 second(s)
+Collapsing finished for file SRR1646473 in 1.338 second(s)
+
+Cutadapt finished for file SRR1646493 in 125.4339 second(s)
+Collapsing finished for file SRR1646493 in 15.0731 second(s)
+
+Cutadapt finished for file SRR1917324 in 65.3597 second(s)
+Collapsing finished for file SRR1917324 in 19.6803 second(s)
+
+Cutadapt finished for file SRR1917329 in 132.5184 second(s)
+Collapsing finished for file SRR1917329 in 33.9265 second(s)
+
+Cutadapt finished for file SRR1917336 in 103.2941 second(s)
+Collapsing finished for file SRR1917336 in 39.4591 second(s)
+
+Cutadapt finished for file SRR5127219 in 117.0673 second(s)
+Collapsing finished for file SRR5127219 in 52.7628 second(s)
+
+Cutadapt finished for file SRR837839 in 78.3818 second(s)
+Collapsing finished for file SRR837839 in 72.4583 second(s)
+
+Cutadapt finished for file SRR837842 in 77.0599 second(s)
+Collapsing finished for file SRR837842 in 84.0581 second(s)
+
+Cutadapt finished for file SRR095854 in 30.1892 second(s)
+Collapsing finished for file SRR095854 in 100.6426 second(s)
+
+Matrix creation finished in 30.8276 second(s)
+
+Completed in 1321.5039 second(s)
+
+Alignment in progress ...
+Alignment completed in 742.9161 second(s)
+
+Summarizing and tabulating results...
+step1-other smallRNA: 10.4645 second(s)
+
+step2-other miRNA initial step: 2.9373 second(s)
+
+step3-complex miR.Counts step: 9.3229 second(s)
+
+step4- Remaining reporting step: 0.1277 second(s)
+
+
+Summary completed in 195.869 second(s)
+
+
+The analysis completed in 2278.3016 second(s)
+```
