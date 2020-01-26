@@ -46,14 +46,13 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     ca_thr = float(args.crThreshold)
     mfname = args.organism_name + "_merges_" + ref_db + ".csv"
     mergeFile = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/mfname
-    hmir=mtrna=pmtrna=snorna=rrna=ncrna=mrna=spikein={}
     if args.spikeIn:
         col_headers = ['hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','spike-in']
         col_vars = ['hmir','mtrna','pmtrna','snorna','rrna','ncrna','mrna','spikein']
     else:
         col_headers = ['hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA']
         col_vars = ['hmir','mtrna','pmtrna','snorna','rrna','ncrna','mrna']
-    empty_list=dict() #Actually this is a dictionary, to collect dictionary of keys as sample names and values for each element of col_vars. Sorry for naming it _list. 
+    empty_list=dict() #Actually this is a dictionary, to collect dictionary of `sample names` as keys and `sum of expression` as values for each element of col_vars. Sorry for naming it _list. 
     for element, col_in in enumerate(col_headers):
         for file_name in base_names:
             if col_vars[element] in empty_list:
@@ -65,7 +64,6 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     """
     BEGINNING OF WORKING AROUND WITH EXACT miRNA and isomiRs 
     """
-    step2_start = time.perf_counter()
     with open(mergeFile, "r") as merge_file:
         for line in merge_file:
             line_content = line.strip().split(',')
