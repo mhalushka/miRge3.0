@@ -14,18 +14,15 @@ import cutadapt
 #Custom miRge libraries 
 from libs.parse import parseArg
 from libs.miRgeEssential import check_dependencies, validate_files
-#from libs.feeding import *
 from libs.digest import baking 
 from libs.summary import summarize
 from libs.manifoldAlign import bwtAlign
 
 
 def main():
-    #WORKING 
+    globalstart = time.perf_counter()     
     args = parseArg()
     check_dependencies(args)
-    globalstart = time.perf_counter()     
-    #TESTING 
     samples = args.samples
     tStamp = time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
     ourDir = "miRge." + tStamp
@@ -33,7 +30,26 @@ def main():
     Path(workDir).mkdir(exist_ok=True, parents=True)
     db_keys = {"mirbase":"miRBase", "mirgenedb":"MirGeneDB"}
     ref_db = db_keys.get(args.mir_DB.lower()) if args.mir_DB.lower() in db_keys else sys.exit("ERROR: Require valid database (-d miRBase or MirGeneDB)")
-    
+    if len(args.adapters) == 2:
+        back = list(args.adapters[0])
+        if back[1] == "illumina":
+            back[1] = 'TGGAATTCTCGGGTGCCAAGGAACTCCAG'
+        args.adapters[0] = tuple(back)
+
+        front = list(args.adapters[1])
+        if front[1] == "illumina":
+            front[1] = 'GTTCAGAGTTCTACAGTCCGACGATC'
+        args.adapters[1] = tuple(front)
+
+    if len(args.adapters) == 1:
+        somewhere = list(args.adapters[0])
+        if somewhere[0] == "back" and somewhere[1] == "illumina":
+            somewhere[1] = 'TGGAATTCTCGGGTGCCAAGGAACTCCAG'
+            args.adapters[0] = tuple(somewhere)
+        elif somewhere[0] == "front" and somewhere[1] == "illumina": 
+            somewhere[1] = 'GTTCAGAGTTCTACAGTCCGACGATC'
+            args.adapters[0] = tuple(somewhere)
+
 
     file_exts = ['.txt', '.csv']
     file_list = samples[0].split(',')
@@ -47,19 +63,13 @@ def main():
     else:  # READ FASTQ OR FASTQ.gz FILES HERE
         fastq_fullPath, base_names = validate_files(file_list)
     print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
-    #baking(args, fastq_fullPath, base_names, workDir)
-    pdDataFrame,sampleReadCounts = baking(args, fastq_fullPath, base_names, workDir)
+    pdDataFrame,sampleReadCounts,trimmedReadCounts,trimmedReadCountsUnique = baking(args, fastq_fullPath, base_names, workDir)
     pdDataFrame = bwtAlign(args,pdDataFrame,workDir,ref_db)
     print(f"Summarizing and tabulating results...")
     summary_Start_time = time.perf_counter()
-    pdMapped = pdDataFrame[pdDataFrame.annotFlag == 1]
     pdMapped = pdDataFrame[pdDataFrame.annotFlag.eq(1)]
     pdUnmapped = pdDataFrame[pdDataFrame.annotFlag.eq(0)]
-    summarize(args, workDir, ref_db,base_names, pdMapped,pdUnmapped, sampleReadCounts)
-
-#    pdMapped = pdMapped.drop(columns=['SeqLength'])
-#    pdUnmapped = pdDataFrame[pdDataFrame.annotFlag == '0']
-#    pdUnmapped = pdUnmapped.drop(columns=['SeqLength'])
+    summarize(args, workDir, ref_db, base_names, pdMapped, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique)
 
     #fileToCSV = Path(workDir)/"miRge3_collapsed.csv"
     mappedfileToCSV = Path(workDir)/"mapped.csv"
