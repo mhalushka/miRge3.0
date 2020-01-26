@@ -38,7 +38,7 @@ def mirge_can(can, iso, df, ca_thr, file_name):
 
 
 
-def summarize(args, workDir, ref_db,base_names, pdMapped, pdUnmapped,sampleReadCounts):
+def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique):
     """
     THIS FUNCTION IS CALLED FIRST FROM THE miRge3.0 to summarize the output.  
     """
@@ -46,26 +46,26 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, pdUnmapped,sampleReadC
     ca_thr = float(args.crThreshold)
     mfname = args.organism_name + "_merges_" + ref_db + ".csv"
     mergeFile = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/mfname
+    hmir=mtrna=pmtrna=snorna=rrna=ncrna=mrna=spikein={}
     if args.spikeIn:
         col_headers = ['hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','spike-in']
         col_vars = ['hmir','mtrna','pmtrna','snorna','rrna','ncrna','mrna','spikein']
     else:
         col_headers = ['hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA']
         col_vars = ['hmir','mtrna','pmtrna','snorna','rrna','ncrna','mrna']
-
+    empty_list=dict() #Actually this is a dictionary, to collect dictionary of keys as sample names and values for each element of col_vars. Sorry for naming it _list. 
     for element, col_in in enumerate(col_headers):
-        col_vars[element] = pdMapped.loc[pdMapped[col_in] != ""].sum(axis = 0, skipna = True)[base_names]
-        col_vars[element] = col_vars[element].to_dict()
+        for file_name in base_names:
+            if col_vars[element] in empty_list:
+                empty_list[col_vars[element]].update({file_name:pdMapped[pdMapped[col_in].astype(bool)][file_name].values.sum()})
+            else:
+                empty_list[col_vars[element]] = {file_name:pdMapped[pdMapped[col_in].astype(bool)][file_name].values.sum()}
 
-    """
-    GET THE COUNTS FOR UNMAPPED READS
-    """
-    unmappedSumTotal = pdUnmapped.sum(axis = 0, skipna = True)[base_names]
-    unmapped = unmappedSumTotal.to_dict()
     
     """
     BEGINNING OF WORKING AROUND WITH EXACT miRNA and isomiRs 
     """
+    step2_start = time.perf_counter()
     with open(mergeFile, "r") as merge_file:
         for line in merge_file:
             line_content = line.strip().split(',')
@@ -119,31 +119,41 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, pdUnmapped,sampleReadC
     miRNA_counts={}
     trimmed_counts={}
     for file_name in base_names:
-        numOfRows = len(df[df[file_name] > 0].index.tolist())
-        mapped_rows = len(pdMapped[pdMapped[file_name] > 0].index.tolist())
-        unmapped_rows = len(pdUnmapped[pdUnmapped[file_name] > 0].index.tolist())
-        trimmed_reads = mapped_rows+unmapped_rows
-        trimmed_dict = {file_name:trimmed_reads} 
+        numOfRows = df.index[df[file_name] > 0].shape[0]
+        mapped_rows = pdMapped.index[pdMapped[file_name] > 0].shape[0]
         mirna_dict = {file_name:numOfRows}
         miRNA_counts.update(mirna_dict)
-        trimmed_counts.update(trimmed_dict)
 
     """
     END OF WORKING AROUND WITH EXACT miRNA and isomiRs 
     """
-
+    trimmed_counts = trimmedReadCountsUnique
     if args.spikeIn:
-        pre_summary = {'Total Input Reads':sampleReadCounts,'Trimmed Reads (unique)':trimmed_counts,'All miRNA Reads':l_1d,'Filtered miRNA Reads':Filtered_miRNA_Reads,'Unique miRNAs':miRNA_counts, 'Hairpin miRNAs':col_vars[0],'mature tRNA Reads':col_vars[1],'primary tRNA Reads':col_vars[2],'snoRNA Reads':col_vars[3],'rRNA Reads':col_vars[4],'ncRNA others':col_vars[5],'mRNA Reads':col_vars[6],'Spike-in':col_vars[7],'Remaining Reads':unmapped}
-        col_tosum = ['All miRNA Reads','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads','Spike-in','Remaining Reads']
+        pre_summary = {'Total Input Reads':sampleReadCounts,'Trimmed Reads (all)':trimmedReadCounts,'Trimmed Reads (unique)':trimmed_counts,'All miRNA Reads':l_1d,'Filtered miRNA Reads':Filtered_miRNA_Reads,'Unique miRNAs':miRNA_counts, 'Hairpin miRNAs':empty_list[col_vars[0]],'mature tRNA Reads':empty_list[col_vars[1]],'primary tRNA Reads':empty_list[col_vars[2]],'snoRNA Reads':empty_list[col_vars[3]],'rRNA Reads':empty_list[col_vars[4]],'ncRNA others':empty_list[col_vars[5]],'mRNA Reads':empty_list[col_vars[6]],'Spike-in':empty_list[col_vars[7]]}
+        col_tosum = ['All miRNA Reads','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads','Spike-in']
         colRearrange = ['Total Input Reads', 'Trimmed Reads (all)','Trimmed Reads (unique)','All miRNA Reads','Filtered miRNA Reads','Unique miRNAs','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads','Spike-in','Remaining Reads']
     else:
-        pre_summary = {'Total Input Reads':sampleReadCounts,'Trimmed Reads (unique)':trimmed_counts,'All miRNA Reads':l_1d,'Filtered miRNA Reads':Filtered_miRNA_Reads,'Unique miRNAs':miRNA_counts, 'Hairpin miRNAs':col_vars[0],'mature tRNA Reads':col_vars[1],'primary tRNA Reads':col_vars[2],'snoRNA Reads':col_vars[3],'rRNA Reads':col_vars[4],'ncRNA others':col_vars[5],'mRNA Reads':col_vars[6],'Remaining Reads':unmapped}
-        col_tosum = ['All miRNA Reads','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads','Remaining Reads']
+        pre_summary = {'Total Input Reads':sampleReadCounts,'Trimmed Reads (all)':trimmedReadCounts,'Trimmed Reads (unique)':trimmed_counts,'All miRNA Reads':l_1d,'Filtered miRNA Reads':Filtered_miRNA_Reads,'Unique miRNAs':miRNA_counts, 'Hairpin miRNAs':empty_list[col_vars[0]],'mature tRNA Reads':empty_list[col_vars[1]],'primary tRNA Reads':empty_list[col_vars[2]],'snoRNA Reads':empty_list[col_vars[3]],'rRNA Reads':empty_list[col_vars[4]],'ncRNA others':empty_list[col_vars[5]],'mRNA Reads':empty_list[col_vars[6]]}
+        col_tosum = ['All miRNA Reads','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads']
         colRearrange = ['Total Input Reads', 'Trimmed Reads (all)','Trimmed Reads (unique)','All miRNA Reads','Filtered miRNA Reads','Unique miRNAs','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads','Remaining Reads']
 
     summary = pd.DataFrame.from_dict(pre_summary).astype(int)
-    summary['Trimmed Reads (all)'] = summary[col_tosum].sum(axis=1)
+    summary['Remaining Reads'] = summary['Trimmed Reads (all)'] - (summary[col_tosum].sum(axis=1))
     summary = summary.reindex(columns=colRearrange)
     summary.index.name = "Sample name(s)"
     report = Path(workDir)/"annotation.report.csv"
+    report_html = Path(workDir)/"annotation.report.html"
     summary.to_csv(report)
+    summary = summary.reset_index(level=['Sample name(s)'])
+    summary.index += 1
+
+    data_in_html = summary.to_html(index=False)
+    import re
+    table = '<table style="color="black";font-size:15px; text-align:center; border:0.2px solid black; border-collapse:collapse; table-layout:fixed; height="550"; text-align:center">'
+    th = '<th style ="background-color: #3f51b5; color:#ffffff; text-align:center">'
+    td ='<td style="vertical-align: middle;background-color: #edf6ff;font-size: 14px;font-family: Arial;font-weight: normal;color: #000000;text-align:center; height="250";border:0; ">'
+    data_in_html = data_in_html.replace("<table>", th)
+    data_in_html = data_in_html.replace("<th>", th)
+    data_in_html = data_in_html.replace("<td>", td)
+    with open(report_html,'w') as f:
+        f.write(data_in_html)
