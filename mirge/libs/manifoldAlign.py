@@ -25,6 +25,7 @@ def createFastaInput(SequenceToAlign, bwtInput, bwt_iter):
             else:
                 wseq.write(">"+str(sequences)+"\n")
                 wseq.write(str(sequences)+"\n")
+    SequenceToAlign=[]
     return True
 
 
