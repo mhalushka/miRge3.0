@@ -105,6 +105,8 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     complete_set=pd.DataFrame()
     begningTime = time.perf_counter()
     sampleReadCounts={}
+    trimmedReadCounts={}
+    trimmedReadCountsUnique={}
     for index, FQfile in enumerate(inFileArray):
         start = time.perf_counter()
         finish2=finish3=finish4=finish5=0
@@ -123,8 +125,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                                 varx = list(each_list)
                                 if varx[0] in completeDict: # Collapsing, i.e., counting the occurance of each read for each data 
                                     completeDict[varx[0]] += int(varx[1])
+                                    trimmed+=int(varx[1])
                                 else:
                                     completeDict[varx[0]] = int(varx[1])
+                                    trimmed+=int(varx[1])
                         readobj=[]
                 future=[]
                 future.extend([executor.submit(cutadapt, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)]) # sending remaining reads for parallel execution
@@ -133,8 +137,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                         varx = list(each_list)
                         if varx[0] in completeDict: # Collapsing, i.e., counting the occurance of each read for each data 
                             completeDict[varx[0]] += int(varx[1])
+                            trimmed+=int(varx[1])
                         else:
                             completeDict[varx[0]] = int(varx[1])
+                            trimmed+=int(varx[1])
                 readobj=[]
         """
         TO DO: 
@@ -144,8 +150,13 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         Based on requirement [annotflag]: number of non-zero values accros the column corresponding to each file 
         CREATE A DATAFRAME OF THESE SUMMARY STATISTICS AND RETURN TO MAIN FUNCTION, WHICH CAN BE USED FOR ALIGNMENT SUMMARY AS WELL.
         """
+        digestReadCounts = {inFileBaseArray[index]:trimmed}
+        uniqTrimmedReads = {inFileBaseArray[index]:len(completeDict)}
+        #digestReadCounts = {inFileBaseArray[index]:sum(completeDict.values())}
         inputReadCounts = {inFileBaseArray[index]:count}
         sampleReadCounts.update(inputReadCounts)
+        trimmedReadCounts.update(digestReadCounts)
+        trimmedReadCountsUnique.update(uniqTrimmedReads)
         finish2 = time.perf_counter()
         print(f'Cutadapt finished for file {inFileBaseArray[index]} in {round(finish2-start, 4)} second(s)')
         """
@@ -178,7 +189,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     print(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
     EndTime = time.perf_counter()
     print(f'Completed in {round(EndTime-begningTime, 4)} second(s)\n')
-    return(complete_set, sampleReadCounts)
+    return(complete_set, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique)
 
 
 def UMIParser(s, n=4):
