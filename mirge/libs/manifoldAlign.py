@@ -9,27 +9,6 @@ import concurrent.futures
 from libs.miRgeEssential import UID
 
 
-def createFastaInput(SequenceToAlign, bwtInput, bwt_iter):
-    """
-    CREATE FASTA FOR EACH ITERATIONS FOR BOWTIE ALIGNMENT 
-    """
-    with open(bwtInput, 'w') as wseq:
-        for sequences in SequenceToAlign:
-            if bwt_iter == 3:
-                try:
-                    footer = sequences[:(re.search('T{3,}$', sequences).span(0)[0])]
-                    wseq.write(">"+str(sequences)+"\n")
-                    wseq.write(str(footer)+"\n")
-                except AttributeError:
-                    pass
-            else:
-                wseq.write(">"+str(sequences)+"\n")
-                wseq.write(str(sequences)+"\n")
-    SequenceToAlign=[]
-    return True
-
-
-
 def alignPlusParse(bwtExec, iter_number, pdDataFrame):
     """
     ALIGN TO BOWTIE, PARSE SAM FILE AND UPDATE THE DATAFRAME
@@ -69,28 +48,47 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
         iterations = 9
     for bwt_iter in range(iterations):
         if bwt_iter == 0:
-            SequenceToAlign = pdDataFrame[pdDataFrame.index.str.len() < 26].index.tolist()
-            createFastaInput(SequenceToAlign, bwtInput, bwt_iter)
+            with open(bwtInput, 'w') as wseq:
+                for sequences in (pdDataFrame.index[pdDataFrame.index.str.len() < 26]):
+                    wseq.write(">"+str(sequences)+"\n")
+                    wseq.write(str(sequences)+"\n")
+
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
             bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame)
         
         elif bwt_iter == 1:
-            SequenceToAlign = pdDataFrame[pdDataFrame.index.str.len() > 25].index.tolist()
-            createFastaInput(SequenceToAlign, bwtInput, bwt_iter)
+            with open(bwtInput, 'w') as wseq: 
+                for sequences in (pdDataFrame.index[pdDataFrame.index.str.len() > 25]):
+                    wseq.write(">"+str(sequences)+"\n")
+                    wseq.write(str(sequences)+"\n")
+
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
             bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame)
 
         else:
-            SequenceToAlign = pdDataFrame[pdDataFrame.annotFlag.eq(0)].index.tolist()
-            createFastaInput(SequenceToAlign, bwtInput, bwt_iter)
             if bwt_iter == 8: 
                 indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             else:
                 indexName  = str(args.organism_name) + str(indexNames[bwt_iter])
+            if bwt_iter == 3:
+                with open(bwtInput, 'w') as wseq:
+                    for sequences in (pdDataFrame.index[pdDataFrame.annotFlag.eq(0)]):
+                        try:
+                            footer = sequences[:(re.search('T{3,}$', sequences).span(0)[0])]
+                            wseq.write(">"+str(sequences)+"\n")
+                            wseq.write(str(footer)+"\n")
+                        except AttributeError:
+                            pass
+            else:
+                with open(bwtInput, 'w') as wseq:
+                    for sequences in (pdDataFrame.index[pdDataFrame.annotFlag.eq(0)]):
+                        wseq.write(">"+str(sequences)+"\n")
+                        wseq.write(str(sequences)+"\n")
+
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
             bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame)
