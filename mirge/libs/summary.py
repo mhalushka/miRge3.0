@@ -3,6 +3,7 @@ import time
 import pandas as pd
 from pathlib import Path
 import numpy as np
+import subprocess
 
 """
 THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY
@@ -42,7 +43,6 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     """
     THIS FUNCTION IS CALLED FIRST FROM THE miRge3.0 to summarize the output.  
     """
-    mirMergedNameDic={}
     ca_thr = float(args.crThreshold)
     mfname = args.organism_name + "_merges_" + ref_db + ".csv"
     mergeFile = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/mfname
@@ -64,11 +64,15 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     """
     BEGINNING OF WORKING AROUND WITH EXACT miRNA and isomiRs 
     """
+    mirMergedNameDic={}
+    mirMergedDataframeDic={}
     with open(mergeFile, "r") as merge_file:
         for line in merge_file:
             line_content = line.strip().split(',')
             for item in line_content[1:]:
                 mirMergedNameDic.update({item:line_content[0]})
+                mirMergedDataframeDic.update({line_content[0]:"1"})
+
     pdMapped = pdMapped.reset_index(level=['Sequence'])
     subpdMapped = pdMapped[(pdMapped['exact miRNA'].astype(bool) | pdMapped['isomiR miRNA'].astype(bool))]
     cannonical = pdMapped[pdMapped['exact miRNA'].astype(bool)]
@@ -103,7 +107,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     df.set_index('miRNA',inplace = True)
     df.drop(columns=['exact miRNA'])
     df = df.groupby(['miRNA']).sum()[base_names]
-    df = df.loc[(df.sum(axis=1) != 0)] # THIS WILL ELEMINATE ROWS ACCROSS SAMPLES WHO'S SUM IS ZERO
+    #df = df.loc[(df.sum(axis=1) != 0)] # THIS WILL ELEMINATE ROWS ACCROSS SAMPLES WHO'S SUM IS ZERO
     Filtered_miRNA_Reads = df.sum(axis = 0, skipna = True)[base_names]
     Filtered_miRNA_Reads = Filtered_miRNA_Reads.to_dict()
     miR_RPM = (df.div(df.sum(axis=0))*1000000).round(4)
@@ -112,8 +116,30 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     l_1d = sumTotal.to_dict()
     miRgefileToCSV = Path(workDir)/"miR.Counts.csv"
     miRgeRPMToCSV = Path(workDir)/"miR.RPM.csv"
-    df.to_csv(miRgefileToCSV)
-    miR_RPM.to_csv(miRgeRPMToCSV)
+    indexName  = str(args.organism_name) + '_mirna_' + str(ref_db)
+    indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
+    bwtExec = "bowtie-inspect -n " + str(indexFiles)
+    #bwtExec = "bowtie-inspect -n /home/arun/repositories/Project_120919/mirge/Libs/human/index.Libs/human_mirna_miRBase"
+    bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+    if bowtie.returncode==0:
+        bwtOut = bowtie.stdout
+        bwtErr = bowtie.stderr
+        lines = bwtOut.strip()
+        for srow in lines.split('\n'):
+            if srow not in mirMergedNameDic:
+                mirMergedDataframeDic.update({srow:"1"})
+
+    mirMerged_df = pd.DataFrame(list(mirMergedDataframeDic.keys()),columns = ['miRNA']) #Contains all the miRNA including those that is not expressed
+    mirMerged_df.set_index('miRNA',inplace = True)
+    
+    mirCounts_completeSet = mirMerged_df.join(df, how='outer').fillna(0)
+    mirRPM_completeSet = mirMerged_df.join(miR_RPM, how='outer').fillna(0)
+    #df.to_csv(miRgefileToCSV)
+    #miR_RPM.to_csv(miRgeRPMToCSV)
+
+    mirCounts_completeSet.to_csv(miRgefileToCSV)
+    mirRPM_completeSet.to_csv(miRgeRPMToCSV)
+
     miRNA_counts={}
     trimmed_counts={}
     for file_name in base_names:
