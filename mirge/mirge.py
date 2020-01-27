@@ -5,6 +5,7 @@ from pathlib import Path
 import time
 import sys
 import os
+import multiprocessing
 
 # GitHub libraries
 import pandas
@@ -29,6 +30,9 @@ def main():
     workDir = Path(args.outDir)/ourDir if args.outDir else Path.cwd()/ourDir
     Path(workDir).mkdir(exist_ok=True, parents=True)
     db_keys = {"mirbase":"miRBase", "mirgenedb":"MirGeneDB"}
+    if args.threads == 0:
+        args.threads = multiprocessing.cpu_count()
+
     ref_db = db_keys.get(args.mir_DB.lower()) if args.mir_DB.lower() in db_keys else sys.exit("ERROR: Require valid database (-d miRBase or MirGeneDB)")
     if len(args.adapters) == 2:
         back = list(args.adapters[0])
