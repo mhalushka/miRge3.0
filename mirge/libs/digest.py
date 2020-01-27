@@ -159,6 +159,17 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         CREATING PANDAS MATRIX FOR ALL THE SAMPLES THAT CAME THROUGH 
         WILL BE EDITED TO A FUNCTION, ONCE UMI COMES IN PICTURE
         """
+        if args.tcf_out:
+            fno = str(inFileBaseArray[index]) + '.trim.collapse.fa'
+            fo_tcf = Path(workDir)/fno
+            header_count = 1
+            with open(fo_tcf,'w') as fo:
+                for seqs in sorted(completeDict, key=completeDict.get, reverse=True):
+                    head_r = ">seq"+str(header_count)+"_"+str(completeDict[seqs])+"\n"
+                    fo.write(head_r)
+                    fo.write(str(seqs)+"\n")
+                    header_count+=1
+
         collapsed_df = pd.DataFrame(list(completeDict.items()), columns=['Sequence', inFileBaseArray[index]])
         collapsed_df.set_index('Sequence',inplace = True)
         if len(inFileBaseArray) == 1:
