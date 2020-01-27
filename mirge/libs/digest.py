@@ -144,11 +144,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                 readobj=[]
         """
         TO DO: 
-        To include the summary which in general is the counts of raw reads, trimmed reads, time taken for each, unique sequences in each group etc. 
-        counts of raw reads: can be just sum the len(readobj) for filename being the key 
-        counts of trimmed reads: Total = df['MyColumn'].sum() for each file
-        Based on requirement [annotflag]: number of non-zero values accros the column corresponding to each file 
-        CREATE A DATAFRAME OF THESE SUMMARY STATISTICS AND RETURN TO MAIN FUNCTION, WHICH CAN BE USED FOR ALIGNMENT SUMMARY AS WELL.
+        CREATE A DATAFRAME OF SUMMARY STATISTICS AND RETURN TO MAIN FUNCTION, WHICH CAN BE USED FOR ALIGNMENT SUMMARY.
         """
         digestReadCounts = {inFileBaseArray[index]:trimmed}
         uniqTrimmedReads = {inFileBaseArray[index]:len(completeDict)}
