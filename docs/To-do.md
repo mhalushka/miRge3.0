@@ -58,7 +58,7 @@ Datasets: SRR* for different lib kit and adapters etc: https://trace.ncbi.nlm.ni
 - [x] Incorporate latest version of cutadapt and its features. 
 - [ ] Keep track to update features of miRge automatically with newer versions of cutadapt.
 - [ ] No installation required for [Bowtie 1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/). Use: `\bin\bowtie`
-- [ ] **miRge --paste**. Option to comibne colummns of several \*.csv files into one matrix using panda dataframe 
+- [ ] ~~**miRge --paste**~~. Option to comibne colummns of several \*.csv files into one matrix using panda dataframe (The output miR_Counts.csv and miR_RPM.csv can handle that automatically)
 - [ ] `Additional features here`
 
 ## Secondary functions - Predict:
