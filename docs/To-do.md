@@ -16,8 +16,8 @@
 - [ ] miRge --build-lib (Issue: #1) (Pending)
 - [ ] miRge --allele-freq (Issue: #3) (Pending)
 - [x] A zero count and an absent record in miR.Counts.csv (Issue: #20) (REQUIRE TESTING)
-- [ ] Option: -ad ion (Issue: #25) - I think its mostly due to the use of different cutadapt version. (I am not sure).  The 11 is defined in the code below. 
-- [ ] Any other type of adapters possible? 
+- [x] Option: -ad ion (Issue: #25) - I think its mostly due to the use of different cutadapt version. (I am not sure).  The 11 is defined in the code below. (Ans: Ion torrent adapters should be provided by user unless modified in miRge3 in near future)
+- [x] Any other type of adapters possible? (Ans: Any adapter seq can be provided on 5' `-g` and 3' `-a` end, or mention Illumina for adapters at 5' or 3')
 ```
 adapter = args.adapter
 	if adapter == 'illumina':
@@ -68,6 +68,7 @@ Datasets: SRR* for different lib kit and adapters etc: https://trace.ncbi.nlm.ni
 - [ ] SVM re-implementation 
 - [ ] PDF and HTML output
 - [ ] Incorporate SQLite db for quick query and visualization
+- [ ] A function to handle Batch effect? 
 - [ ] `Add features here`
 
 ## Additional features - Customization of software:
