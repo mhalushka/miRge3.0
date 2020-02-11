@@ -75,7 +75,9 @@ def validate_files(in_fileArray, fastq_fullPath=[], base_names=[]):
        if Path(files).exists() and (filetype.endswith(".fastq") or filetype.endswith(".fastq.gz")):
        #if Path(files).exists() and (filetype == ".fastq" or filetype == ".fastq.gz"):
            fastq_fullPath.append(str(Path(files).resolve()))
-           base_names.append(Path(str(Path(files)).replace(''.join(Path(files).suffixes),'')).stem if Path(files).suffix == ".gz" else Path(files).stem)
+           files = Path(files).name
+           base_names.append(('.').join(files.split('.')[:-2]) if Path(files).suffix == ".gz" else ('.').join(files.split('.')[:-1]))
+           #base_names.append(Path(str(Path(files)).replace(''.join(Path(files).suffixes),'')).stem if Path(files).suffix == ".gz" else Path(files).stem)
        else:
            print(f"\nWARNING: File {files} does not exists!") if not Path(files).exists() else print(f"\nWARNING: File {files} is neither fastq or fastq.gz format!")
            print(f"Omitting file {files}")
