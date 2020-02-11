@@ -63,7 +63,7 @@ def parseArg():
     group1.add_argument("-q", "--quality-cutoff", default="10", metavar="[5'CUTOFF,]3'CUTOFF", help=argparse.SUPPRESS)
     group1.add_argument("--length", "-l", type=int, default=3, metavar="LENGTH", help=argparse.SUPPRESS)
     group1.add_argument("-NX", "--trim-n", action='store_true', default=False, help=argparse.SUPPRESS)
-    group1.add_argument("-m", "--minimum-length", default=0, help=argparse.SUPPRESS)
+    group1.add_argument("-m", "--minimum-length", default=16, help=argparse.SUPPRESS)
     group1.add_argument("-umi", "--uniq-mol-ids", default=None, help=argparse.SUPPRESS, action='store_true')
     #### we use none of the following cutadapt options but are required to pass default values for miRNA and cutadapt pipeline
     group1.add_argument("-op", "--output", metavar="FILE", help=argparse.SUPPRESS) #"Default: write to standard output"
