@@ -54,7 +54,7 @@ def main():
             somewhere[1] = 'GTTCAGAGTTCTACAGTCCGACGATC'
             args.adapters[0] = tuple(somewhere)
 
-
+    print("Collecting and validating input files...")
     file_exts = ['.txt', '.csv']
     file_list = samples[0].split(',')
     if Path(file_list[0]).is_dir():
