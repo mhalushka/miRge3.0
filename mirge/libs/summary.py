@@ -72,6 +72,9 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
             for item in line_content[1:]:
                 mirMergedNameDic.update({item:line_content[0]})
                 mirMergedDataframeDic.update({line_content[0]:"1"})
+    
+    #allSequences = pdMapped.index.shape[0]
+    #print(allSequences)
 
     pdMapped = pdMapped.reset_index(level=['Sequence'])
     subpdMapped = pdMapped[(pdMapped['exact miRNA'].astype(bool) | pdMapped['isomiR miRNA'].astype(bool))]
