@@ -26,6 +26,8 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame):
                 if sam_line[2] != "*":
                     pdDataFrame.at[sam_line[0], colnames[colToAct]] = sam_line[2]
                     pdDataFrame.at[sam_line[0], colnames[0]] = 1
+                    #if iter_number == 0 or iter_number == 8:
+                    #    print(sam_line)
     return pdDataFrame
 
 
