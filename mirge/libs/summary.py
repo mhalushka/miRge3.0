@@ -4,7 +4,8 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 import subprocess
-
+from difflib import unified_diff, Differ
+from libs.miRgeEssential import UID
 """
 THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY
 IF YOU ARE A DEVELOPER, AND WANT TO UNDERSTAND THIS SCRIPT!! I WOULD RECOMMEND YOU TO BE THOROUGH WITH pandas FUNCTIONS 
@@ -38,6 +39,142 @@ def mirge_can(can, iso, df, ca_thr, file_name):
     return df
 
 
+def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib):
+    pre_cols1 = ["Sequence","exact miRNA"]
+    pre_cols2 = ["Sequence","isomiR miRNA"]
+    cols1 = pre_cols1 + base_names
+    cols2 = pre_cols2 + base_names
+    can_gff_df = pd.DataFrame(cannonical, columns= cols1)
+    iso_gff_df = pd.DataFrame(isomirs, columns= cols2)
+    canonical_gff = can_gff_df.values.tolist()
+    isomir_gff = iso_gff_df.values.tolist()
+    gffwrite = open(filenamegff, "w+")
+    gffwrite.write("# GFF3 adapted for miRNA sequencing data\n")
+    gffwrite.write("## VERSION 0.0.1\n")
+    version_db = "miRBase22" if ref_db == "miRBase" else "MirGeneDB2.0"
+    gffwrite.write("## source-ontology: " + version_db + "\n")
+    gffwrite.write("## COLDATA: "+ ",".join(str(nm) for nm in base_names) + "\n")
+    # GFF3 adapted for miRNA sequencing data")
+    start=end=0
+    parent="-"
+    filter_var = "Pass"
+    strand = "+"
+    dots = "."
+    precursorSeq = uid_val = ""
+    """
+    READING ANNOTATION DATA TO GET GENOMIC COORDINATES AND PRECURSOR miRNA 
+    """
+    pre_cur_name=pre_strand={}
+    mature_cor_start=mature_cor_end={}
+    with open(annotation_lib) as alib:
+        for annlib in alib:
+            annlib = annlib.strip()
+            annlib_list = annlib.split("\t")
+            try:
+                if ref_db == "MirGeneDB":
+                    if annlib_list[2] == "pre_miRNA":
+                        pre_name = annlib_list[8].split(";")[0]
+                        pre_name = pre_name.replace("ID=","")
+                        pre_strand[pre_name] = annlib_list[6]
+                    else:
+                        mature_name = annlib_list[8].split(";")[0]
+                        mature_name = mature_name.replace("ID=","")
+                        if mature_name not in pre_cur_name:
+                            pre_cur_name[mature_name] = pre_name
+                            mature_cor_start[mature_name] = annlib_list[3]
+                            mature_cor_end[mature_name] = annlib_list[4]
+                else:
+                    if annlib_list[2] == "miRNA_primary_transcript":
+                        pre_name = annlib_list[8].split(";")[-1]
+                        pre_name = pre_name.replace("Name=","")
+                        pre_strand[pre_name] = annlib_list[6] 
+                    else:
+                        mature_name = annlib_list[8].split(";")[2]
+                        mature_name = mature_name.replace("Name=","")
+                        if mature_name not in pre_cur_name:
+                            pre_cur_name[mature_name] = pre_name
+                            mature_cor_start[mature_name] = annlib_list[3]
+                            mature_cor_end[mature_name] = annlib_list[4]
+            except IndexError:
+                pass
+
+    for cans in canonical_gff:
+        seq_m = cans[0]
+        
+        if "." in cans[1]:
+            seq_master = cans[1].split(".")[0]
+        else:
+            seq_master = cans[1]
+        canonical_expression = ','.join(str(x) for x in cans[2:])
+        new_string=""
+        try:
+            if seq_master in pre_cur_name:
+                master_seq = mirDict[seq_master]
+                req_precursor_name = pre_cur_name[seq_master] 
+            else:
+                seq_master = seq_master.replace("-3p","")
+                seq_master = seq_master.replace("-5p","")
+                seq_master = seq_master.replace("-3p*","")
+                seq_master = seq_master.replace("-5p*","")
+                master_seq = mirDict[seq_master]
+                req_precursor_name = pre_cur_name[seq_master]
+            precursorSeq = pre_mirDict[req_precursor_name]
+            if seq_m == master_seq:
+                type_rna = "ref_miRNA"
+                if "N" not in seq_m:
+                    uid_val = UID(seq_m, "ref")
+                else:
+                    uid_val = "."
+                cigar = str(len(seq_m))+"M"
+                if precursorSeq != "":
+                    start = precursorSeq.find(seq_m) + 1
+                    end = start + len(seq_m) - 1
+                else:
+                    start = 1
+                    end = start + len(seq_m) - 1
+                mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant=NA; Cigar="+cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
+                gffwrite.write(mi_var)
+            else:
+                type_rna = "isomiR"
+                if "N" not in seq_m:
+                    uid_val = UID(seq_m, "iso")
+                else:
+                    uid_val = "."
+                result = list(d.compare(master_seq, seq_m))
+                re_len = len(master_seq)
+                variant="0"
+                print(result)
+                n = "".join(x.replace(" ","") for x in result)
+                print(n)
+                for idx, bases in enumerate(result):
+                    if not bases.startswith("-"):
+                        bases = bases.replace(" ","")
+                        if bases.startswith("+"):
+                            if idx < re_len:
+                                variant = "1"
+                            new_string += "["+ str(bases) +"]"
+                        else:
+                            new_string += bases
+                    else:
+                        try:
+                            if bases[idx+1].startswith("+"):
+                                pass
+                            else:
+                                new_string += "[-]"
+                        except IndexError:
+                            pass
+                print(seq_master +"\t"+ master_seq +"\t"+ seq_m +" "+ new_string+"\t"+variant)
+        except KeyError:
+            print(seq_m+"\t"+seq_master)
+            pass
+        pass
+
+    for isos in isomir_gff:
+        seq_i = isos[0]
+        seq_master_iso = isos[1]
+        isomirs_expression = ','.join(str(x) for x in isos[2:])
+        pass
+    pass
 
 def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique):
     """
@@ -80,6 +217,53 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     subpdMapped = pdMapped[(pdMapped['exact miRNA'].astype(bool) | pdMapped['isomiR miRNA'].astype(bool))]
     cannonical = pdMapped[pdMapped['exact miRNA'].astype(bool)]
     isomirs = pdMapped[pdMapped['isomiR miRNA'].astype(bool)]
+    if args.gff_out:
+        pre_mirDict = dict()
+        mirDict = dict()
+        filenamegff = workDir/"sample_miRge3.gff"
+        maturefname = args.organism_name + "_mature_" + ref_db + ".fa"
+        pre_fname = args.organism_name + "_hairpin_" + ref_db
+        fasta_file = Path(args.libraries_path)/args.organism_name/"fasta.Libs"/maturefname
+        precursor_file = Path(args.libraries_path)/args.organism_name/"index.Libs"/pre_fname
+        annotation_pre_fname = args.organism_name+"_"+ref_db+".gff3"
+        annotation_lib = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/annotation_pre_fname
+
+        bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
+        bwtExec = bwtCommand+" -a 20000 -e "+ str(precursor_file)
+        bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+        #READING PRECURSOR miRNA SEQUENCES INFORMATION IN A DICTIONARY (pre_mirDict)
+        if bowtie.returncode==0:
+            bwtOut = bowtie.stdout
+            bwtErr = bowtie.stderr
+        for srow in bwtOut.split('\n'):
+            if '>' in srow:
+                srow = srow.replace(">","")
+                headmil = srow.split(" ")[0]
+                if "MirGeneDB" in ref_db:
+                    headmil = headmil.split("_")[0]
+            else:
+                #headmil = '-'.join(headmil.split('-')[:-1])
+                pre_mirDict[headmil] = srow
+        #READING MATURE miRNA SEQUENCES INFORMATION IN A DICTIONARY (mirDict)
+        with open(fasta_file) as mir:
+            for mil in mir:
+                mil = mil.strip()
+                if '>' in mil:
+                    headmil_mi = mil.replace(">","")
+                    if "MirGeneDB" in ref_db:
+                        headmil_mi = headmil_mi.split("_")[0]
+                else:
+                    mirDict[headmil_mi] = mil
+        d = Differ()
+        create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib)
+        
+        #https://stackoverflow.com/questions/35125062/how-do-i-join-2-columns-of-a-pandas-data-frame-by-a-comma
+        #ref_db #miRBase | MirGeneDB
+        #bowtie-inspect -a 20000 -e human_hairpin_miRBase
+        #/Libs/human/index.Libs/human_hairpin_miRBase
+        #/Libs/human/fasta.Libs
+        #human_mature_miRBase.fa
+        pass
     if args.spikeIn:
         cannonical = cannonical.drop(columns=['Sequence','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','isomiR miRNA','spike-in'])
         isomirs = isomirs.drop(columns=['Sequence','exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','spike-in'])
