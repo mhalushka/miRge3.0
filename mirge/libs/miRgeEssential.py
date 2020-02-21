@@ -322,9 +322,9 @@ encode_hash = {'AAAAA': 'BB', 'AAAAC': 'BD', 'AAAAG': 'B0', 'AAAAT': 'BE', 'AAAC
                'TTTG': 'KP', 'TTTT': 'KQ'}
 
 
-def UID(seq):
+def UID(seq, prefix):
     work_sequence = seq
-    final_result = [('iso-' + str(len(work_sequence)) + '-')]
+    final_result = [(prefix +"-" + str(len(work_sequence)) + '-')]
     while work_sequence != '':
         final_result.append(encode_hash[work_sequence[0:5]])
         work_sequence = work_sequence[5:]
