@@ -48,6 +48,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
     iso_gff_df = pd.DataFrame(isomirs, columns= cols2)
     canonical_gff = can_gff_df.values.tolist()
     isomir_gff = iso_gff_df.values.tolist()
+    canonical_gff.extend(isomir_gff)  # APPENDING THE LIST OF ISOMIRS TO CANONICAL 
     gffwrite = open(filenamegff, "w+")
     gffwrite.write("# GFF3 adapted for miRNA sequencing data\n")
     gffwrite.write("## VERSION 0.0.1\n")
@@ -143,38 +144,116 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 result = list(d.compare(master_seq, seq_m))
                 re_len = len(master_seq)
                 variant="0"
-                print(result)
-                n = "".join(x.replace(" ","") for x in result)
-                print(n)
+                master_variant = []
+                print("--**START**--")
+                #print(result)
+                #print(len(result))
+                #n = "".join(x.replace(" ","") for x in result)
+                #print(n)
+                master_seq_bc = list(master_seq)
+                result_seq_bc = result
+                for mdx, mbases in enumerate(master_seq_bc):
+                    if result_seq_bc[mdx].startswith("-"):
+                        pass
+                        #poped_element = master_seq_bc.pop(mdx)
+                        #var_id_del[mdx] = poped_element
+                        #result_seq_bc.pop(mdx)
+                    elif result_seq_bc[mdx].startswith("+"):
+                        master_seq_bc.insert(mdx,'-')
+                        #var_id_ins[mdx] = result_seq_bc.pop(mdx)
+                        pass
+                result_seq_bc = [bc.replace(" ", "") for bc in result_seq_bc if not bc.startswith("-")]
+                print("--**MID**--")
+                sub=que=[]
                 for idx, bases in enumerate(result):
-                    if not bases.startswith("-"):
-                        bases = bases.replace(" ","")
-                        if bases.startswith("+"):
-                            if idx < re_len:
-                                variant = "1"
-                            new_string += "["+ str(bases) +"]"
-                        else:
-                            new_string += bases
+                    if bases.startswith("-"):
+                        sub.append("_")
+                    elif bases.startswith("+"):
+                        sub.append(bases.replace(" ", ""))
                     else:
+                        sub.append(bases.replace(" ",""))
+                
+                diff = len(sub) - len(master_seq_bc)
+                for x in range(diff):
+                    master_seq_bc.append("-")
+                print(master_seq_bc)
+                print(sub)
+                for yidx, ys in enumerate(master_seq_bc):
+                    if yidx > 0:
                         try:
-                            if bases[idx+1].startswith("+"):
-                                pass
-                            else:
-                                new_string += "[-]"
+                            if ys == "-" and sub[yidx-1] == "_":
+                                if yidx-2 > 0 and sub[yidx-2] == "_" and master_seq_bc[yidx+1] == "-":
+                                    del master_seq_bc[yidx:yidx+2]
+                                    del sub[yidx-2:yidx]
+#['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', 'A', '-', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', 'A', 'G', 'T', 'T', '-', '-']
+#['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', '_', '+T', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', '_', 'G', '_', '_', '+G', '+G']
+                                else:
+                                    temp_1 = master_seq_bc.pop(yidx)
+                                    temp_2 = sub.pop(yidx-1)
+                                #AAACCGTTTCCATTACTGGGG
                         except IndexError:
                             pass
+                print()
+                print(master_seq_bc)
+                print(sub)
                 print(seq_master +"\t"+ master_seq +"\t"+ seq_m +" "+ new_string+"\t"+variant)
+                iso_add={}
+                iso_del={}
+                iso_sub={}
+                iso_5p_add=iso_5p_del=""
+                iso_3p_add=iso_3p_del=""
+                #iso_5p_sub=iso_3p_add=iso_3p_sub=""
+                for pidx, v in enumerate(master_seq_bc):
+                    if v == "-": # Insertions
+                        iso_add[pidx] = sub[pidx]
+                        #if pidx == 0: 
+                        #    iso_5p_add += sub[pidx]
+                        #elif iso_add[pidx-1] and iso_add[0]:
+                        #    iso_5p_add += sub[pidx]
+                    elif sub[pidx] == "_": # Delitions
+                        iso_del[pidx] = v
+                    elif v != sub[pidx]: # Substitutions
+                        iso_sub[pidx] = sub[pidx]
+                print(iso_add) # Insertions
+                print(iso_del) # Delitions
+                print(iso_sub) # Substitutions
+                limit_master = len(master_seq_bc)
+                ## Loop to detect 5p changes ##
+                for i in range(limit_master):
+                    if i in iso_add:
+                        iso_5p_add += iso_add[i]
+                    elif i in iso_del:
+                        iso_5p_del += iso_del[i]
+                    else: 
+                        break 
+                ## Loop to detect 3p changes ##
+                print(limit_master)
+                for i in range(limit_master, -1, -1):
+                    if i-1 in iso_add:
+                        iso_3p_add += iso_add[i-1]
+                    elif i-1 in iso_del:
+                        iso_3p_del += iso_del[i-1]
+                    else: 
+                        break 
+                        
+                print("5p_add:" + iso_5p_add)
+                print("5p_del:" + iso_5p_del)
+                print("3p_add:" + "".join(iso_3p_add[::-1]))
+                print("3p_del:" + "".join(iso_3p_del[::-1]))
+
+#['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'C', '-', 'T', 'C', 'C', 'T', 'G', 'A', 'C', '-', 'C'] =>  "-" in this line means insertion
+#['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', '_', '+G', 'T', 'C', 'C', 'T', 'G', '_', 'C', '+T', 'C'] => "_" in this line means deletion
+#hsa-miR-335-3p  TTTTTCATTATTGCTCCTGACC  TTTTTCATTATTGGTCCTGCTC
+
+                print("--**END**--")
         except KeyError:
             print(seq_m+"\t"+seq_master)
-            pass
-        pass
 
-    for isos in isomir_gff:
-        seq_i = isos[0]
-        seq_master_iso = isos[1]
-        isomirs_expression = ','.join(str(x) for x in isos[2:])
-        pass
-    pass
+#    for isos in isomir_gff:
+#        seq_i = isos[0]
+#        seq_master_iso = isos[1]
+#        isomirs_expression = ','.join(str(x) for x in isos[2:])
+#        pass
 
 def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique):
     """
