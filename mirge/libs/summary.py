@@ -206,17 +206,13 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 for pidx, v in enumerate(master_seq_bc):
                     if v == "-": # Insertions
                         iso_add[pidx] = sub[pidx]
-                        #if pidx == 0: 
-                        #    iso_5p_add += sub[pidx]
-                        #elif iso_add[pidx-1] and iso_add[0]:
-                        #    iso_5p_add += sub[pidx]
                     elif sub[pidx] == "_": # Delitions
                         iso_del[pidx] = v
                     elif v != sub[pidx]: # Substitutions
                         iso_sub[pidx] = sub[pidx]
-                print(iso_add) # Insertions
-                print(iso_del) # Delitions
-                print(iso_sub) # Substitutions
+                #print(iso_add) # Insertions
+                #print(iso_del) # Delitions
+                #print(iso_sub) # Substitutions
                 limit_master = len(master_seq_bc)
                 ## Loop to detect 5p changes ##
                 for i in range(limit_master):
@@ -227,7 +223,6 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     else: 
                         break 
                 ## Loop to detect 3p changes ##
-                print(limit_master)
                 for i in range(limit_master, -1, -1):
                     if i-1 in iso_add:
                         iso_3p_add += iso_add[i-1]
@@ -235,11 +230,37 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         iso_3p_del += iso_del[i-1]
                     else: 
                         break 
-                        
-                print("5p_add:" + iso_5p_add)
-                print("5p_del:" + iso_5p_del)
-                print("3p_add:" + "".join(iso_3p_add[::-1]))
-                print("3p_del:" + "".join(iso_3p_del[::-1]))
+                ## Loop to detect internal changes ##
+                ## Find and trim all the 5p and 3p changes to retain only the internal variants ##
+                if iso_5p_add != "":
+                    a5p = iso_5p_add
+                    a5p = a5p.replace("+","")
+                    len5padd = len(a5p)
+                    del sub[0:len5padd]
+                    del master_seq_bc[0:len5padd]
+                    print("5p_add:" + a5p + "Len"+ str(len5padd))
+                if iso_5p_del != "":
+                    d5p = iso_5p_del
+                    len5pdel = len(d5p)
+                    del sub[0:len5pdel]
+                    del master_seq_bc[0:len5pdel]
+                    print("5p_del:" + d5p +"Len"+ str(len5pdel))
+                if iso_3p_add != "":
+                    a3p = "".join(iso_3p_add[::-1])
+                    a3p = a3p.replace("+","")
+                    len3padd = len(a3p)
+                    del sub[-len3padd:]
+                    del master_seq_bc[-len3padd:]
+                    print("3p_add:" + a3p + "Len"+ str(len3padd))
+                if iso_3p_del != "":
+                    d3p = "".join(iso_3p_del[::-1])
+                    len3pdel = len(d3p)
+                    del sub[-len3pdel:]
+                    del master_seq_bc[-len3pdel:]
+                    print("3p_del:" + d3p +"Len"+ str(len3pdel))
+
+                print(master_seq_bc)
+                print(sub)
 
 #['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'C', '-', 'T', 'C', 'C', 'T', 'G', 'A', 'C', '-', 'C'] =>  "-" in this line means insertion
 #['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', '_', '+G', 'T', 'C', 'C', 'T', 'G', '_', 'C', '+T', 'C'] => "_" in this line means deletion
@@ -249,11 +270,6 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
         except KeyError:
             print(seq_m+"\t"+seq_master)
 
-#    for isos in isomir_gff:
-#        seq_i = isos[0]
-#        seq_master_iso = isos[1]
-#        isomirs_expression = ','.join(str(x) for x in isos[2:])
-#        pass
 
 def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique):
     """
