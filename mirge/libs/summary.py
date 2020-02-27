@@ -232,6 +232,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         break 
                 ## Loop to detect internal changes ##
                 ## Find and trim all the 5p and 3p changes to retain only the internal variants ##
+                cigar5padd = ""
                 if iso_5p_add != "":
                     a5p = iso_5p_add
                     a5p = a5p.replace("+","")
@@ -239,12 +240,14 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     del sub[0:len5padd]
                     del master_seq_bc[0:len5padd]
                     print("5p_add:" + a5p + "Len"+ str(len5padd))
+                    cigar5padd = str(len5padd)+"I"
                 if iso_5p_del != "":
                     d5p = iso_5p_del
                     len5pdel = len(d5p)
                     del sub[0:len5pdel]
                     del master_seq_bc[0:len5pdel]
                     print("5p_del:" + d5p +"Len"+ str(len5pdel))
+                    cigar5pdel = str(len5pdel)+"D"
                 if iso_3p_add != "":
                     a3p = "".join(iso_3p_add[::-1])
                     a3p = a3p.replace("+","")
@@ -252,15 +255,24 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     del sub[-len3padd:]
                     del master_seq_bc[-len3padd:]
                     print("3p_add:" + a3p + "Len"+ str(len3padd))
+                    cigar3padd = str(len3padd)+"I"
                 if iso_3p_del != "":
                     d3p = "".join(iso_3p_del[::-1])
                     len3pdel = len(d3p)
                     del sub[-len3pdel:]
                     del master_seq_bc[-len3pdel:]
                     print("3p_del:" + d3p +"Len"+ str(len3pdel))
+                    cigar3pdel = str(len3pdel)+"D"
+                # Now, these array's for reference and query doesn't have changes at the 5' or 3' ends. So, any variant correspond to internal changes
+                # print(master_seq_bc)
+                # print(sub)
+                print(iso_sub) # Substitutions
+                for ikey, ival in iso_sub.items():
+                    var_position = ikey+1
+                    print(var_position, ival)
+                #for snv_id, snv in enumerate(master_seq_bc):
+                #    print(snv_id, snv, sub[snv_id]) 
 
-                print(master_seq_bc)
-                print(sub)
 
 #['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'C', '-', 'T', 'C', 'C', 'T', 'G', 'A', 'C', '-', 'C'] =>  "-" in this line means insertion
 #['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', '_', '+G', 'T', 'C', 'C', 'T', 'G', '_', 'C', '+T', 'C'] => "_" in this line means deletion
