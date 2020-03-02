@@ -7,7 +7,7 @@ import subprocess
 from difflib import unified_diff, Differ
 from libs.miRgeEssential import UID
 """
-THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY
+THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY (EXCEPT FOR GFF-FUNCTION)
 IF YOU ARE A DEVELOPER, AND WANT TO UNDERSTAND THIS SCRIPT!! I WOULD RECOMMEND YOU TO BE THOROUGH WITH pandas FUNCTIONS 
 THIS FUNCTION RETURNS THE FOLLOWING FILES AS OUTPUT:
     miR.Counts
@@ -40,16 +40,16 @@ def mirge_can(can, iso, df, ca_thr, file_name):
 
 
 def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib):
-    pre_cols1 = ["Sequence","exact miRNA"]
+    pre_cols1 = ["Sequence","exact miRNA"] 
     pre_cols2 = ["Sequence","isomiR miRNA"]
     cols1 = pre_cols1 + base_names
     cols2 = pre_cols2 + base_names
-    can_gff_df = pd.DataFrame(cannonical, columns= cols1)
-    iso_gff_df = pd.DataFrame(isomirs, columns= cols2)
-    canonical_gff = can_gff_df.values.tolist()
+    can_gff_df = pd.DataFrame(cannonical, columns= cols1) # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
+    iso_gff_df = pd.DataFrame(isomirs, columns= cols2) # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
+    canonical_gff = can_gff_df.values.tolist() 
     isomir_gff = iso_gff_df.values.tolist()
-    canonical_gff.extend(isomir_gff)  # APPENDING THE LIST OF ISOMIRS TO CANONICAL 
-    gffwrite = open(filenamegff, "w+")
+    canonical_gff.extend(isomir_gff)  # APPENDING THE LIST OF ISOMIRS TO CANONICAL # Making one big list to get coordinates and anntations for GFF3 format of miRTop
+    gffwrite = open(filenamegff, "w+") # creating file to write the gff output # sample_miRge3.gff
     gffwrite.write("# GFF3 adapted for miRNA sequencing data\n")
     gffwrite.write("## VERSION 0.0.1\n")
     version_db = "miRBase22" if ref_db == "miRBase" else "MirGeneDB2.0"
@@ -67,7 +67,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
     """
     pre_cur_name=pre_strand={}
     mature_cor_start=mature_cor_end={}
-    with open(annotation_lib) as alib:
+    with open(annotation_lib) as alib: # Reading annotations GTF from miRBase or miRGeneDB based on user and gather coordinates and name and sequence of the precursor miRNA 
         for annlib in alib:
             annlib = annlib.strip()
             annlib_list = annlib.split("\t")
@@ -94,8 +94,8 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         mature_name = mature_name.replace("Name=","")
                         if mature_name not in pre_cur_name:
                             pre_cur_name[mature_name] = pre_name
-                            mature_cor_start[mature_name] = annlib_list[3]
-                            mature_cor_end[mature_name] = annlib_list[4]
+                            mature_cor_start[mature_name] = annlib_list[3] # Genomic coordinates and not miRNA seq to precursor sequence
+                            mature_cor_end[mature_name] = annlib_list[4] # Genomic coordinates of miRNA and not its position w.r.t precursor sequence 
             except IndexError:
                 pass
 
@@ -110,62 +110,54 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
         new_string=""
         try:
             if seq_master in pre_cur_name:
-                master_seq = mirDict[seq_master]
-                req_precursor_name = pre_cur_name[seq_master] 
+                master_seq = mirDict[seq_master] # Fetch mature miRNA sequence 
+                req_precursor_name = pre_cur_name[seq_master] # Fetch name of the corresponding precursor miRNA name
             else:
                 seq_master = seq_master.replace("-3p","")
                 seq_master = seq_master.replace("-5p","")
                 seq_master = seq_master.replace("-3p*","")
                 seq_master = seq_master.replace("-5p*","")
-                master_seq = mirDict[seq_master]
-                req_precursor_name = pre_cur_name[seq_master]
-            precursorSeq = pre_mirDict[req_precursor_name]
-            if seq_m == master_seq:
+                master_seq = mirDict[seq_master] # Fetch mature miRNA sequence
+                req_precursor_name = pre_cur_name[seq_master] # Fetch name of the corresponding precursor miRNA name
+            precursorSeq = pre_mirDict[req_precursor_name] # # Fetch sequence of the corresponding precursor miRNA 
+            if seq_m == master_seq: # If mature miRNA sequence is same as query FASTQ sequence, then it is reference miRNA
                 type_rna = "ref_miRNA"
-                if "N" not in seq_m:
-                    uid_val = UID(seq_m, "ref")
+                if "N" not in seq_m: 
+                    uid_val = UID(seq_m, "ref") # It is the Unique identifier, this function is present miRgeEssential.py 
                 else:
-                    uid_val = "."
-                cigar = str(len(seq_m))+"M"
-                if precursorSeq != "":
-                    start = precursorSeq.find(seq_m) + 1
-                    end = start + len(seq_m) - 1
+                    uid_val = "." # If the sequence contains ambiguous bases (N), then UID is replaced by dot (.)
+                cigar = str(len(seq_m))+"M" # CIGAR format for ref_miRNA is complete match, i.e., length of miRNA and M for example 25M (meaning 25 bases match)
+                if precursorSeq != "": 
+                    start = precursorSeq.find(seq_m) + 1 # This is to calculate coordinates of the mature miRNA seq wrt precursor, 
+                    end = start + len(seq_m) - 1 # But its ok, doesn't make a difference here. These can be used for isomiRs
                 else:
-                    start = 1
+                    start = 1 # Well, if the coordinates are not availble, I will put them as 1 to length of seq. Although this case is rare to none 
                     end = start + len(seq_m) - 1
+                # Finally to write GFF output for ref_miRNA 
                 mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant=NA; Cigar="+cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
                 gffwrite.write(mi_var)
-            else:
+            else: # If mature miRNA sequence is same as query FASTQ sequence, then it is reference miRNA else it is an isomiR
                 type_rna = "isomiR"
                 if "N" not in seq_m:
                     uid_val = UID(seq_m, "iso")
                 else:
                     uid_val = "."
-                result = list(d.compare(master_seq, seq_m))
+                result = list(d.compare(master_seq, seq_m)) # Python function difflib - Differ to detect changes between two strings
                 re_len = len(master_seq)
-                variant="0"
+                variant=""
                 master_variant = []
                 print("--**START**--")
-                #print(result)
-                #print(len(result))
-                #n = "".join(x.replace(" ","") for x in result)
-                #print(n)
                 master_seq_bc = list(master_seq)
                 result_seq_bc = result
                 for mdx, mbases in enumerate(master_seq_bc):
                     if result_seq_bc[mdx].startswith("-"):
-                        pass
-                        #poped_element = master_seq_bc.pop(mdx)
-                        #var_id_del[mdx] = poped_element
-                        #result_seq_bc.pop(mdx)
+                        pass # Thought of something and left it as placeholder 
                     elif result_seq_bc[mdx].startswith("+"):
-                        master_seq_bc.insert(mdx,'-')
-                        #var_id_ins[mdx] = result_seq_bc.pop(mdx)
-                        pass
-                result_seq_bc = [bc.replace(" ", "") for bc in result_seq_bc if not bc.startswith("-")]
+                        master_seq_bc.insert(mdx,'-') # Inserting '-' in the reference sequence if there is a change is base or insertion in the sequence 
+                result_seq_bc = [bc.replace(" ", "") for bc in result_seq_bc if not bc.startswith("-")] # Cleaning the results and removing extra spaces obtained from difflib - Differ
                 print("--**MID**--")
-                sub=que=[]
-                for idx, bases in enumerate(result):
+                sub=[]
+                for idx, bases in enumerate(result): # Creating an arrays if the reference now starts with '-', append "_" at that index position, etc and making two arrays of same lenght with variations
                     if bases.startswith("-"):
                         sub.append("_")
                     elif bases.startswith("+"):
@@ -178,41 +170,42 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     master_seq_bc.append("-")
                 print(master_seq_bc)
                 print(sub)
-                for yidx, ys in enumerate(master_seq_bc):
-                    if yidx > 0:
+                for yidx, ys in enumerate(master_seq_bc): # For upto 2 bases, find variants/base changes as shown in below comment A>T,T>G,T>G and basically delete '-' and "_" from two arrays 
+                    if yidx > 0: 
                         try:
                             if ys == "-" and sub[yidx-1] == "_":
                                 if yidx-2 > 0 and sub[yidx-2] == "_" and master_seq_bc[yidx+1] == "-":
                                     del master_seq_bc[yidx:yidx+2]
                                     del sub[yidx-2:yidx]
-#['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', 'A', '-', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', 'A', 'G', 'T', 'T', '-', '-']
-#['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', '_', '+T', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', '_', 'G', '_', '_', '+G', '+G']
+                #['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', 'A',  '-', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', 'A', 'G', 'T', 'T', '-',   '-']
+                #['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', '_', '+T', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', '_', 'G', '_', '_', '+G', '+G']
                                 else:
                                     temp_1 = master_seq_bc.pop(yidx)
                                     temp_2 = sub.pop(yidx-1)
-                                #AAACCGTTTCCATTACTGGGG
+                                #AAACCGTTTCCATTACTGGGG - This is the output of the loop
+                #['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T',  'A', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', 'A', 'G',  'T',  'T']
+                #['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', '+T', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', '_', 'G', '+G', '+G']
                         except IndexError:
                             pass
                 print()
-                print(master_seq_bc)
-                print(sub)
+                """
+                    ['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'C', '-', 'T', 'C', 'C', 'T', 'G', 'A', 'C', '-', 'C'] =>  "-" in this line means insertion (Ref)
+                    ['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', '_', '+G', 'T', 'C', 'C', 'T', 'G', '_', 'C', '+T', 'C'] => "_" in this line means deletion (Query)
+                    hsa-miR-335-3p  TTTTTCATTATTGCTCCTGACC  TTTTTCATTATTGGTCCTGCTC
+                """
                 print(seq_master +"\t"+ master_seq +"\t"+ seq_m +" "+ new_string+"\t"+variant)
-                iso_add={}
-                iso_del={}
-                iso_sub={}
+                iso_add={} # Insertions
+                iso_del={} # Deletions
+                iso_sub={} # Substitutions
                 iso_5p_add=iso_5p_del=""
                 iso_3p_add=iso_3p_del=""
-                #iso_5p_sub=iso_3p_add=iso_3p_sub=""
                 for pidx, v in enumerate(master_seq_bc):
                     if v == "-": # Insertions
                         iso_add[pidx] = sub[pidx]
-                    elif sub[pidx] == "_": # Delitions
+                    elif sub[pidx] == "_": # Deletions
                         iso_del[pidx] = v
                     elif v != sub[pidx]: # Substitutions
                         iso_sub[pidx] = sub[pidx]
-                #print(iso_add) # Insertions
-                #print(iso_del) # Delitions
-                #print(iso_sub) # Substitutions
                 limit_master = len(master_seq_bc)
                 ## Loop to detect 5p changes ##
                 for i in range(limit_master):
@@ -232,52 +225,93 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         break 
                 ## Loop to detect internal changes ##
                 ## Find and trim all the 5p and 3p changes to retain only the internal variants ##
-                cigar5padd = ""
+                #cigar5padd = cigar5pdel = len3padd = cigar3pdel ="" # Variant=iso_3p:-1; Cigar=21M; 
+                variant = ""
                 if iso_5p_add != "":
                     a5p = iso_5p_add
                     a5p = a5p.replace("+","")
                     len5padd = len(a5p)
-                    del sub[0:len5padd]
-                    del master_seq_bc[0:len5padd]
-                    print("5p_add:" + a5p + "Len"+ str(len5padd))
-                    cigar5padd = str(len5padd)+"I"
+                    variant+= "iso_5p:+"+str(len5padd)+";"
+                    #del sub[0:len5padd]
+                    #del master_seq_bc[0:len5padd]
+                    #print("5p_add:" + a5p + "Len"+ str(len5padd))
+                    #cigar5padd = str(len5padd)+"I"
                 if iso_5p_del != "":
                     d5p = iso_5p_del
                     len5pdel = len(d5p)
-                    del sub[0:len5pdel]
-                    del master_seq_bc[0:len5pdel]
-                    print("5p_del:" + d5p +"Len"+ str(len5pdel))
-                    cigar5pdel = str(len5pdel)+"D"
+                    variant+= "iso_5p:-"+str(len5pdel)+";"
+                    #del sub[0:len5pdel]
+                    #del master_seq_bc[0:len5pdel]
+                    #print("5p_del:" + d5p +"Len"+ str(len5pdel))
+                    #cigar5pdel = str(len5pdel)+"D"
                 if iso_3p_add != "":
                     a3p = "".join(iso_3p_add[::-1])
                     a3p = a3p.replace("+","")
                     len3padd = len(a3p)
-                    del sub[-len3padd:]
-                    del master_seq_bc[-len3padd:]
-                    print("3p_add:" + a3p + "Len"+ str(len3padd))
-                    cigar3padd = str(len3padd)+"I"
+                    variant+= "iso_3p:+"+str(len3padd)+";"
+                    #del sub[-len3padd:]
+                    #del master_seq_bc[-len3padd:]
+                    #print("3p_add:" + a3p + "Len"+ str(len3padd))
+                    #cigar3padd = str(len3padd)+"I"
                 if iso_3p_del != "":
                     d3p = "".join(iso_3p_del[::-1])
                     len3pdel = len(d3p)
-                    del sub[-len3pdel:]
-                    del master_seq_bc[-len3pdel:]
-                    print("3p_del:" + d3p +"Len"+ str(len3pdel))
-                    cigar3pdel = str(len3pdel)+"D"
+                    variant+= "iso_3p:-"+str(len3pdel)+";"
+                    #del sub[-len3pdel:]
+                    #del master_seq_bc[-len3pdel:]
+                    #print("3p_del:" + d3p +"Len"+ str(len3pdel))
+                    #cigar3pdel = str(len3pdel)+"D"
                 # Now, these array's for reference and query doesn't have changes at the 5' or 3' ends. So, any variant correspond to internal changes
-                # print(master_seq_bc)
-                # print(sub)
-                print(iso_sub) # Substitutions
-                for ikey, ival in iso_sub.items():
-                    var_position = ikey+1
-                    print(var_position, ival)
-                #for snv_id, snv in enumerate(master_seq_bc):
-                #    print(snv_id, snv, sub[snv_id]) 
-
-
-#['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'C', '-', 'T', 'C', 'C', 'T', 'G', 'A', 'C', '-', 'C'] =>  "-" in this line means insertion
-#['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', '_', '+G', 'T', 'C', 'C', 'T', 'G', '_', 'C', '+T', 'C'] => "_" in this line means deletion
-#hsa-miR-335-3p  TTTTTCATTATTGCTCCTGACC  TTTTTCATTATTGGTCCTGCTC
-
+                new_var_type={}
+                if iso_sub:
+                    for xs in iso_sub.keys():
+                        if xs == 7:
+                            new_var_type["iso_snv_central_offset;"] = "1"
+                        elif xs >= 8 and xs <= 12:
+                            new_var_type["iso_snv_central;"] = "1"
+                        elif xs >= 13 and xs <= 17:
+                            new_var_type["iso_snv_central_supp;"] = "1"
+                        else:
+                            new_var_type["iso_snv;"] = "1"
+                    variant+= "".join(new_var_type.keys())
+                    #print(new_var_type)
+                print(variant)
+                """
+                # PREPARING CIGAR BODY 
+                """
+                match_case = ""
+                for snv_id, snv in enumerate(master_seq_bc):
+                    if snv == sub[snv_id]:
+                        match_case+= "M"
+                    elif snv == "-":
+                        match_case+= "I"
+                    elif sub[snv_id] == "_":
+                        match_case+= "D"
+                    else: 
+                        match_case+=master_seq_bc[snv_id] # 11MA7M to indicates there is a mismatch at position 12, where A is the reference nucleotide.
+                        #match_case+=sub[snv_id]
+                ## CREATING THE CIGAR FORMAT HERE ##
+                match_case = match_case.replace("+","")
+                count_4cigar=0
+                iso_cigar="" # This varialbe is actually CIGAR variable which collects CIGAR information
+                for isx, ist in enumerate(match_case):
+                    if isx != 0:
+                        if ist == match_case[isx-1]:
+                            count_4cigar +=1
+                        else:
+                            if count_4cigar != 1:
+                                iso_cigar += str(count_4cigar)+match_case[isx-1]
+                                count_4cigar =1
+                            else: 
+                                iso_cigar += match_case[isx-1]
+                                count_4cigar =1
+                    else:
+                        count_4cigar +=1
+                if count_4cigar != 1:
+                    iso_cigar += str(count_4cigar)+ist
+                else: 
+                    iso_cigar += ist
+                print(iso_cigar) 
                 print("--**END**--")
         except KeyError:
             print(seq_m+"\t"+seq_master)
