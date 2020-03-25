@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 import time
+import math
+import re
 import pandas as pd
 from pathlib import Path
 import numpy as np
 import subprocess
 from difflib import unified_diff, Differ
 from libs.miRgeEssential import UID
+from libs.bamFmt import sam_header, bow2bam, createBAM
+from libs.trnaFragments import trna_deliverables
+import os, sys
 """
 THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY (EXCEPT FOR GFF-FUNCTION)
 IF YOU ARE A DEVELOPER, AND WANT TO UNDERSTAND THIS SCRIPT!! I WOULD RECOMMEND YOU TO BE THOROUGH WITH pandas FUNCTIONS 
@@ -39,15 +44,15 @@ def mirge_can(can, iso, df, ca_thr, file_name):
     return df
 
 
-def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib):
-    pre_cols1 = ["Sequence","exact miRNA"] 
-    pre_cols2 = ["Sequence","isomiR miRNA"]
-    cols1 = pre_cols1 + base_names
-    cols2 = pre_cols2 + base_names
-    can_gff_df = pd.DataFrame(cannonical, columns= cols1) # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
-    iso_gff_df = pd.DataFrame(isomirs, columns= cols2) # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
-    canonical_gff = can_gff_df.values.tolist() 
-    isomir_gff = iso_gff_df.values.tolist()
+def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib, workDir):
+    cols1 = ["Sequence","exact miRNA"] + base_names 
+    cols2 = ["Sequence","isomiR miRNA"] + base_names
+    canonical_gff = pd.DataFrame(cannonical, columns= cols1).values.tolist() # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
+    isomir_gff = pd.DataFrame(isomirs, columns= cols2).values.tolist() # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
+    #can_gff_df = pd.DataFrame(cannonical, columns= cols1) # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
+    #iso_gff_df = pd.DataFrame(isomirs, columns= cols2) # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
+    #canonical_gff = can_gff_df.values.tolist() 
+    #isomir_gff = iso_gff_df.values.tolist()
     canonical_gff.extend(isomir_gff)  # APPENDING THE LIST OF ISOMIRS TO CANONICAL # Making one big list to get coordinates and anntations for GFF3 format of miRTop
     gffwrite = open(filenamegff, "w+") # creating file to write the gff output # sample_miRge3.gff
     gffwrite.write("# GFF3 adapted for miRNA sequencing data\n")
@@ -56,7 +61,8 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
     gffwrite.write("## source-ontology: " + version_db + "\n")
     gffwrite.write("## COLDATA: "+ ",".join(str(nm) for nm in base_names) + "\n")
     # GFF3 adapted for miRNA sequencing data")
-    start=end=0
+    start=0
+    end=0
     parent="-"
     filter_var = "Pass"
     strand = "+"
@@ -65,8 +71,21 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
     """
     READING ANNOTATION DATA TO GET GENOMIC COORDINATES AND PRECURSOR miRNA 
     """
-    pre_cur_name=pre_strand={}
-    mature_cor_start=mature_cor_end={}
+    if args.bam_out:
+        header = sam_header(args)
+        for names in base_names:
+            file_sam_nameH = str(names) +".sam"
+            sam_nameH = Path(workDir)/file_sam_nameH
+            with open(sam_nameH,"w+") as samH:
+                #samH.write("@HD\tVN:3.0\tSO:coordinate\n")
+                samH.write(header)
+
+    pre_cur_name={}
+    pre_strand={}
+    mature_chromosome={}
+    mature_cor_start={}
+    mature_cor_end={}
+    mature_strand = {}
     with open(annotation_lib) as alib: # Reading annotations GTF from miRBase or miRGeneDB based on user and gather coordinates and name and sequence of the precursor miRNA 
         for annlib in alib:
             annlib = annlib.strip()
@@ -82,8 +101,10 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         mature_name = mature_name.replace("ID=","")
                         if mature_name not in pre_cur_name:
                             pre_cur_name[mature_name] = pre_name
+                            mature_chromosome[mature_name] = annlib_list[0]
                             mature_cor_start[mature_name] = annlib_list[3]
                             mature_cor_end[mature_name] = annlib_list[4]
+                            mature_strand[mature_name] =  annlib_list[6] # Genomic strand 
                 else:
                     if annlib_list[2] == "miRNA_primary_transcript":
                         pre_name = annlib_list[8].split(";")[-1]
@@ -94,24 +115,34 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         mature_name = mature_name.replace("Name=","")
                         if mature_name not in pre_cur_name:
                             pre_cur_name[mature_name] = pre_name
+                            mature_chromosome[mature_name] = annlib_list[0] # Chromosome location
                             mature_cor_start[mature_name] = annlib_list[3] # Genomic coordinates and not miRNA seq to precursor sequence
                             mature_cor_end[mature_name] = annlib_list[4] # Genomic coordinates of miRNA and not its position w.r.t precursor sequence 
+                            mature_strand[mature_name] =  annlib_list[6] # Genomic strand 
             except IndexError:
                 pass
-
+    bam_can_dict={}
+    bam_expression_dict={}
     for cans in canonical_gff:
-        seq_m = cans[0]
-        
+        gen_start=0
+        gen_end=0
+        seq_m = cans[0] # Sequence from datasest/pandas 
+         
         if "." in cans[1]:
-            seq_master = cans[1].split(".")[0]
+            seq_master = cans[1].split(".")[0] # miRNA name with .SNP extension
         else:
-            seq_master = cans[1]
-        canonical_expression = ','.join(str(x) for x in cans[2:])
+            seq_master = cans[1] # miRNA name 
+        canonical_expression = ','.join(str(x) for x in cans[2:]) # Expression/collapsed counts for each sample - joining by ','
+        bam_expression_dict[seq_m] = [int(x) for x in cans[2:]]
         new_string=""
         try:
             if seq_master in pre_cur_name:
                 master_seq = mirDict[seq_master] # Fetch mature miRNA sequence 
                 req_precursor_name = pre_cur_name[seq_master] # Fetch name of the corresponding precursor miRNA name
+                gen_chr = mature_chromosome[seq_master]
+                gen_start = int(mature_cor_start[seq_master])
+                gen_end = int(mature_cor_end[seq_master])
+                gen_strand = mature_strand[seq_master] 
             else:
                 seq_master = seq_master.replace("-3p","")
                 seq_master = seq_master.replace("-5p","")
@@ -119,7 +150,21 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 seq_master = seq_master.replace("-5p*","")
                 master_seq = mirDict[seq_master] # Fetch mature miRNA sequence
                 req_precursor_name = pre_cur_name[seq_master] # Fetch name of the corresponding precursor miRNA name
+                gen_chr = mature_chromosome[seq_master]
+                gen_start = int(mature_cor_start[seq_master])
+                gen_end = int(mature_cor_end[seq_master])
+                gen_strand = mature_strand[seq_master] 
             precursorSeq = pre_mirDict[req_precursor_name] # # Fetch sequence of the corresponding precursor miRNA 
+
+            if precursorSeq != "":
+                start = precursorSeq.find(master_seq) + 1 # This is to calculate coordinates of the mature miRNA seq wrt precursor 
+                end = start + len(master_seq) - 1
+            else:
+                start = 1 # Well, if the coordinates are not availble, I will put them as 1 to length of seq. Although this case is rare to none 
+                end = start + len(master_seq) - 1
+            #print()
+            #print(precursorSeq+"\n"+master_seq+"\n")
+            #print("2: "+ seq_m + " "+ str(start)+ " " + str(gen_start))
             if seq_m == master_seq: # If mature miRNA sequence is same as query FASTQ sequence, then it is reference miRNA
                 type_rna = "ref_miRNA"
                 if "N" not in seq_m: 
@@ -127,15 +172,15 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 else:
                     uid_val = "." # If the sequence contains ambiguous bases (N), then UID is replaced by dot (.)
                 cigar = str(len(seq_m))+"M" # CIGAR format for ref_miRNA is complete match, i.e., length of miRNA and M for example 25M (meaning 25 bases match)
-                if precursorSeq != "": 
-                    start = precursorSeq.find(seq_m) + 1 # This is to calculate coordinates of the mature miRNA seq wrt precursor, 
-                    end = start + len(seq_m) - 1 # But its ok, doesn't make a difference here. These can be used for isomiRs
-                else:
-                    start = 1 # Well, if the coordinates are not availble, I will put them as 1 to length of seq. Although this case is rare to none 
-                    end = start + len(seq_m) - 1
                 # Finally to write GFF output for ref_miRNA 
+
                 mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant=NA; Cigar="+cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
                 gffwrite.write(mi_var)
+                bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ cigar + "\t"+ gen_strand 
+                    #bow2bam
+                """
+                FOR SAM/BAM FILE FORMAT: gen_chr, gen_start, gen_end
+                """
             else: # If mature miRNA sequence is same as query FASTQ sequence, then it is reference miRNA else it is an isomiR
                 type_rna = "isomiR"
                 if "N" not in seq_m:
@@ -146,7 +191,8 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 re_len = len(master_seq)
                 variant=""
                 master_variant = []
-                print("--**START**--")
+                #print()
+                #print("--**START**--")
                 master_seq_bc = list(master_seq)
                 result_seq_bc = result
                 for mdx, mbases in enumerate(master_seq_bc):
@@ -155,7 +201,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     elif result_seq_bc[mdx].startswith("+"):
                         master_seq_bc.insert(mdx,'-') # Inserting '-' in the reference sequence if there is a change is base or insertion in the sequence 
                 result_seq_bc = [bc.replace(" ", "") for bc in result_seq_bc if not bc.startswith("-")] # Cleaning the results and removing extra spaces obtained from difflib - Differ
-                print("--**MID**--")
+                #print("--**MID**--")
                 sub=[]
                 for idx, bases in enumerate(result): # Creating an arrays if the reference now starts with '-', append "_" at that index position, etc and making two arrays of same lenght with variations
                     if bases.startswith("-"):
@@ -168,9 +214,9 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 diff = len(sub) - len(master_seq_bc)
                 for x in range(diff):
                     master_seq_bc.append("-")
-                print(master_seq_bc)
-                print(sub)
-                for yidx, ys in enumerate(master_seq_bc): # For upto 2 bases, find variants/base changes as shown in below comment A>T,T>G,T>G and basically delete '-' and "_" from two arrays 
+                # print(master_seq_bc)
+                # print(sub)
+                for yidx, ys in enumerate(master_seq_bc): # <FORWARD> For upto 2 bases, find variants/base changes as shown in below comment A>T,T>G,T>G and basically delete '-' and "_" from two arrays 
                     if yidx > 0: 
                         try:
                             if ys == "-" and sub[yidx-1] == "_":
@@ -187,18 +233,38 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 #['A', 'A', 'A', 'C', 'C', 'G', 'T', 'T', '+T', 'C', 'C', 'A', 'T', 'T', 'A', 'C', 'T', 'G', '_', 'G', '+G', '+G']
                         except IndexError:
                             pass
-                print()
+
+                for yidx, ys in enumerate(master_seq_bc): # <REVERSE> For upto 2 bases, find variants/base changes as shown in below comment C>T,A>_ and basically delete '-' and "_" from two arrays 
+                    if yidx > 0: 
+                        try:
+                            if ys == "-" and sub[yidx+1] == "_":
+                                if yidx+2 <= len(sub) and sub[yidx+2] == "_" and master_seq_bc[yidx+1] == "-":
+                                    del master_seq_bc[yidx:yidx+2]
+                                    del sub[yidx:yidx+2]
+                #['-', 'A', 'A', 'C', 'G', 'G', 'C', 'A', 'A', 'T', 'G', 'A', 'C', 'T', 'T', 'T', 'T', 'G', 'T', 'A', 'C', '-', 'C', 'A']
+                #['+A', 'A', 'A', 'C', 'G', 'G', 'C', 'A', 'A', 'T', 'G', 'A', 'C', 'T', 'T', 'T', 'T', 'G', 'T', 'A', 'C', '+T', '_', '_']
+                                else:
+                                    temp_1 = master_seq_bc.pop(yidx)
+                                    temp_2 = sub.pop(yidx+1)
+                                # hsa-miR-548al   AACGGCAATGACTTTTGTACCA  AAACGGCAATGACTTTTGTACT
+                #['-', 'A', 'A', 'C', 'G', 'G', 'C', 'A', 'A', 'T', 'G', 'A', 'C', 'T', 'T', 'T', 'T', 'G', 'T', 'A', 'C', 'C', 'A']
+                #['+A', 'A', 'A', 'C', 'G', 'G', 'C', 'A', 'A', 'T', 'G', 'A', 'C', 'T', 'T', 'T', 'T', 'G', 'T', 'A', 'C', '+T', '_']
+                        except IndexError:
+                            pass
+                #print(master_seq_bc)
+                #print(sub)
                 """
                     ['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', 'C', '-', 'T', 'C', 'C', 'T', 'G', 'A', 'C', '-', 'C'] =>  "-" in this line means insertion (Ref)
                     ['T', 'T', 'T', 'T', 'T', 'C', 'A', 'T', 'T', 'A', 'T', 'T', 'G', '_', '+G', 'T', 'C', 'C', 'T', 'G', '_', 'C', '+T', 'C'] => "_" in this line means deletion (Query)
                     hsa-miR-335-3p  TTTTTCATTATTGCTCCTGACC  TTTTTCATTATTGGTCCTGCTC
                 """
-                print(seq_master +"\t"+ master_seq +"\t"+ seq_m +" "+ new_string+"\t"+variant)
+                #print(seq_master +"\t"+ master_seq +"\t"+ seq_m +" "+ new_string+"\t"+variant)
                 iso_add={} # Insertions
                 iso_del={} # Deletions
                 iso_sub={} # Substitutions
                 iso_5p_add=iso_5p_del=""
                 iso_3p_add=iso_3p_del=""
+                #print("2"+ seq_m + " "+ str(start)+ " " + str(gen_start))
                 for pidx, v in enumerate(master_seq_bc):
                     if v == "-": # Insertions
                         iso_add[pidx] = sub[pidx]
@@ -225,13 +291,34 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         break 
                 ## Loop to detect internal changes ##
                 ## Find and trim all the 5p and 3p changes to retain only the internal variants ##
-                #cigar5padd = cigar5pdel = len3padd = cigar3pdel ="" # Variant=iso_3p:-1; Cigar=21M; 
+                #cigar5padd = cigar5pdel = len3padd = cigar3pdel ="" # variant=iso_3p:-1; Cigar=21M; 
                 variant = ""
+                #print(precursorSeq)
+                #print(precursorSeq[start-1:end])
+                #print(seq_m)
                 if iso_5p_add != "":
                     a5p = iso_5p_add
                     a5p = a5p.replace("+","")
                     len5padd = len(a5p)
-                    variant+= "iso_5p:+"+str(len5padd)+";"
+                    pre_5pAdd = list(precursorSeq[start-len5padd-1:start-1])
+                    try: 
+                        template5p=non_template5p=0
+                        for e5pidx, each5ps in enumerate(a5p):
+                            if each5ps == pre_5pAdd[e5pidx]:
+                                template5p += 1
+                            else:
+                                non_template5p += 1
+                        if template5p != 0:
+                            variant+= "iso_5p:+"+str(template5p)+","
+                        if non_template5p != 0:
+                            variant+= "iso_add5p:+"+str(non_template5p)+","
+                    except IndexError:
+                        variant+= "iso_5p:+"+str(len5padd)+","
+                    start = start - len5padd
+                    if gen_strand != "-":
+                        #gen_start = gen_start + len5pdel
+                        gen_start = gen_start - len5padd
+                    # If the addition is a SNV w.r.t precursor, then it will be => iso_add5p:N. Number of non-template nucleotides added at 3p. 
                     #del sub[0:len5padd]
                     #del master_seq_bc[0:len5padd]
                     #print("5p_add:" + a5p + "Len"+ str(len5padd))
@@ -239,7 +326,10 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 if iso_5p_del != "":
                     d5p = iso_5p_del
                     len5pdel = len(d5p)
-                    variant+= "iso_5p:-"+str(len5pdel)+";"
+                    variant+= "iso_5p:-"+str(len5pdel)+","
+                    start = start + len5pdel
+                    if gen_strand != "-":
+                        gen_start = gen_start + len5pdel
                     #del sub[0:len5pdel]
                     #del master_seq_bc[0:len5pdel]
                     #print("5p_del:" + d5p +"Len"+ str(len5pdel))
@@ -248,7 +338,27 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     a3p = "".join(iso_3p_add[::-1])
                     a3p = a3p.replace("+","")
                     len3padd = len(a3p)
-                    variant+= "iso_3p:+"+str(len3padd)+";"
+                    #variant+= "iso_3p:+"+str(len3padd)+","
+                    pre_3pAdd = list(precursorSeq[end:end+len3padd])
+                    try: 
+                        template3p=non_template3p=0
+                        for e3pidx, each3ps in enumerate(a3p):
+                            if each3ps == pre_3pAdd[e3pidx]:
+                                template3p += 1
+                            else:
+                                non_template3p += 1
+                        if template3p != 0:
+                            variant+= "iso_3p:+"+str(template3p)+","
+                        if non_template3p != 0:
+                            variant+= "iso_add3p:+"+str(non_template3p)+","
+                    except IndexError:
+                        variant+= "iso_3p:+"+str(len3padd)+","
+                    #iso_add3p
+                    end = end + len3padd
+                    gen_end = gen_end + len3padd
+                    if gen_strand == "-":
+                        gen_start-=len3padd
+                    # If the addition is a SNV w.r.t precursor, then it will be => iso_add3p:N. Number of non-template nucleotides added at 3p. 
                     #del sub[-len3padd:]
                     #del master_seq_bc[-len3padd:]
                     #print("3p_add:" + a3p + "Len"+ str(len3padd))
@@ -256,37 +366,51 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 if iso_3p_del != "":
                     d3p = "".join(iso_3p_del[::-1])
                     len3pdel = len(d3p)
-                    variant+= "iso_3p:-"+str(len3pdel)+";"
+                    variant+= "iso_3p:-"+str(len3pdel)+","
+                    end = end - len3pdel
+                    gen_end = gen_end - len3pdel
+                    if gen_strand == "-":
+                        gen_start+=len3pdel
                     #del sub[-len3pdel:]
                     #del master_seq_bc[-len3pdel:]
                     #print("3p_del:" + d3p +"Len"+ str(len3pdel))
                     #cigar3pdel = str(len3pdel)+"D"
                 # Now, these array's for reference and query doesn't have changes at the 5' or 3' ends. So, any variant correspond to internal changes
+                #print(precursorSeq[start-1:end])
                 new_var_type={}
                 if iso_sub:
                     for xs in iso_sub.keys():
                         if xs == 7:
-                            new_var_type["iso_snv_central_offset;"] = "1"
+                            new_var_type["iso_snv_central_offset,"] = "1"
+                        elif xs >= 1 and xs <= 6:
+                            new_var_type["iso_snv_seed,"] = "1"
                         elif xs >= 8 and xs <= 12:
-                            new_var_type["iso_snv_central;"] = "1"
+                            new_var_type["iso_snv_central,"] = "1"
                         elif xs >= 13 and xs <= 17:
-                            new_var_type["iso_snv_central_supp;"] = "1"
+                            new_var_type["iso_snv_central_supp,"] = "1"
                         else:
-                            new_var_type["iso_snv;"] = "1"
+                            new_var_type["iso_snv,"] = "1"
                     variant+= "".join(new_var_type.keys())
                     #print(new_var_type)
-                print(variant)
+                if variant.endswith(","):
+                    variant = re.sub(',$','',variant)
+                #print(variant)
                 """
                 # PREPARING CIGAR BODY 
                 """
+                #print("Arun:")
+                #print(master_seq_bc)
+                #print("Patil:")
                 match_case = ""
                 for snv_id, snv in enumerate(master_seq_bc):
                     if snv == sub[snv_id]:
                         match_case+= "M"
                     elif snv == "-":
-                        match_case+= "I"
+                        match_case+= "M"
+                        #match_case+= "I"
                     elif sub[snv_id] == "_":
-                        match_case+= "D"
+                        #match_case+= "D"
+                        match_case+= "M"
                     else: 
                         match_case+=master_seq_bc[snv_id] # 11MA7M to indicates there is a mismatch at position 12, where A is the reference nucleotide.
                         #match_case+=sub[snv_id]
@@ -311,10 +435,84 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     iso_cigar += str(count_4cigar)+ist
                 else: 
                     iso_cigar += ist
-                print(iso_cigar) 
-                print("--**END**--")
+                iso_mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant="+variant+"; Cigar="+iso_cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
+                gffwrite.write(iso_mi_var)
+                """
+                FOR SAM/BAM FILE FORMAT: gen_chr, gen_start, gen_end
+                """
+                bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ iso_cigar + "\t"+ gen_strand
+                #print(seq_m+"\t"+ str(gen_chr) +"\t"+ str(gen_start) +"\t"+ iso_cigar+"\n")
+                #print("--**END**--")
         except KeyError:
-            print(seq_m+"\t"+seq_master)
+            pass
+            #print(seq_m+"\t"+seq_master)
+            #ACTGGCCTTGGAGTCAGAAGGC  hsa-miR-378g
+    if args.bam_out:
+        mirna_samFile = Path(workDir)/"miRge3_miRNA.sam"
+        genC=0
+        genS=0
+        cig=0
+        with open(mirna_samFile) as miSam:
+            for mi_idx, mi_sam in enumerate(miSam):
+                mi_sam = mi_sam.strip()
+                mi_sam_list = mi_sam.split("\t")
+                try:
+                #if bam_can_dict[mi_sam_list[0]]:
+                    sam_exprn_list = bam_expression_dict[mi_sam_list[0]]
+                    for ex_idx, exprn in enumerate(sam_exprn_list):
+                        (genC, genS, cig, strand) = bam_can_dict[mi_sam_list[0]].split("\t")
+                        if exprn >= 1:
+                            file_sam_name = str(base_names[ex_idx]) +".sam"
+                            sam_name = Path(workDir)/file_sam_name
+                            xbam = open(sam_name, "a+")
+                            for numexp in range(exprn):
+                                #print()
+                                #readname = "r"+str(mi_idx) + "_" + str(numexp)
+                                readname = mi_sam_list[0] + "_" + str(numexp)
+                                phredQual = "I"*len(mi_sam_list[0])
+                                cigar = str(len(mi_sam_list[0]))+"M"
+                                #xbamout = readname+"\t"+mi_sam_list[1]+"\t"+genC+"\t"+str(genS)+"\t"+mi_sam_list[4]+"\t"+mi_sam_list[5]+"\t"+mi_sam_list[6]+"\t"+mi_sam_list[7]+"\t"+mi_sam_list[8]+"\t"+mi_sam_list[9]+"\t"+mi_sam_list[10]+"\n"
+                                if strand == "+":
+                                    xbamout = readname+"\t"+mi_sam_list[1]+"\t"+genC+"\t"+str(genS)+"\t"+mi_sam_list[4]+"\t"+cigar+"\t"+mi_sam_list[6]+"\t"+mi_sam_list[7]+"\t"+mi_sam_list[8]+"\t"+mi_sam_list[0]+"\t"+phredQual+"\n"
+                                else:
+
+                                    xbamout = readname+"\t"+mi_sam_list[1]+"\t"+genC+"\t"+str(genS)+"\t"+mi_sam_list[4]+"\t"+cigar+"\t"+mi_sam_list[6]+"\t"+mi_sam_list[7]+"\t"+mi_sam_list[8]+"\t"+mi_sam_list[0][::-1]+"\t"+phredQual+"\n"
+
+                                xbam.write(xbamout)
+                            xbam.close()
+                except KeyError:
+                    pass
+
+def addDashNew(seq, totalLength, start, end):
+    newSeq = '-'*(start-1)+seq+'-'*(totalLength-end)
+    return newSeq
+
+def trfTypes(seq, tRNAName, start, trnaStruDic):
+    if 'pre_' not in tRNAName:
+        tRNASeq = trnaStruDic[tRNAName]['seq']
+        tRNAStru = trnaStruDic[tRNAName]['stru']
+        tRNASeqLen = len(tRNASeq)
+        # anticodonStart and anticodonEnd is 1-based position, so change it into 0-based
+        anticodonStart = trnaStruDic[tRNAName]['anticodonStart']-1
+        anticodonEnd = trnaStruDic[tRNAName]['anticodonEnd']-1
+        if start == 0:
+            if start+len(seq) == tRNASeqLen:
+                trfType = 'tRF-whole'
+            elif start+len(seq)-1 >= anticodonStart-2 and start+len(seq)-1 <= anticodonStart+1:
+                trfType = "5'-half"
+            else:
+                trfType = "5'-tRF"
+        else:
+            if start+len(seq)-1 >= tRNASeqLen-1-2 and start+len(seq)-1 <= tRNASeqLen-1:
+                if start >= anticodonStart-1 and start <= anticodonStart+2:
+                    trfType = "3'-half"
+                else:
+                    trfType = "3'-tRF"
+            else:
+                trfType = 'i-tRF'
+    else:
+        trfType = 'tRF-1'
+    return trfType
 
 
 def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique):
@@ -358,7 +556,12 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     subpdMapped = pdMapped[(pdMapped['exact miRNA'].astype(bool) | pdMapped['isomiR miRNA'].astype(bool))]
     cannonical = pdMapped[pdMapped['exact miRNA'].astype(bool)]
     isomirs = pdMapped[pdMapped['isomiR miRNA'].astype(bool)]
-    if args.gff_out:
+
+
+
+    cannonical_4ie = cannonical
+    isomirs_4ie = isomirs
+    if args.gff_out or args.bam_out:
         pre_mirDict = dict()
         mirDict = dict()
         filenamegff = workDir/"sample_miRge3.gff"
@@ -396,22 +599,34 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
                 else:
                     mirDict[headmil_mi] = mil
         d = Differ()
-        create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib)
-        
+        create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib, workDir)
+
+    if args.bam_out:
+        pd_frame = ['snoRNA','rRNA','ncrna others','mRNA']
+        bwt_idx_prefname = ['snorna','rrna','ncrna_others','mrna']
+        for igv_idx, igv_name in enumerate(pd_frame):
+            dfRNA2sam = pdMapped[pdMapped[igv_name].astype(bool)]
+            pre_cols_birth = ["Sequence", igv_name]
+            cols1 = pre_cols_birth + base_names
+            df_sam_out = pd.DataFrame(dfRNA2sam, columns= cols1) # Gives list of list containg Sequence, RNA type, expression values for the samples 
+            df_expr_list = df_sam_out.values.tolist()
+            rna_type = args.organism_name + "_" + bwt_idx_prefname[igv_idx]
+            index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
+            bow2bam(args, workDir, ref_db, df_expr_list, base_names, index_file_name, rna_type, bwt_idx_prefname[igv_idx])
+            createBAM(args, workDir, base_names)
         #https://stackoverflow.com/questions/35125062/how-do-i-join-2-columns-of-a-pandas-data-frame-by-a-comma
-        #ref_db #miRBase | MirGeneDB
-        #bowtie-inspect -a 20000 -e human_hairpin_miRBase
-        #/Libs/human/index.Libs/human_hairpin_miRBase
-        #/Libs/human/fasta.Libs
-        #human_mature_miRBase.fa
-        pass
+    
     if args.spikeIn:
         cannonical = cannonical.drop(columns=['Sequence','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','isomiR miRNA','spike-in'])
         isomirs = isomirs.drop(columns=['Sequence','exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','spike-in'])
+        cannonical_4ie = cannonical_4ie.drop(columns=['hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','isomiR miRNA','spike-in'])
+        isomirs_4ie = isomirs_4ie.drop(columns=['exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','spike-in'])
         subpdMapped = subpdMapped.drop(columns=['Sequence','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','spike-in'])
     else:
         cannonical = cannonical.drop(columns=['Sequence','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','isomiR miRNA'])
         isomirs = isomirs.drop(columns=['Sequence','exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag'])
+        cannonical_4ie = cannonical_4ie.drop(columns=['hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','isomiR miRNA'])
+        isomirs_4ie = isomirs_4ie.drop(columns=['exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag'])
         subpdMapped = subpdMapped.drop(columns=['Sequence','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag'])
 
     subpdMapped['miRNA_cbind'] = subpdMapped[['exact miRNA', 'isomiR miRNA']].apply(lambda x: ''.join(x), axis = 1)
@@ -488,7 +703,384 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         pre_summary = {'Total Input Reads':sampleReadCounts,'Trimmed Reads (all)':trimmedReadCounts,'Trimmed Reads (unique)':trimmed_counts,'All miRNA Reads':l_1d,'Filtered miRNA Reads':Filtered_miRNA_Reads,'Unique miRNAs':miRNA_counts, 'Hairpin miRNAs':empty_list[col_vars[0]],'mature tRNA Reads':empty_list[col_vars[1]],'primary tRNA Reads':empty_list[col_vars[2]],'snoRNA Reads':empty_list[col_vars[3]],'rRNA Reads':empty_list[col_vars[4]],'ncRNA others':empty_list[col_vars[5]],'mRNA Reads':empty_list[col_vars[6]]}
         col_tosum = ['All miRNA Reads','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads']
         colRearrange = ['Total Input Reads', 'Trimmed Reads (all)','Trimmed Reads (unique)','All miRNA Reads','Filtered miRNA Reads','Unique miRNAs','Hairpin miRNAs','mature tRNA Reads','primary tRNA Reads','snoRNA Reads','rRNA Reads','ncRNA others','mRNA Reads','Remaining Reads']
+    
+    """
+    Calcuate isomir entropy
+    """
+    def calcEntropy(inputList):
+        sum1 = sum(inputList)
+        entropy = 0
+        for i in range(len(inputList)):
+            if inputList[i] > 1:
+                freq = float(inputList[i])/sum1
+                entropy = entropy + -1*freq*math.log(freq, 2)
+        return entropy
 
+    def create_ie(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_Reads):
+        isomirFile = Path(workDir)/"isomirs.csv"
+        isomirSampleFile = Path(workDir)/"isomirs.samples.csv"
+        outf1 = open(isomirFile, 'w')
+        outf2 = open(isomirSampleFile, 'w')
+        outf1.write('miRNA,sequence')
+        outf2.write('miRNA')
+        for i in range(len(base_names)):
+            outf1.write(','+base_names[i])
+            outf2.write(','+base_names[i]+' isomir+miRNA Entropy')
+            outf2.write(','+base_names[i]+' Canonical Sequence')
+            outf2.write(','+base_names[i]+' Canonical RPM')
+            outf2.write(','+base_names[i]+' Top Isomir RPM')
+        outf1.write(',Entropy\n')
+        outf2.write('\n')
+        pre_cols1 = ["Sequence","exact miRNA"] 
+        pre_cols2 = ["Sequence","isomiR miRNA"]
+        cols1 = pre_cols1 + base_names
+        cols2 = pre_cols2 + base_names
+        can_gff_df = pd.DataFrame(cannonical, columns= cols1) # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
+        iso_gff_df = pd.DataFrame(isomirs, columns= cols2) # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
+        canonical_gff = can_gff_df.values.tolist() 
+        isomir_gff = iso_gff_df.values.tolist()
+        freq_list=[]
+        for fname in base_names:
+            freq_list.append(1000000/Filtered_miRNA_Reads[fname])
+        maxEntropy = math.log(len(base_names), 2)
+
+        """
+        Collecting miRNA values across each samples into an array
+        """
+        miR_can = {}
+        for each_can in canonical_gff:
+            canValScore = each_can[2:]
+            if ".SNP" in each_can[1]:
+                each_can[1] = each_can[1].split('.')[0]
+            try:
+                miR_can[each_can[1]].append(canValScore)
+            except KeyError:
+                miR_can[each_can[1]] = [canValScore]
+
+        """
+        Collecting miRNA values across each samples into an array - Here the values for each sample is summed 
+        """
+        for key_mir, val_mir in miR_can.items():
+            res = [sum(i) for i in zip(*val_mir)]
+            miR_can[key_mir] = res
+        
+        miR_iso = {}
+        for each_isoSeq in isomir_gff:
+            valueScore = each_isoSeq[2:]
+            entropy = calcEntropy(valueScore)
+            if maxEntropy == 0:
+                entropy= "NA"
+            else:
+                entropy = str(entropy/maxEntropy)
+            emptyListEntropy = []
+            #topIsomir = []
+            #isomirSum = []
+            for idxn, ival in enumerate(valueScore):
+                emptyListEntropy.append(str(ival*freq_list[idxn]))
+                #topIsomir.append(str(max(valueScore)*rpmFactor))
+                #isomirSum.append(str(sum(sampleIsomirs[sampleLane])*rpmFactor))
+            samplesEntropy = "\t".join(emptyListEntropy)
+            if ".SNP" in each_isoSeq[1]:
+                each_isoSeq[1] = each_isoSeq[1].split('.')[0]
+            try:
+                miR_iso[each_isoSeq[1]].append(valueScore)
+            except KeyError:
+                miR_iso[each_isoSeq[1]] = [valueScore]
+            outf1.write(each_isoSeq[1]+"\t"+each_isoSeq[0]+"\t"+ samplesEntropy +"\t"+ entropy + "\n")
+
+        for isokey, isoval in miR_iso.items():
+            #print(list(zip(*isoval)))
+            res = [i for i in zip(*isoval)]
+            isomirOut = [isokey]
+            for xn, x in enumerate(res):
+                iso_vals_asList =list(x)
+                topIsomir = max(iso_vals_asList)*freq_list[xn]
+                isomirSum = sum(iso_vals_asList)*freq_list[xn]
+                if isokey in miR_can:
+                    iso_can_vals_list = iso_vals_asList + [miR_can[isokey][xn]]
+                    miRNARPM = miR_can[isokey][xn] * freq_list[xn] 
+                    sampleEntropyWithmiRNA = calcEntropy(iso_can_vals_list)
+                    maxEntropy = len(iso_vals_asList)
+                    if maxEntropy > 1:
+                        sampleEntropyWithmiRNA = str(sampleEntropyWithmiRNA/(math.log(maxEntropy,2)))
+                    else:
+                        sampleEntropyWithmiRNA = 'NA'
+                    isomirOut.append(sampleEntropyWithmiRNA)
+                    combined = miRNARPM + isomirSum
+                    if combined >0:
+                        isomirOut.append(str(100.0*miRNARPM/combined))
+                    else:
+                        isomirOut.append('NA')
+                    isomirOut.append(str(miRNARPM))
+                    isomirOut.append(str(topIsomir))
+                    
+                else:
+                    pass
+                    #print(list(x))
+            if len(isomirOut) > 1:
+                outf2.write(','.join(isomirOut))
+                outf2.write('\n')
+
+        outf1.close()
+        outf2.close()
+            #print(isomirOut)
+            #print(isokey, isoval)
+            #print(res)
+            #print(each_isoSeq)
+            # ['AAAAAACTCTAAACAA', 'hsa-miR-3145-5p', 0, 1]
+
+    if args.isoform_entropy:        
+        create_ie(args, cannonical_4ie, isomirs_4ie, base_names, workDir, Filtered_miRNA_Reads)
+    
+    def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_Reads, mirMergedNameDic):
+        mirNameSeqDicTmp = {}
+        pre_cols1 = ["Sequence","exact miRNA"] 
+        pre_cols2 = ["Sequence","isomiR miRNA"]
+        cols1 = pre_cols1 + base_names
+        cols2 = pre_cols2 + base_names
+        can_gff_df = pd.DataFrame(cannonical, columns= cols1) # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
+        iso_gff_df = pd.DataFrame(isomirs, columns= cols2) # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
+        canonical_gff = can_gff_df.values.tolist() 
+        isomir_gff = iso_gff_df.values.tolist()
+        freq_list=[]
+        for fname in base_names:
+            freq_list.append(1000000/Filtered_miRNA_Reads[fname])
+        for can_list_element in canonical_gff:
+            if can_list_element[1] in mirMergedNameDic:
+                miRName = mirMergedNameDic[can_list_element[1]]
+            else:
+                miRName = can_list_element[1]
+            try:
+                mirNameSeqDicTmp[miRName].append(can_list_element[0])
+            except KeyError:
+                mirNameSeqDicTmp.update({miRName:[can_list_element[0]]})
+
+        for iso_list_element in isomir_gff:
+            if iso_list_element[1] in mirMergedNameDic:
+                miRName = mirMergedNameDic[iso_list_element[1]]
+            else:
+                miRName = iso_list_element[1]
+            iso_sample_values = iso_list_element[2:]
+            if any([(iso_sample_values[i]*freq_list[i]) >=1 for i in range(len(base_names))]):
+                try:
+                    mirNameSeqDicTmp[miRName].append(iso_list_element[0])
+                except KeyError:
+                    mirNameSeqDicTmp.update({miRName:[iso_list_element[0]]})
+            else:
+                pass
+        samToMapFasta = Path(workDir)/"SeqToMap.fasta"
+        with open(samToMapFasta,'w') as outf:
+            for mirName in mirNameSeqDicTmp.keys():
+                for seqTmp in mirNameSeqDicTmp[mirName]:
+                    outf.write('>'+seqTmp+'\n'+seqTmp+'\n')
+        
+        bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
+        bwtCommand = bwtCommand + " --threads " + str(args.threads) + " "
+        if args.phred64:
+            bwtCommand = bwtCommand + ' --phred64-quals '
+        
+        indexName  = str(args.organism_name) + str("_genome") 
+        genome_index = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
+        bwtCommand = bwtCommand + str(genome_index) + ' -n 1 -f -a -3 2 ' + str(samToMapFasta)
+        retainedSeqDic = {}
+        retainedSeqContentDicTmp = {}
+        #+' 1> '+os.path.join(outputdir, 'SeqToMap.sam')+' 2> '+os.path.join(outputdir, 'SeqToMap.log')
+        bowtie = subprocess.run(str(bwtCommand), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+        if bowtie.returncode==0:
+            bwtOut = bowtie.stdout
+            bwtErr = bowtie.stderr
+        for srow in bwtOut.split('\n'):
+            if not srow.startswith('@'):
+                sam_line = srow.split('\t')
+                if sam_line != ['']:
+                    print(sam_line)
+                    try:
+                        retainedSeqContentDicTmp[sam_line[0]].append(sam_line[-1].count(':'))
+                    except KeyError:
+                        retainedSeqContentDicTmp.update({sam_line[0]:[sam_line[-1].count(':')]})
+                    #['AAAAACTGAGACTACTTTTG', '+', 'chr10', '110988977', 'AAAAACTGAGACTACTTT', 'IIIIIIIIIIIIIIIIII', '0', '']
+                    #['AAAAACTGAGACTACTTTTG', '-', 'chr2', '236950434', 'AAAGTAGTCTCAGTTTTT', 'IIIIIIIIIIIIIIIIII', '0', '']
+                    #['AAAAACTGAGACTACTTTTG', '-', 'chr14', '65022420', 'AAAGTAGTCTCAGTTTTT', 'IIIIIIIIIIIIIIIIII', '0', '14:T>G']
+                    #['AAAAACTGAGACTACTTTTG', '-', 'chr4', '134615933', 'AAAGTAGTCTCAGTTTTT', 'IIIIIIIIIIIIIIIIII', '0', '14:A>G']
+        for seq_tmp in retainedSeqContentDicTmp.keys():
+            kept = False
+            content = retainedSeqContentDicTmp[seq_tmp]
+            if len(content) == 1:
+                kept = True
+            else:
+                minimum = min(content)
+                if len([subitem for subitem in content if subitem == minimum]) == 1:
+                    kept = True
+            if kept:
+                retainedSeqDic.update({seq_tmp:True})
+
+    if args.AtoI:
+        a2i_editing(args, cannonical_4ie, isomirs_4ie, base_names, workDir, Filtered_miRNA_Reads, mirMergedNameDic)
+        print("We are planning to work on A2I\n")
+    
+    if args.tRNA_frag:
+        m_trna_pre = pdMapped[pdMapped['mature tRNA'].astype(bool)]
+        p_trna_pre = pdMapped[pdMapped['primary tRNA'].astype(bool)]
+        m_trna_cols1 = ["Sequence","mature tRNA"] + base_names
+        p_trna_cols2 = ["Sequence","primary tRNA"] + base_names
+        m_trna = pd.DataFrame(m_trna_pre, columns= m_trna_cols1).values.tolist() # Gives list of list containg Sequence, mature tRNA, expression values for the samples - mature tRNA 
+        p_trna = pd.DataFrame(p_trna_pre, columns= p_trna_cols2).values.tolist() # Gives list of list containg Sequence, primary tRNA, expression values for the samples - primary tRNA
+        trnaStruDic={}
+        fname = args.organism_name+'_trna.str'
+        trna_stru_file = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/fname
+        allFiles_inPlace = 1
+        try:
+            with open(trna_stru_file, 'r') as inf:
+                a=0
+                lines = inf.readlines()
+                for idx, xline in enumerate(lines):
+                    xline=xline.strip()
+                    if xline.startswith(">"):
+                        trnaName = xline.replace(">","")
+                        a+=1
+                    elif a == 1:
+                        a+=1
+                        trnaSeq = xline
+                    elif a == 2:
+                        a=0
+                        trnaStru = xline
+                        anticodonStart = trnaStru.index('XXX')+1
+                        anticodonEnd = anticodonStart+2
+                        trnaStruDic.update({trnaName:{'seq':trnaSeq, 'stru':trnaStru, 'anticodonStart':anticodonStart, 'anticodonEnd':anticodonEnd}})
+        except IOError:
+            allFiles_inPlace = 0
+            print(f"File {trna_stru_file} does not exist!!\nProceeding the annotation with out -trf\n")
+
+        fname2 = args.organism_name+'_trna_aminoacid_anticodon.csv'
+        trna_aa_anticodon_file = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/fname2
+        trnaAAanticodonDic = {}
+        try:
+            with open(trna_aa_anticodon_file, 'r') as inf:
+                for line in inf:
+                    contentTmp = line.strip().split(',')
+                    trnaAAanticodonDic.update({contentTmp[0]:{'aaType':contentTmp[1], 'anticodon':contentTmp[2]}})
+        except IOError:
+            allFiles_inPlace = 0
+            print(f"File {trna_aa_anticodon_file} does not exist!!\nProceeding the annotation with out -trf\n")
+        
+        fname3 = args.organism_name+'_trna_deduplicated_list.csv'
+        trna_duplicated_list_file = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/fname3
+        duptRNA2UniqueDic = {}
+        try:
+            with open(trna_duplicated_list_file, 'r') as inf:
+                line = inf.readline()
+                line = inf.readline()
+                while line != '':
+                    contentTmp = line.strip().split(',')
+                    for item in contentTmp[1].split('/'):
+                        duptRNA2UniqueDic.update({item.strip():contentTmp[0].strip()})
+                    line = inf.readline()
+        except IOError:
+            allFiles_inPlace = 0
+            print(f"File {trna_duplicated_list_file} does not exist!!\nProceeding the annotation with out -trf\n")
+        
+        fname4 = args.organism_name+'_tRF_infor.csv'
+        tRF_infor_file = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/fname4
+        tRNAtrfDic = {}
+        try:
+            with open(tRF_infor_file, 'r') as  inf:
+                line = inf.readline()
+                line = inf.readline()
+                while line != '':
+                    content = line.strip().split(',')
+                    tRNAName = content[0].split('_Cluster')[0]
+                    tRNAClusterName = content[0]
+                    seq = content[4]
+                    tRNAlength = len(content[5])
+                    start = int(content[3].split('-')[0])
+                    end = int(content[3].split('-')[1])
+                    if tRNAName not in tRNAtrfDic.keys():
+                        tRNAtrfDic.update({tRNAName:{}})
+                    tRNAtrfDic[tRNAName].update({addDashNew(seq, tRNAlength, start, end):tRNAClusterName})
+                    line = inf.readline()
+        except IOError:
+            allFiles_inPlace = 0
+            print(f"File {tRF_infor_file} does not exist!!\nProceeding the annotation with out -trf\n")
+
+        # Load predifined tRF merged file
+        fname5 = args.organism_name+"_tRF_merges.csv"
+        tRF_merge_file = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/fname5
+        trfMergedNameDic = {}
+        trfMergedList = []
+        try:
+            with open(tRF_merge_file, 'r') as inf:
+                for line in inf:
+                    tmp = line.strip().split(',')
+                    mergedName = tmp[0]
+                    trfMergedList.append(mergedName)
+                    for item in tmp[1].split('/'):
+                        trfMergedNameDic.update({item:mergedName})
+        except IOError: 
+            allFiles_inPlace = 0
+            print(f"File {tRF_merge_file} does not exist!!\nProceeding the annotation with out -trf\n")
+        
+        pretrnaNameSeqDic = {}
+        file_pre_tRNA = args.organism_name+'_pre_trna'
+        indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/file_pre_tRNA
+        bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
+        bwtExec = bwtCommand+" -a 20000 -e "+ str(indexFiles)
+        bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+        #READING PRECURSOR miRNA SEQUENCES INFORMATION IN A DICTIONARY (pre_mirDict)
+        if bowtie.returncode==0:
+            bwtOut2 = bowtie.stdout
+            for srow in bwtOut2.split('\n'):
+                if srow != "":
+                    if '>' in srow:
+                        header = srow.replace(">","")
+                    else:
+                        pretrnaNameSeqDic.update({header:str(srow)})
+        else:
+            allFiles_inPlace = 0
+        # Deal with the alignment of mature tRNA
+        #alignmentResult[content[0]].append((content[2], content[1], content[3], content[5]))
+        if allFiles_inPlace == 1:
+            m_trna.extend(p_trna)
+            trfContentDic = {}
+            for mtrna_item in m_trna:
+                trfContentDic.update({mtrna_item[0]:{'count':mtrna_item[2:]}})
+                if "N" not in mtrna_item[0]:
+                    trfContentDic[mtrna_item[0]]['uid'] = UID(mtrna_item[0], "tRF") # It is the Unique identifier, this function is present miRgeEssential.py
+                else:
+                    trfContentDic[mtrna_item[0]]['uid'] = "."
+            # Open sam file for the mapped mature tRNA 
+            matureMappedtRNA = workDir/"miRge3_tRNA.sam"
+            with open(matureMappedtRNA, "r") as minf:
+                for mline in minf:
+                    mline=mline.strip()
+                    #AAAACATCAGATTGTGAGTC    0       trnaMT_HisGTG_MT_+_12138_12206  18      255     20M     *       0       0       AAAACATCAGATTGTGAGTC    IIIIIIIIIIIIIIIIIIII    XA:i:1  MD:Z:17A2       NM:i:1  XM:i:2
+                    item = mline.split("\t")
+                    startTmp = int(item[3])-1
+                    trfContentDic[item[0]][item[2]] = {}
+                    trfContentDic[item[0]][item[2]]['start'] = startTmp
+                    trfContentDic[item[0]][item[2]]['end'] = startTmp+len(item[0])-1
+                    trfContentDic[item[0]][item[2]]['cigar'] = 'undifined'
+                    trfContentDic[item[0]][item[2]]['tRFType'] = trfTypes(item[0], item[2], startTmp, trnaStruDic)
+            
+            primaryMappedtRNA = workDir/"miRge3_pre_tRNA.sam"
+            with open(primaryMappedtRNA, "r") as minf:
+                for mline in minf:
+                    mline=mline.strip()
+                    item = mline.split("\t")
+                    startTmp = int(item[3])-1
+                    trfContentDic[item[0]][item[2]] = {}
+                    trfContentDic[item[0]][item[2]]['start'] = startTmp
+                    trfContentDic[item[0]][item[2]]['cigar'] = 'undifined'
+                    trfContentDic[item[0]][item[2]]['tRFType'] = trfTypes(item[0], item[2], startTmp, trnaStruDic)
+                    # Only end coordinate will change
+                    cutRemainderSeqLen = re.search('T{3,}$', item[0]).span(0)[0]
+                    lenPostTrimming = len(item[0])-cutRemainderSeqLen ## Length after trimming the sequences at end for more than 3 TTT's
+                    trfContentDic[item[0]][item[2]]['end'] = startTmp+len(item[0])-1-lenPostTrimming 
+            ## CALLING EXTERNAL FUNCTION FROM miRge2 TO OUTPUT THE tRNF RESULT FILES 
+            mature_tRNA_Reads_values = list(empty_list[col_vars[1]].values())
+            primary_tRNA_Reads_values = list(empty_list[col_vars[2]].values())
+            trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tRNA_Reads_values, primary_tRNA_Reads_values, trnaAAanticodonDic, base_names, trnaStruDic, duptRNA2UniqueDic, trfMergedList, tRNAtrfDic, trfMergedNameDic)
+
+            #pretrnaNameSeqDic
     summary = pd.DataFrame.from_dict(pre_summary).astype(int)
     summary['Remaining Reads'] = summary['Trimmed Reads (all)'] - (summary[col_tosum].sum(axis=1))
     summary = summary.reindex(columns=colRearrange)
@@ -498,9 +1090,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     summary.to_csv(report)
     summary = summary.reset_index(level=['Sample name(s)'])
     summary.index += 1
-
+    
     data_in_html = summary.to_html(index=False)
-    import re
     table = '<table style="color="black";font-size:15px; text-align:center; border:0.2px solid black; border-collapse:collapse; table-layout:fixed; height="550"; text-align:center">'
     th = '<th style ="background-color: #3f51b5; color:#ffffff; text-align:center">'
     td ='<td style="vertical-align: middle;background-color: #edf6ff;font-size: 14px;font-family: Arial;font-weight: normal;color: #000000;text-align:center; height="250";border:0; ">'
