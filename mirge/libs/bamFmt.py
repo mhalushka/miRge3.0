@@ -38,12 +38,6 @@ def bow2bam(args, workDir, ref_db, df_list, base_names, index_file_name, rna_typ
     samtoolsCommandPre = Path(args.samtools_path)/"samtools " if args.samtools_path else "samtools "
     dict_genCors = {}
     dict_genCors = fetchGenCor(args, index_file_name, dict_genCors) # Key: ENST00000516122.1 and value: chromosome:GRCh38:12:59450673:59450772:-1
-#    header = sam_header(args) # Getting SAM header 
-#    for names in base_names: # Writing SAM header before hand
-#        file_sam_nameH = str(names) +"_otherRNA.sam"
-#        sam_nameH = Path(workDir)/file_sam_nameH
-#        with open(sam_nameH,"w+") as samH:
-#            samH.write(header)
 
     bam_expression_dict={}
     for seq in df_list:
