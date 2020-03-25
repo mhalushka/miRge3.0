@@ -72,7 +72,8 @@ def bow2bam(args, workDir, ref_db, df_list, base_names, index_file_name, rna_typ
                                     xbamout = readname+"\t"+mi_sam_list[1]+"\t"+chromo+"\t"+str(start)+"\t"+mi_sam_list[4]+"\t"+mi_sam_list[5]+"\t"+mi_sam_list[6]+"\t"+mi_sam_list[7]+"\t"+mi_sam_list[8]+"\t"+mi_sam_list[0][::-1]+"\t"+phredQual+"\n"
                                 xbam.write(xbamout)
                             xbam.close()
-                except IndexError:                                                                                                                                                                                                    pass
+                except IndexError:    
+                    pass
             except KeyError:
                 pass
 
@@ -110,5 +111,4 @@ def createBAM(args, workDir, base_names):
         if bamindexing.returncode !=0:
             print("Error indexing BAM file!. Ignoring this step\n")
             pass
-        #mfname = args.organism_name + "_merges_" + ref_db + ".csv"
-    #mergeFile = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/mfname
+        
