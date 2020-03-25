@@ -60,12 +60,7 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
                     elif args.tRNA_frag:
                         if iter_number != 9:
                             bwto.write(srow+"\n")
-#        elif args.bam_out: 
-#            if iter_number != 2 and iter_number != 3 and iter_number != 9 and iter_number != 0 and iter_number != 8: # miRNA SAM header is miRNA names and genomic location so, we avoid them 
-#                bwto.write(srow+"\n")
 
-                    #if iter_number == 0 or iter_number == 8:
-                    #    print(sam_line)
     return pdDataFrame
 
 
