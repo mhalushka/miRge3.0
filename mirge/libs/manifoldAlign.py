@@ -9,13 +9,41 @@ import concurrent.futures
 from libs.miRgeEssential import UID
 
 
-def alignPlusParse(bwtExec, iter_number, pdDataFrame):
+def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
     """
     ALIGN TO BOWTIE, PARSE SAM FILE AND UPDATE THE DATAFRAME
     """
+    #indexNames = ['_mirna_', '_hairpin_', '_mature_trna', '_pre_trna', '_snorna', '_rrna', '_ncrna_others', '_mrna', '_mirna_', '_spike-in']
     colnames = list(pdDataFrame.columns)
     colToAct = 1 + int(iter_number)
     bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+    if args.bam_out: 
+        if iter_number == 0 or iter_number == 8:
+            bwtoutput = Path(workDir)/"miRge3_miRNA.sam"
+            bwto = open(bwtoutput, "a+")
+        elif iter_number == 1:
+            bwtoutput = Path(workDir)/"miRge3_hairpin_miRNA.sam"
+            bwto = open(bwtoutput, "a+")
+        elif iter_number == 4: 
+            bwtoutput = Path(workDir)/"miRge3_snorna.sam"
+            bwto = open(bwtoutput, "a+")
+        elif iter_number == 5:
+            bwtoutput = Path(workDir)/"miRge3_rrna.sam" 
+            bwto = open(bwtoutput, "a+")
+        elif iter_number == 6:
+            bwtoutput = Path(workDir)/"miRge3_ncrna_others.sam" 
+            bwto = open(bwtoutput, "a+")
+        elif iter_number == 7:
+            bwtoutput = Path(workDir)/"miRge3_mrna.sam" 
+            bwto = open(bwtoutput, "a+")
+    if args.tRNA_frag:
+        if iter_number == 2:
+            bwtoutput = Path(workDir)/"miRge3_tRNA.sam"
+            bwto = open(bwtoutput, "a+")
+        elif iter_number == 3:
+            bwtoutput = Path(workDir)/"miRge3_pre_tRNA.sam"
+            bwto = open(bwtoutput, "a+")
+
     if bowtie.returncode==0:
         bwtOut = bowtie.stdout
         bwtErr = bowtie.stderr
@@ -26,6 +54,16 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame):
                 if sam_line[2] != "*":
                     pdDataFrame.at[sam_line[0], colnames[colToAct]] = sam_line[2]
                     pdDataFrame.at[sam_line[0], colnames[0]] = 1
+                    if iter_number != 2 and iter_number != 3 and iter_number != 9: #tRNA and pre_tRNA and spike-ins are ignored 
+                        if args.bam_out:
+                            bwto.write(srow+"\n")
+                    elif args.tRNA_frag:
+                        if iter_number != 9:
+                            bwto.write(srow+"\n")
+#        elif args.bam_out: 
+#            if iter_number != 2 and iter_number != 3 and iter_number != 9 and iter_number != 0 and iter_number != 8: # miRNA SAM header is miRNA names and genomic location so, we avoid them 
+#                bwto.write(srow+"\n")
+
                     #if iter_number == 0 or iter_number == 8:
                     #    print(sam_line)
     return pdDataFrame
@@ -58,7 +96,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
             bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
-            alignPlusParse(bwtExec, bwt_iter, pdDataFrame)
+            alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
         
         elif bwt_iter == 1:
             with open(bwtInput, 'w') as wseq: 
@@ -69,7 +107,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
             bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
-            alignPlusParse(bwtExec, bwt_iter, pdDataFrame)
+            alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
 
         else:
             if bwt_iter == 8: 
@@ -93,7 +131,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
 
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
             bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
-            alignPlusParse(bwtExec, bwt_iter, pdDataFrame)
+            alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
     finish = time.perf_counter()
     if not args.spikeIn:
         pdDataFrame = pdDataFrame.drop(columns=['spike-in'])
