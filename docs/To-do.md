@@ -18,6 +18,7 @@
 - [x] A zero count and an absent record in miR.Counts.csv (Issue: #20) (Complete)
 - [x] Option: -ad ion (Issue: #25) - I think its mostly due to the use of different cutadapt version. (Complete).  The 11 is defined in the code below. (Ans: Ion torrent adapters should be provided by user unless modified in miRge3 in near future)
 - [x] Any other type of adapters possible? (Ans: Any adapter seq can be provided on 5' `-g` and 3' `-a` end, or mention Illumina for adapters at 5' or 3')
+- [ ] Ok. If this `hsa-miR-378g` is no longer an accepted miRNA we can remove it totally in Mirge3. Slack by Marc, Date:03/03/2020. 
 ```
 adapter = args.adapter
 	if adapter == 'illumina':
