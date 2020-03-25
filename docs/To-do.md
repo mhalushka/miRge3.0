@@ -64,8 +64,8 @@ Datasets: SRR* for different lib kit and adapters etc: https://trace.ncbi.nlm.ni
 
 ## Secondary functions - Predict:
 - [ ] RNA-fold for novel miRNAs
-- [ ] Correct miRge GFF output
-- [ ] tRNA halve and fragment prediction
+- [x] Correct miRge GFF output
+- [x] tRNA halve and fragment prediction
 - [ ] SVM re-implementation 
 - [ ] PDF and HTML output
 - [ ] Incorporate SQLite db for quick query and visualization
