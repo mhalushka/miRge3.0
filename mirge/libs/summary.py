@@ -9,7 +9,7 @@ import subprocess
 from difflib import unified_diff, Differ
 from libs.miRgeEssential import UID
 from libs.bamFmt import sam_header, bow2bam, createBAM
-from libs.trnaFragments import trna_deliverables
+from libs.mirge2_tRF_a2i import trna_deliverables, a2i_editing
 import os, sys
 """
 THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY (EXCEPT FOR GFF-FUNCTION)
@@ -557,8 +557,6 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     cannonical = pdMapped[pdMapped['exact miRNA'].astype(bool)]
     isomirs = pdMapped[pdMapped['isomiR miRNA'].astype(bool)]
 
-
-
     cannonical_4ie = cannonical
     isomirs_4ie = isomirs
     if args.gff_out or args.bam_out:
@@ -832,91 +830,31 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     if args.isoform_entropy:        
         create_ie(args, cannonical_4ie, isomirs_4ie, base_names, workDir, Filtered_miRNA_Reads)
     
-    def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_Reads, mirMergedNameDic):
-        mirNameSeqDicTmp = {}
-        pre_cols1 = ["Sequence","exact miRNA"] 
-        pre_cols2 = ["Sequence","isomiR miRNA"]
-        cols1 = pre_cols1 + base_names
-        cols2 = pre_cols2 + base_names
-        can_gff_df = pd.DataFrame(cannonical, columns= cols1) # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
-        iso_gff_df = pd.DataFrame(isomirs, columns= cols2) # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
-        canonical_gff = can_gff_df.values.tolist() 
-        isomir_gff = iso_gff_df.values.tolist()
-        freq_list=[]
-        for fname in base_names:
-            freq_list.append(1000000/Filtered_miRNA_Reads[fname])
-        for can_list_element in canonical_gff:
-            if can_list_element[1] in mirMergedNameDic:
-                miRName = mirMergedNameDic[can_list_element[1]]
-            else:
-                miRName = can_list_element[1]
-            try:
-                mirNameSeqDicTmp[miRName].append(can_list_element[0])
-            except KeyError:
-                mirNameSeqDicTmp.update({miRName:[can_list_element[0]]})
-
-        for iso_list_element in isomir_gff:
-            if iso_list_element[1] in mirMergedNameDic:
-                miRName = mirMergedNameDic[iso_list_element[1]]
-            else:
-                miRName = iso_list_element[1]
-            iso_sample_values = iso_list_element[2:]
-            if any([(iso_sample_values[i]*freq_list[i]) >=1 for i in range(len(base_names))]):
-                try:
-                    mirNameSeqDicTmp[miRName].append(iso_list_element[0])
-                except KeyError:
-                    mirNameSeqDicTmp.update({miRName:[iso_list_element[0]]})
-            else:
-                pass
-        samToMapFasta = Path(workDir)/"SeqToMap.fasta"
-        with open(samToMapFasta,'w') as outf:
-            for mirName in mirNameSeqDicTmp.keys():
-                for seqTmp in mirNameSeqDicTmp[mirName]:
-                    outf.write('>'+seqTmp+'\n'+seqTmp+'\n')
-        
-        bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
-        bwtCommand = bwtCommand + " --threads " + str(args.threads) + " "
-        if args.phred64:
-            bwtCommand = bwtCommand + ' --phred64-quals '
-        
-        indexName  = str(args.organism_name) + str("_genome") 
-        genome_index = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-        bwtCommand = bwtCommand + str(genome_index) + ' -n 1 -f -a -3 2 ' + str(samToMapFasta)
-        retainedSeqDic = {}
-        retainedSeqContentDicTmp = {}
-        #+' 1> '+os.path.join(outputdir, 'SeqToMap.sam')+' 2> '+os.path.join(outputdir, 'SeqToMap.log')
-        bowtie = subprocess.run(str(bwtCommand), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
-        if bowtie.returncode==0:
-            bwtOut = bowtie.stdout
-            bwtErr = bowtie.stderr
-        for srow in bwtOut.split('\n'):
-            if not srow.startswith('@'):
-                sam_line = srow.split('\t')
-                if sam_line != ['']:
-                    print(sam_line)
-                    try:
-                        retainedSeqContentDicTmp[sam_line[0]].append(sam_line[-1].count(':'))
-                    except KeyError:
-                        retainedSeqContentDicTmp.update({sam_line[0]:[sam_line[-1].count(':')]})
-                    #['AAAAACTGAGACTACTTTTG', '+', 'chr10', '110988977', 'AAAAACTGAGACTACTTT', 'IIIIIIIIIIIIIIIIII', '0', '']
-                    #['AAAAACTGAGACTACTTTTG', '-', 'chr2', '236950434', 'AAAGTAGTCTCAGTTTTT', 'IIIIIIIIIIIIIIIIII', '0', '']
-                    #['AAAAACTGAGACTACTTTTG', '-', 'chr14', '65022420', 'AAAGTAGTCTCAGTTTTT', 'IIIIIIIIIIIIIIIIII', '0', '14:T>G']
-                    #['AAAAACTGAGACTACTTTTG', '-', 'chr4', '134615933', 'AAAGTAGTCTCAGTTTTT', 'IIIIIIIIIIIIIIIIII', '0', '14:A>G']
-        for seq_tmp in retainedSeqContentDicTmp.keys():
-            kept = False
-            content = retainedSeqContentDicTmp[seq_tmp]
-            if len(content) == 1:
-                kept = True
-            else:
-                minimum = min(content)
-                if len([subitem for subitem in content if subitem == minimum]) == 1:
-                    kept = True
-            if kept:
-                retainedSeqDic.update({seq_tmp:True})
-
     if args.AtoI:
-        a2i_editing(args, cannonical_4ie, isomirs_4ie, base_names, workDir, Filtered_miRNA_Reads, mirMergedNameDic)
-        print("We are planning to work on A2I\n")
+        reqCols = ['miRNA']+base_names
+        mirCounts_completeSet = mirCounts_completeSet.reset_index(level=['miRNA'])
+        mirCC = pd.DataFrame(mirCounts_completeSet, columns= reqCols).values.tolist() 
+        mirDic={}
+        for mC in mirCC:
+            mirDic[mC[0]] = mC[1:]
+        pre_cols1 = ["Sequence"] 
+        cols1 = pre_cols1 + base_names
+        cols2 = pre_cols1 + base_names
+        can_ai_df = pd.DataFrame(cannonical_4ie, columns= cols1) # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
+        iso_ai_df = pd.DataFrame(isomirs_4ie, columns= cols2) # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR 
+        canonical_ai = can_ai_df.values.tolist() 
+        onlyCannon = canonical_ai
+        onlyCanmiRNA={}
+        for oC in onlyCannon:
+            onlyCanmiRNA[oC[0]] = oC[1:]
+        isomir_ai = iso_ai_df.values.tolist()
+        canonical_ai.extend(isomir_ai) 
+        seqDic={}
+        for sD in canonical_ai:
+            seqDic[sD[0]] = sD[1:]
+        #print(seqDic)
+        a2i_editing(args, cannonical_4ie, isomirs_4ie, base_names, workDir, Filtered_miRNA_Reads, mirMergedNameDic, mirDic, ref_db, seqDic, onlyCanmiRNA)
+        pass
     
     if args.tRNA_frag:
         m_trna_pre = pdMapped[pdMapped['mature tRNA'].astype(bool)]
