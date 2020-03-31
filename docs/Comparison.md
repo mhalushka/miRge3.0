@@ -322,3 +322,40 @@ Summary completed in 195.869 second(s)
 
 The analysis completed in 2278.3016 second(s)
 ```
+**Advance annotation run from miRge2.0**
+```
+(base) ahanuma2@ares:~/datasets/mirge_data$ miRge2.0 annotate -s ./a2i_editing/SRR1646473.fastq ./a2i_editing/SRR1646493.fastq ./a2i_editing/SRR1917324.fastq ./a2i_editing/SRR1917329.fastq ./a2i_editing/SRR1917336.fastq ./a2i_editing/SRR5127219.fastq ./a2i_editing/SRR837839.fastq ./a2i_editing/SRR837842.fastq ./a2i_editing/SRR095854.fastq -d miRBase -pb ~/Other_softwarePackages/bowtie-1.2.3-linux-x86_64/ -lib /home/ahanuma2/datasets/mirge_data/human -sp human -ad illumina  -cpu 12 -o speedTest_012320_a2i  -tcf -di -ai -gff -trf
+Performing quantitation analysis of SRR1646473.fastq...
+It takes: 617.60s
+Performing quantitation analysis of SRR1646493.fastq...
+It takes: 511.69s
+Performing quantitation analysis of SRR1917324.fastq...
+It takes: 284.31s
+Performing quantitation analysis of SRR1917329.fastq...
+It takes: 683.58s
+Performing quantitation analysis of SRR1917336.fastq...
+It takes: 505.37s
+Performing quantitation analysis of SRR5127219.fastq...
+It takes: 479.87s
+Performing quantitation analysis of SRR837839.fastq...
+It takes: 453.42s
+Performing quantitation analysis of SRR837842.fastq...
+It takes: 429.01s
+Performing quantitation analysis of SRR095854.fastq...
+It takes: 187.55s
+
+Performing annotation for all of the collasped sequences...
+I am done with first command/home/ahanuma2/datasets/mirge_data/speedTest_012320_a2i/miRge.2020-03-31_00-37-19
+All annotation cycles completed (1299.88 sec).
+
+Summarizing and tabulating results...
+Registered S3 methods overwritten by 'ggplot2':
+  method         from 
+  [.quosures     rlang
+  c.quosures     rlang
+  print.quosures rlang
+Warning message:
+Removed 168 rows containing missing values (geom_point). 
+Summary Complete (2961.27 sec)
+Annotation of miRge2.0 Completed (8413.54 sec)
+```
