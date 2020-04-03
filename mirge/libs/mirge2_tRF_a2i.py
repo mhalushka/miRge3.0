@@ -218,9 +218,12 @@ def detectMismach(target_seq, template_seq, position_tmp):
     startPos, endPos = int(position_tmp.split(':')[0])-1, int(position_tmp.split(':')[1])-1
     seqTmp = template_seq[startPos:endPos+1]
     for i in range(len(target_seq)):
-        if target_seq[i] != seqTmp[i]:
-            mimatchState = 'Y'
-            mismatchPos.append(str(startPos+1+i))
+        try:
+            if target_seq[i] != seqTmp[i]:
+                mimatchState = 'Y'
+                mismatchPos.append(str(startPos+1+i))
+        except IndexError:
+            pass
     return (mimatchState, ','.join(mismatchPos))
 
 
@@ -764,6 +767,7 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
         outf_1 = open(Path(tRF_dir)/potential_tRFs_file, 'w')
         outf_2 = open(Path(tRF_dir)/tRFs_report_file, 'w')
         for indexId, readInforDic in enumerate(readInforList):
+            tRNANameTmp = ""
             tRNANameTmp = tRNANameList[indexId]
             distanceDic, max_dis, min_dis, max_id = getDistance(readInforDic)
             rho = local_density(distanceDic, readInforDic, max_id, dc=dcValue)
@@ -1394,7 +1398,8 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
     if len(miRNAList2) <= 5:
         print('The number of A-to-I editing sites for is less than 10 so that no heatmap is drawn.')
     else:
+        pass
         #RscriptDirTmp = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
-        RscriptDir = os.path.join(RscriptDirTmp, 'rScripts', 'A-to-I_plot.R')
-        outA2Ipdf = os.path.join(outputdir, 'a-to-I.heatmap.pdf')
-        os.system('Rscript %s %s %s'%(RscriptDir, a2IEditingFileTrans, outA2Ipdf))
+        #RscriptDir = os.path.join(RscriptDirTmp, 'rScripts', 'A-to-I_plot.R')
+        #outA2Ipdf = os.path.join(outputdir, 'a-to-I.heatmap.pdf')
+        #os.system('Rscript %s %s %s'%(RscriptDir, a2IEditingFileTrans, outA2Ipdf))
