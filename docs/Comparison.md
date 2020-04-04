@@ -359,3 +359,53 @@ Removed 168 rows containing missing values (geom_point).
 Summary Complete (2961.27 sec)
 Annotation of miRge2.0 Completed (8413.54 sec)
 ```
+**Advance annotation run from miRge3.0**
+```
+arun@DESKTOP-H231NS7:~/repositories/Project_120919/mirge$ python mirge.py -s ../../../datasets/sample/a2i/working -lib Libs -on human --adapter illumina -gff -db mirbase -o correlation_plot -ai -trf -gff -ie
+bowtie version: 1.2.3
+cutadapt version: 2.7
+Samtools version: 1.9
+Collecting and validating input files...
+
+miRge3.0 will process 9 out of 9 input file(s).
+
+Cutadapt finished for file SRR095854 in 31.0035 second(s)
+Collapsing finished for file SRR095854 in 1.3475 second(s)
+
+Cutadapt finished for file SRR1646473 in 148.624 second(s)
+Collapsing finished for file SRR1646473 in 18.1766 second(s)
+
+Cutadapt finished for file SRR1646493 in 125.4503 second(s)
+Collapsing finished for file SRR1646493 in 23.2247 second(s)
+
+Cutadapt finished for file SRR1917324 in 65.9966 second(s)
+Collapsing finished for file SRR1917324 in 30.2167 second(s)
+
+Cutadapt finished for file SRR1917329 in 129.6396 second(s)
+Collapsing finished for file SRR1917329 in 44.4232 second(s)
+
+Cutadapt finished for file SRR1917336 in 102.206 second(s)
+Collapsing finished for file SRR1917336 in 50.7671 second(s)
+
+Cutadapt finished for file SRR5127219 in 111.2055 second(s)
+Collapsing finished for file SRR5127219 in 65.9283 second(s)
+
+Cutadapt finished for file SRR837839 in 79.2293 second(s)
+Collapsing finished for file SRR837839 in 83.0095 second(s)
+
+Cutadapt finished for file SRR837842 in 78.5581 second(s)
+Collapsing finished for file SRR837842 in 98.741 second(s)
+
+Matrix creation finished in 32.5851 second(s)
+
+Completed in 1320.338 second(s)
+
+Alignment in progress ...
+Alignment completed in 695.5142 second(s)
+
+Summarizing and tabulating results...
+Summary completed in 2132.581 second(s)
+
+
+The analysis completed in 4164.9447 second(s)
+```
