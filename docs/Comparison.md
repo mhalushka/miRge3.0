@@ -409,3 +409,56 @@ Summary completed in 2132.581 second(s)
 
 The analysis completed in 4164.9447 second(s)
 ```
+**Advance annotation run from miRge3.0 on MARCC**
+```
+python mirge.py -s ../../sample_datasets/a2i_editing/  -lib Libs -on human --adapter illumina -gff -db mirbase -o /home-1/ahanuma2@jhu.edu/work2/a2i_editing_output -tcf -ie -ai -gff -trf -cpu 12
+/home-1/ahanuma2@jhu.edu/biopython-1.68/Bio/pairwise2.py:992: BiopythonWarning: Import of C module failed. Falling back to pure Python implementation. This may be slooow...
+  warnings.warn('Import of C module failed. Falling back to pure Python ' +
+bowtie version: 1.2.2
+cutadapt version: 2.7
+Samtools version: 1.9
+Collecting and validating input files...
+
+miRge3.0 will process 9 out of 9 input file(s).
+
+Cutadapt finished for file SRR5127219 in 154.9236 second(s)
+Collapsing finished for file SRR5127219 in 8.9022 second(s)
+
+Cutadapt finished for file SRR1917324 in 109.5353 second(s)
+Collapsing finished for file SRR1917324 in 26.4944 second(s)
+
+Cutadapt finished for file SRR1917329 in 222.5525 second(s)
+Collapsing finished for file SRR1917329 in 47.4011 second(s)
+
+Cutadapt finished for file SRR1646473 in 213.1408 second(s)
+Collapsing finished for file SRR1646473 in 53.6567 second(s)
+
+Cutadapt finished for file SRR1646493 in 188.8778 second(s)
+Collapsing finished for file SRR1646493 in 99.6362 second(s)
+
+Cutadapt finished for file SRR095854 in 48.7256 second(s)
+Collapsing finished for file SRR095854 in 92.3156 second(s)
+
+Cutadapt finished for file SRR837839 in 138.5892 second(s)
+Collapsing finished for file SRR837839 in 115.5172 second(s)
+
+Cutadapt finished for file SRR1917336 in 175.9518 second(s)
+Collapsing finished for file SRR1917336 in 131.021 second(s)
+
+Cutadapt finished for file SRR837842 in 141.9718 second(s)
+Collapsing finished for file SRR837842 in 138.6964 second(s)
+
+Matrix creation finished in 34.7511 second(s)
+
+Completed in 2142.6612 second(s)
+
+Alignment in progress ...
+Alignment completed in 870.5221 second(s)
+
+Summarizing and tabulating results...
+
+Summary completed in 5117.2898 second(s)
+
+
+The analysis completed in 8155.8544 second(s)
+```
