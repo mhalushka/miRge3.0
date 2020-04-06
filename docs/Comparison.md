@@ -492,3 +492,55 @@ Summarizing and tabulating results...
 Summary Complete (364.26 sec)
 Annotation of miRge2.0 Completed (5364.75 sec)
 ```
+**miRge3.0 basic annotation in MARCC**
+```
+ python mirge.py -s /home-1/ahanuma2@jhu.edu/work2/a2i_editing  -lib Libs -on human --adapter illumina -db mirbase -o a2i_editing_output -cpu 12
+/home-1/ahanuma2@jhu.edu/biopython-1.68/Bio/pairwise2.py:992: BiopythonWarning: Import of C module failed. Falling back to pure Python implementation. This may be slooow...
+  warnings.warn('Import of C module failed. Falling back to pure Python ' +
+bowtie version: 1.2.2
+cutadapt version: 2.7
+Samtools version: 1.9
+Collecting and validating input files...
+
+miRge3.0 will process 9 out of 9 input file(s).
+
+Cutadapt finished for file SRR095854 in 41.5729 second(s)
+Collapsing finished for file SRR095854 in 1.8725 second(s)
+
+Cutadapt finished for file SRR1917324 in 95.5864 second(s)
+Collapsing finished for file SRR1917324 in 21.2456 second(s)
+
+Cutadapt finished for file SRR1646493 in 169.6147 second(s)
+Collapsing finished for file SRR1646493 in 31.0801 second(s)
+
+Cutadapt finished for file SRR1646473 in 191.109 second(s)
+Collapsing finished for file SRR1646473 in 46.215 second(s)
+
+Cutadapt finished for file SRR837839 in 122.7486 second(s)
+Collapsing finished for file SRR837839 in 76.9441 second(s)
+
+Cutadapt finished for file SRR1917329 in 248.6948 second(s)
+Collapsing finished for file SRR1917329 in 81.1314 second(s)
+
+Cutadapt finished for file SRR5127219 in 157.2472 second(s)
+Collapsing finished for file SRR5127219 in 100.1815 second(s)
+
+Cutadapt finished for file SRR1917336 in 158.4521 second(s)
+Collapsing finished for file SRR1917336 in 118.0457 second(s)
+
+Cutadapt finished for file SRR837842 in 142.3089 second(s)
+Collapsing finished for file SRR837842 in 146.5978 second(s)
+
+Matrix creation finished in 32.1231 second(s)
+
+Completed in 1982.7723 second(s)
+
+Alignment in progress ...
+Alignment completed in 781.722 second(s)
+
+Summarizing and tabulating results...
+Summary completed in 336.9369 second(s)
+
+
+The analysis completed in 3122.5207 second(s)
+```
