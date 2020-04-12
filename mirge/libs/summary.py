@@ -416,6 +416,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         #match_case+=sub[snv_id]
                 ## CREATING THE CIGAR FORMAT HERE ##
                 match_case = match_case.replace("+","")
+                #print(seq_master, match_case, seq_m)
                 count_4cigar=0
                 iso_cigar="" # This varialbe is actually CIGAR variable which collects CIGAR information
                 for isx, ist in enumerate(match_case):
@@ -435,6 +436,12 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                     iso_cigar += str(count_4cigar)+ist
                 else: 
                     iso_cigar += ist
+
+                if "A" not in match_case and "T" not in match_case and "G" not in match_case and "C" not in match_case:
+                    iso_cigar = str(len(seq_m))+"M"
+                else:
+                    pass
+                    #print(seq_m, iso_cigar)
                 iso_mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant="+variant+"; Cigar="+iso_cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
                 gffwrite.write(iso_mi_var)
                 """
