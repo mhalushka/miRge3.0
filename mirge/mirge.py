@@ -18,6 +18,7 @@ from libs.miRgeEssential import check_dependencies, validate_files
 from libs.digest import baking 
 from libs.summary import summarize
 from libs.manifoldAlign import bwtAlign
+from libs.novel_mir import predict_nmir
 
 
 def main():
@@ -82,9 +83,12 @@ def main():
     pdMapped.to_csv(mappedfileToCSV)
     pdUnmapped.to_csv(unmappedfileToCSV)
     summary_End_time = time.perf_counter()
-
+    if args.novel_miRNA:
+        print("Predicting novel miRNAs\n")
+        predict_nmir(args, workDir, ref_db, base_names, pdUnmapped)
+    globalend_time = time.perf_counter()
     print(f'Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n')     
-    print(f'\nThe analysis completed in {round(summary_End_time-globalstart, 4)} second(s)\n')     
+    print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     
 
 
 
