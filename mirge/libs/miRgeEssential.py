@@ -55,7 +55,7 @@ def check_dependencies(args):
     if args.novel_miRNA: 
         rnafold = subprocess.run(str(rnaFoldCommand), shell=True, capture_output=True, text=True)
         if rnafold.returncode==0:
-            if float(rnafold.stdout.split('\n')[0].split(' ')[1]) != "2.4.14":
+            if not str(rnafold.stdout.split('\n')[0].split(' ')[1]) == "2.4.14":
                 print("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>")
                 exit()
             else:
@@ -63,6 +63,8 @@ def check_dependencies(args):
         else:
             print("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>")
             exit()
+        if args.organism_name  not in ['human', 'mouse']:
+            print(f"NOTICE: For {args.organism_name}, the predictive model is trained on \"human\" and \"mouse\".")
 
 
 
