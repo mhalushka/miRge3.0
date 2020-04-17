@@ -88,19 +88,23 @@ def parseArg():
 
     group2 = parser.add_argument_group('Predicting novel miRNAs',description='''novel miRNA detection is confined to human and mouse only (with "-on" argument):
 -nmir, --novel-miRNA        include prediction of novel miRNAs
+-minl, --minLength          the minimum length of the reatined reads for novel miRNA detection (default: 16)
+-maxl, --maxLength          the maximum length of the reatined reads for novel miRNA detection (default: 25)
 -c,    --minReadCounts      the minimum read counts supporting novel miRNA detection (default: 2)
 -mloc, --maxMappingLoci     the maximum number of mapping loci for the retained reads for novel miRNA detection (default: 3)
 -sl,   --seedLength         the seed length when invoking Bowtie for novel miRNA detection (default: 25)
--olc,  --overlapLength      the length of overlapped seqence when joining reads into longer sequences based on the coordinate 
+-olc,  --overlapLenCutoff   the length of overlapped seqence when joining reads into longer sequences based on the coordinate 
                             on the genome for novel miRNA detection (default: 14)
 -clc,  --clusterLength      the maximum length of the clustered sequences for novel miRNA detection (default: 30)
 ''')
     group2.add_argument('-nmir', '--novel-miRNA', help=argparse.SUPPRESS, action='store_true')
+    group2.add_argument('-minl', '--minLength', type=int, default='16', metavar='', help=argparse.SUPPRESS)
+    group2.add_argument('-maxl', '--maxLength', type=int, default='25', metavar='', help=argparse.SUPPRESS)
     group2.add_argument('-c', '--minReadCounts', default='2', metavar='', help=argparse.SUPPRESS)
     group2.add_argument('-mloc', '--maxMappingLoci', default='3', metavar='', help=argparse.SUPPRESS)
     group2.add_argument('-sl','--seedLength', default='25', metavar='', help=argparse.SUPPRESS)
     group2.add_argument('-olc', default='14', dest='overlapLenCutoff', metavar='', help=argparse.SUPPRESS)
-    group2.add_argument('-clc', default='30', dest='clusterSeqLenCutoff', metavar='', help=argparse.SUPPRESS)
+    group2.add_argument('-clc', default='30', dest='clusterLength', metavar='', help=argparse.SUPPRESS)
 
 
     ## group - 3 ##
