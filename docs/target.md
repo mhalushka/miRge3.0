@@ -66,12 +66,12 @@ ___
 **├── utils**
 
 **ANNOTATE**
-- [x] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) extractPreMiRName.py (63)
+- [x] ![#c5f015](https://placehold.it/15/1589F0/000000?text=+) extractPreMiRName.py (63)
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) generateReport.py (281)
-- [x] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) filter.py (32)
-- [x] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) miRNAmerge.py (43)
+- [x] ![#c5f015](https://placehold.it/15/1589F0/000000?text=+) filter.py (32)
+- [x] ![#c5f015](https://placehold.it/15/1589F0/000000?text=+) miRNAmerge.py (43)
 - [x] ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) quantReads.py (46)
-- [x] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) runAnnotationPipeline.py (707)
+- [x] ![#c5f015](https://placehold.it/15/1589F0/000000?text=+) runAnnotationPipeline.py (707)
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) trim_file.py (138)
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) summarize.py (66)
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) writeDataToCSV.py (1615)
@@ -81,7 +81,7 @@ ___
 
 **PREDICT**
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) cluster_basedon_location.py
-- [x] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) convert2Fasta.py
+- [x] ![#c5f015](https://placehold.it/15/1589F0/000000?text=+) convert2Fasta.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) fileExist.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) generate_Seq.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) generate_featureFiles.py
@@ -95,9 +95,7 @@ ___
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) write_novel_report.py
 
  ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) `Yet to work`
- 
- ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `Dry code implemented - Not required`
- 
+  
  ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) `Complemented the code - no longer needed`
  ___
 This Directory structure github markdown is implemented form [@Aerobatic](https://github.com/aerobatic/markdown-content/blob/master/docs/directory-structure.md)
