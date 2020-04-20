@@ -66,6 +66,7 @@ ___
 **├── utils**
 
 **ANNOTATE**
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) parseArgument.py
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) extractPreMiRName.py (63)
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) generateReport.py (281)
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) filter.py (32)
@@ -77,20 +78,19 @@ ___
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) writeDataToCSV.py (1615)
 
 **PREDICT**
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) cluster_basedon_location.py
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) cluster_basedon_location.py
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) convert2Fasta.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) fileExist.py
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) generate_Seq.py
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) generate_Seq.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) generate_featureFiles.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) get_precursors.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) model_predict.py
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) parseArgument.py
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) preTrimClusteredSeq.py
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) preTrimClusteredSeq.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) preprocess_featureFiles.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) renameStrFile.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) screen_precusor_candidates.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) write_novel_report.py
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) processSam.py
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) processSam.py
 
  ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) `Yet to work`
   
