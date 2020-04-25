@@ -2,7 +2,7 @@ Metadata-Version: 1.2
 Name: testmirge
 Version: 3.0
 Summary: Comprehensive analysis of small RNA sequencing Data
-Home-page: https://github.com/arunhpatil/Project_120919
+Home-page: https://test.pypi.org/legacy/
 Author: Arun Patil and Marc Halushka
 Author-email: mhalush1@jhmi.edu
 License: MIT
@@ -21,11 +21,11 @@ Description: # Project_120919
         
 Keywords: miRge,small RNA analysis,NGS,bioinformatics tools
 Platform: UNKNOWN
-Classifier: Development Status :: 1 - Alpha
+Classifier: Development Status :: 1 - Planning
 Classifier: Environment :: Console
 Classifier: Intended Audience :: Science/Research
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Natural Language :: English
 Classifier: Programming Language :: Python :: 3.8
-Classifier: Topic :: Scientific/Engineering :: Bioinformatics
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
 Requires-Python: >=3.8

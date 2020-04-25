@@ -8,7 +8,7 @@ setup(
         version='3.0',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
-        url='https://github.com/arunhpatil/Project_120919',
+        url='https://test.pypi.org/legacy/',
         description='Comprehensive analysis of small RNA sequencing Data', 
         long_description=long_description,
         keywords=['miRge', 'small RNA analysis', 'NGS', 'bioinformatics tools'],  # arbitrary keywords
@@ -22,13 +22,13 @@ setup(
             ],
         entry_points={'console_scripts': ['miRge3.0 = src.mirge']},
         classifiers=[
-            "Development Status :: 1 - Alpha",
+            "Development Status :: 1 - Planning",
             "Environment :: Console",
             "Intended Audience :: Science/Research",
             "License :: OSI Approved :: MIT License",
             "Natural Language :: English",
             "Programming Language :: Python :: 3.8",
-            "Topic :: Scientific/Engineering :: Bioinformatics"
+            "Topic :: Scientific/Engineering :: Bio-Informatics"
             ],
         python_requires='>=3.8',
 )
