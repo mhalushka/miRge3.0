@@ -7,9 +7,9 @@ from pathlib import Path
 import numpy as np
 import subprocess
 from difflib import unified_diff, Differ
-from libs.miRgeEssential import UID
-from libs.bamFmt import sam_header, bow2bam, createBAM
-from libs.mirge2_tRF_a2i import trna_deliverables, a2i_editing
+from mirge.libs.miRgeEssential import UID
+from mirge.libs.bamFmt import sam_header, bow2bam, createBAM
+from mirge.libs.mirge2_tRF_a2i import trna_deliverables, a2i_editing
 import os, sys
 """
 THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY (EXCEPT FOR GFF-FUNCTION)

@@ -1,0 +1,8 @@
+README.md
+setup.py
+tstmirge1/tstmirge1.egg-info/PKG-INFO
+tstmirge1/tstmirge1.egg-info/SOURCES.txt
+tstmirge1/tstmirge1.egg-info/dependency_links.txt
+tstmirge1/tstmirge1.egg-info/entry_points.txt
+tstmirge1/tstmirge1.egg-info/requires.txt
+tstmirge1/tstmirge1.egg-info/top_level.txt

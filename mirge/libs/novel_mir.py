@@ -27,8 +27,8 @@ import re
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
 import numpy as np
-from libs.processSam import split_fasta_from_sam, combineSam, decorateSam, parse_refine_sam
-from libs.generate_featureFiles import generate_featureFiles
+from mirge.libs.processSam import split_fasta_from_sam, combineSam, decorateSam, parse_refine_sam
+from mirge.libs.generate_featureFiles import generate_featureFiles
 # from sklearn.externals import joblib 
 # /home/arun/.local/lib/python3.8/site-packages/sklearn/externals/joblib/__init__.py:15: FutureWarning: sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23. Please import this functionality directly from joblib, which can be installed with: pip install joblib. If this warning is raised when loading pickled models, you may need to re-serialize those models with scikit-learn 0.21+.
 # warnings.warn(msg, category=FutureWarning)

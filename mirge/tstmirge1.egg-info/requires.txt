@@ -1,0 +1,9 @@
+cutadapt==2.7
+biopython
+dnaio
+numpy
+scipy
+matplotlib
+pandas
+scikit-learn
+reportlab

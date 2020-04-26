@@ -6,7 +6,7 @@ import os
 import re
 import concurrent.futures
 
-from libs.miRgeEssential import UID
+from mirge.libs.miRgeEssential import UID
 
 
 def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
