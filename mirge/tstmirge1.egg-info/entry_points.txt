@@ -1,3 +1,0 @@
-[console_scripts]
-miRge3.0 = tstmirge1.__main__:main
-
