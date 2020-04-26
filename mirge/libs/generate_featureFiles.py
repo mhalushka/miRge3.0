@@ -16,7 +16,9 @@ def interset(l1,l2):
             outlist.append(item)
     return outlist
 
-def distance((s1, e1), (s2, e2)):
+def distance(tup1, tup2):
+    (s1, e1) = tup1
+    (s2, e2) = tup2
     # In default, s1 < s2
     d = s2 - e1-1
     return d
