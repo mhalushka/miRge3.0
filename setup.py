@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
         name='mirge',
-        version='0.1.34',
+        version='0.1.1',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
         url='https://test.pypi.org/legacy/',
@@ -25,7 +25,7 @@ setup(
             'scipy', 'matplotlib', 'pandas','scikit-learn',
             'reportlab',
             ],
-        entry_points={'console_scripts': ['miRge3.0 = tstmirge1.__main__:main']},
+        entry_points={'console_scripts': ['miRge3.0 = mirge.__main__:main']},
         classifiers=[
             "Development Status :: 1 - Planning",
             "Environment :: Console",
