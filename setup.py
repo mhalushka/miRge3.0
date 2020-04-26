@@ -1,11 +1,11 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, find_namespace_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-        name='testmirge',
-        version='3.0',
+        name='mirge',
+        version='0.1.33',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
         url='https://test.pypi.org/legacy/',
@@ -13,14 +13,19 @@ setup(
         long_description=long_description,
         keywords=['miRge', 'small RNA analysis', 'NGS', 'bioinformatics tools'],  # arbitrary keywords
         license='MIT',
-        package_dir={'': 'src'},
-        packages=find_packages('src', exclude=['.txt']),
-        package_data = {'testmirge3':['models/*.pkl', 'models/*.txt', 'rScripts/*.R']},
-        install_requires=['cutadapt>=2.7', 'biopython>=1.76', 'dnaio >= 0.4.1', 'numpy>=1.18.2',
-            'scipy>=1.4.1', 'matplotlib>=3.2.1', 'pandas>=0.25.3','scikit-learn>=0.22.2',
-            'reportlab>=3.3.0', 'sklearn>=0.0', 'joblib >= 0.14.1',
+        #packages=['mirge','mirge.classes','mirge.libs', 'mirge.forgi.',],
+        #packages=['mirge',],
+        package_dir={'mirge': 'mirge'},
+        packages=find_packages(),
+        #packages=find_packages(where='mirge'),
+        #packages=find_namespace_packages(include=['classes','libs']),
+        #packages=find_packages('tstmirge1', exclude=['.txt']),
+        package_data = {'':['models/*.pkl', 'models/*.txt', 'rScripts/*.R']},
+        install_requires=['cutadapt==2.7', 'biopython', 'dnaio', 'numpy',
+            'scipy', 'matplotlib', 'pandas','scikit-learn',
+            'reportlab',
             ],
-        entry_points={'console_scripts': ['miRge3.0 = src.mirge']},
+        entry_points={'console_scripts': ['miRge3.0 = tstmirge1.__main__:main']},
         classifiers=[
             "Development Status :: 1 - Planning",
             "Environment :: Console",
@@ -30,5 +35,6 @@ setup(
             "Programming Language :: Python :: 3.8",
             "Topic :: Scientific/Engineering :: Bio-Informatics"
             ],
+        include_package_data=True,
         python_requires='>=3.8',
 )
