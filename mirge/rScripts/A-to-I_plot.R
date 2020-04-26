@@ -1,6 +1,6 @@
 #library(gplots)
 library(ggplot2)
-
+options(warn=-1)
 args <- commandArgs(TRUE)
 cancerCellsData <- read.csv(file=args[1], header=TRUE, sep=",")
 midValue <- median(cancerCellsData$log2RPM, na.rm=TRUE)
