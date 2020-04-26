@@ -1398,8 +1398,7 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
     if len(miRNAList2) <= 5:
         print('The number of A-to-I editing sites for is less than 10 so that no heatmap is drawn.')
     else:
-        pass
-        #RscriptDirTmp = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
-        #RscriptDir = os.path.join(RscriptDirTmp, 'rScripts', 'A-to-I_plot.R')
-        #outA2Ipdf = os.path.join(outputdir, 'a-to-I.heatmap.pdf')
-        #os.system('Rscript %s %s %s'%(RscriptDir, a2IEditingFileTrans, outA2Ipdf))
+        RscriptDirTmp = Path(__file__).resolve().parents[1]
+        RscriptDir = Path(RscriptDirTmp)/('rScripts')/('A-to-I_plot.R')
+        outA2Ipdf = Path(workDir)/('a-to-I.heatmap.pdf')
+        os.system('Rscript %s %s %s'%(RscriptDir, a2IEditingFileTrans, outA2Ipdf))
