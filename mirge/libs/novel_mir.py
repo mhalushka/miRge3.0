@@ -28,7 +28,7 @@ from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
 import numpy as np
 from mirge.libs.processSam import split_fasta_from_sam, combineSam, decorateSam, parse_refine_sam
-from mirge.libs.generate_featureFiles import generate_featureFiles
+from mirge.libs.generate_featureFiles import generate_featureFiles, get_precursors, renameStrFile
 # from sklearn.externals import joblib 
 # /home/arun/.local/lib/python3.8/site-packages/sklearn/externals/joblib/__init__.py:15: FutureWarning: sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23. Please import this functionality directly from joblib, which can be installed with: pip install joblib. If this warning is raised when loading pickled models, you may need to re-serialize those models with scikit-learn 0.21+.
 # warnings.warn(msg, category=FutureWarning)
@@ -396,10 +396,19 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             outfLog.write('feature file is generated\n')
             outfLog.write('Generating the precusors based on the clustered sequences\n')
             time9 = time.perf_counter()
-            #get_precursors(str(Path(outputdir2), files, /(files+"_modified_selected_sorted.tsv"), chrSeqDic)
+            precursor_count = get_precursors(str(Path(outputdir2)), files, chrSeqDic)
             time10 = time.perf_counter()
             outfLog.write('Generating the precusors based on the clustered sequences time: %.1fs\n'%(time10-time9))
-            #outfLog.write('**There are %d precusors generated\n'%(int(commands.getstatusoutput('cat %s_modified_selected_sorted_features_precusor.fa|wc -l'%(outfile4))[1])/2))
-                                                                                                                                                                                                
+            outfLog.write(f'**There are {str(precursor_count)} precusors generated\n')
+            outfLog.write('Folding precursors with RNAfold\n')
+            time11 = time.perf_counter()
+            infile_pre = str(Path(outputdir2)/(files+"_precursor.fa"))
+            outfile_str = str(Path(outputdir2)/(files+"_precursor_tmp.str"))
+            rnafld_exec = str(rnafoldCmdTmp) + " " + str(infile_pre) + " --noPS --noLP > " + str(outfile_str)
+            rnafldRun = subprocess.run(str(rnafld_exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+            strFileOut= str(Path(outputdir2)/(files+"_precursor.str"))
+            renameStrFile(infile_pre, outfile_str, strFileOut)
+            time12 = time.perf_counter()
+            outfLog.write('Folding precursors with RNAfold time: %.1fs\n'%(time12-time11))
             outfLog.write('********************\n')
             outfLog.flush()
