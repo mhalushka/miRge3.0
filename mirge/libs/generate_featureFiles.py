@@ -3,11 +3,13 @@
 
 import os
 import sys
+from pathlib import Path
 #import cPickle
 import pickle
 from Bio.Seq import Seq
 from Bio import SeqIO
-#from mirge.classes.readCluster import ReadCluster
+from mirge.classes.readCluster import ReadCluster
+
 
 def interset(l1,l2):
     outlist = []
@@ -51,9 +53,10 @@ def removeDash(seq):
             outSeq = outSeq + symbol
     return outSeq
 
-def generate_featureFiles(infFile, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDic, exactmiRNASeqDic, readNameIndex=1, readCountIndex=2, readSeqIndex=3, clusterNameIndex=6, clusterSeqIndex=4):
+def generate_featureFiles(outputdir2, infFile, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDic, exactmiRNASeqDic, readNameIndex=1, readCountIndex=2, readSeqIndex=3, clusterNameIndex=6, clusterSeqIndex=4):
     #def generate_featureFiles(infFile, readNameIndex=1, readCountIndex=2, readSeqIndex=3, clusterNameIndex=6, clusterSeqIndex=4):
     # *.py unmapped_mirna_SRR944034_vs_representative_seq_modified_selected_sorted.tsv hg38.pckl hsa_miRNA.gff3 hsa_mature.fa readNameIndex(1) readCountIndex(2) readSeqIndex(3) clusterNameIndex(6) clusterSeqIndex(4)"
+    files_in = str(Path(outputdir2)/(infFile+"_modified_selected_sorted.tsv"))
     readCountLimit = 10
     seqCountLimit = 3
     stableClusterSeqLenLimit = 16-6-3
@@ -61,7 +64,8 @@ def generate_featureFiles(infFile, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDi
     fathestDistance = 44
     # closest distance from miRNA to the terminal of chromosome is set to be 20
     distance2Terminal = 20
-    fileName = os.path.basename(infFile) ### NEEDS CHANGE 
+    fileName = infFile
+    #fileName = os.path.basename(infFile) ### NEEDS CHANGE 
     readNameIndex = readNameIndex-1
     readCountIndex = readCountIndex-1
     readSeqIndex = readSeqIndex-1
@@ -70,7 +74,7 @@ def generate_featureFiles(infFile, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDi
     chrContentDic = {}
     chrList = []
     chrContentDetailedDic = {}
-    with open(infFile, 'r') as inf:
+    with open(files_in, 'r') as inf:
         for line in inf:
             lineContent = line.strip().split('\t')
             readName = lineContent[readNameIndex]
@@ -120,8 +124,8 @@ def generate_featureFiles(infFile, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDi
                     else:
                         chrContentDetailedDic[chr].append((clusterInstance, alignSeqList, exacMatch, clusterSeq, clusterSeqRatioList, majorSeq, majorSeqRationList, headStartPosition, tailStartPosition))
 
-    outf5 = open(infFile[:-4]+'_cluster.txt','w')
-    with open(infFile[:-4]+'_features.tsv','w') as outf:
+    outf5 = open(str(Path(outputdir2)/(infFile+'_cluster.txt')),'w')
+    with open(str(Path(outputdir2)/(infFile+'_features.tsv')),'w') as outf:
         outf.write('realMicRNA\trealMicRNAName\tchr\tstartPos\tendPos\tclusterName\tclusterSeq\tmajoritySeq\tstableClusterSeq\talignedClusterSeq\tadjustedClusterSeq\tclusterSecondSeq\ttemplateSeq\tseqCount\treadCountSum\texactMatchRatio\theadUnstableLength\ttailUnstableLength\t')
         s = 0
         for chr in chrList:
@@ -207,78 +211,11 @@ def generate_featureFiles(infFile, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDi
                     upstreamDistance = None
                     downstreamDistance = None
                     
-                if fileName.split('_')[0] == 'mapped':
-                    flag = '-1'
-                    miRNA = 'Null'
-                else:
-                    flag = 'Null'
-                    miRNA = 'Null'
-                if fileName.split('_')[0] == 'mapped' and fileName.split('_')[1] == 'mirna':
-                    if chr in miRNAchrCoordivateDic.keys():
-                        if strand == "+":
-                            searchList = miRNAchrCoordivateDic[chr][0]
-                        else:
-                            searchList = miRNAchrCoordivateDic[chr][1]
-                        for item in searchList:
-                            list1 = range(item[0],item[1]+1)
-                            list2 = range(startPos, endPos+1)
-                            itersetRange = interset(list1, list2)
-                            if len(itersetRange) > len(list1)*2/3.0:
-                                flag = '1'
-                                miRNA = item[2]
-                                originalStart = list1[0]
-                                originalEnd = list1[-1]
-                                originalStrand = strand
-                                #print '%s: %d-%d %d-%d'%(chr, item[0], item[1], clusterInstance.startPos, clusterInstance.endPos)
-                                #break
-                            else:
-                                pass
-                    else:
-                        pass
+                flag = 'Null'
+                miRNA = 'Null'
                 
-                if flag == '1':
-                    outf5.write("Cluster Name: %s\n"%(clusterName))
-                    outf5.write("%s (%d - %d%s) cluster %d:\n"%(chr, startPos, endPos, strand, t))
-                    outf5.write("     (%d - %d%s) exact miRNA %s\n"%(originalStart, originalEnd, originalStrand, miRNA))
-                    outf5.write("%s\n"%(exactmiRNASeqDic[miRNA]))
-                    outf5.write("Head startPos: %d; Tail startPos: %d\n"%(headStartPosition, tailStartPosition))
-                    if startPos <= originalStart and endPos >= originalEnd:
-                        outf1.write("%s (%d - %d%s) cluster %d:\n     (%d - %d%s) exact miRNA %s\n%s\n"%(chr, startPos, endPos, strand, t, originalStart, originalEnd, originalStrand, miRNA, exactmiRNASeqDic[miRNA]))
-                        outf1.write("%s: %s\n%s: %s\n"%(clusterSeq, '\t'.join(map(lambda x: str(x), clusterSeqRatioList)), majorSeq, '\t'.join(map(lambda x: str(x), majorSeqRationList))))
-                        for i in range(len(alignSeqList)):
-                            if i == 0:
-                                outf1.write("%s\n"%(alignSeqList[i]))
-                            else:
-                                outf1.write('%s\t%d\n'%(alignSeqList[i], readCountList[i-1]))
-                    elif (originalStrand == '+' and startPos > originalStart and endPos >= originalEnd) or (originalStrand == '-' and startPos <= originalStart and endPos < originalEnd):
-                        outf2.write("%s (%d - %d%s) cluster %d:\n     (%d - %d%s) exact miRNA %s\n%s\n"%(chr, startPos, endPos, strand, t, originalStart, originalEnd, originalStrand, miRNA, exactmiRNASeqDic[miRNA]))
-                        outf2.write("%s: %s\n%s: %s\n"%(clusterSeq, '\t'.join(map(lambda x: str(x), clusterSeqRatioList)), majorSeq, '\t'.join(map(lambda x: str(x), majorSeqRationList))))
-                        for i in range(len(alignSeqList)):
-                            if i == 0:
-                                outf2.write("%s\n"%(alignSeqList[i]))
-                            else:
-                                outf2.write('%s\t%d\n'%(alignSeqList[i], readCountList[i-1]))
-                    elif (originalStrand == '+' and startPos <= originalStart and endPos < originalEnd) or (originalStrand == '-' and startPos > originalStart and endPos >= originalEnd):
-                        outf3.write("%s (%d - %d%s) cluster %d:\n     (%d - %d%s) exact miRNA %s\n%s\n"%(chr, startPos, endPos, strand, t, originalStart, originalEnd, originalStrand, miRNA, exactmiRNASeqDic[miRNA]))
-                        outf3.write("%s: %s\n%s: %s\n"%(clusterSeq, '\t'.join(map(lambda x: str(x), clusterSeqRatioList)), majorSeq, '\t'.join(map(lambda x: str(x), majorSeqRationList))))
-                        for i in range(len(alignSeqList)):
-                            if i == 0:
-                                outf3.write("%s\n"%(alignSeqList[i]))
-                            else:
-                                outf3.write('%s\t%d\n'%(alignSeqList[i], readCountList[i-1]))
-                    elif startPos > originalStart and endPos < originalEnd:
-                        outf4.write("%s (%d - %d%s) cluster %d:\n     (%d - %d%s) exact miRNA %s\n%s\n"%(chr, startPos, endPos, strand, t, originalStart, originalEnd, originalStrand, miRNA, exactmiRNASeqDic[miRNA]))
-                        outf4.write("%s: %s\n%s: %s\n"%(clusterSeq, '\t'.join(map(lambda x: str(x), clusterSeqRatioList)), majorSeq, '\t'.join(map(lambda x: str(x), majorSeqRationList))))
-                        for i in range(len(alignSeqList)):
-                            if i == 0:
-                                outf4.write("%s\n"%(alignSeqList[i]))
-                            else:
-                                outf4.write('%s\t%d\n'%(alignSeqList[i], readCountList[i-1]))
-                    else:
-                        pass
-                else:
-                    outf5.write("Cluster Name: %s\n"%(clusterName))
-                    outf5.write("%s (%d - %d%s) cluster %d:\n"%(chr, startPos, endPos, clusterName[-1], t))
+                outf5.write("Cluster Name: %s\n"%(clusterName))
+                outf5.write("%s (%d - %d%s) cluster %d:\n"%(chr, startPos, endPos, clusterName[-1], t))
                 outf5.write("%s: %s\n"%(clusterSeq, '\t'.join(map(lambda x: str(x), clusterSeqRatioList))))
                 outf5.write("%s: %s\n"%(majorSeq, '\t'.join(map(lambda x: str(x), majorSeqRationList))))
                 for i in range(len(alignSeqList)):
