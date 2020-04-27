@@ -86,7 +86,7 @@ ___
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) get_precursors.py
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) preTrimClusteredSeq.py
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) renameStrFile.py
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) screen_precusor_candidates.py
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) screen_precusor_candidates.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) preprocess_featureFiles.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) model_predict.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) write_novel_report.py
