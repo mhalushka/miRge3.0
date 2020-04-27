@@ -16,7 +16,7 @@ def calculate_identity(sequenceA, sequenceB):
 	return matches
 
 def chunks(seq, n):
-	return (seq[i:i+n] for i in xrange(0, len(seq), n))
+	return (seq[i:i+n] for i in range(0, len(seq), n))
 
 class ReadCluster(object):
 	threshold = 0.8
@@ -207,7 +207,7 @@ class ReadCluster(object):
 			alignSeqList2.insert(0, templateSeq)
 			clusterSecondSeq = alignSeqList2[2]
 
-			colList = range(headStartPosition-ReadCluster.headShiftStep, headStartPosition)+range(tailStartPosition, tailStartPosition+ReadCluster.tailShiftStep)
+			colList = list(range(headStartPosition-ReadCluster.headShiftStep, headStartPosition)) + list(range(tailStartPosition, tailStartPosition+ReadCluster.tailShiftStep))
 			transformedListTmp = []
 			for i in range(len(colList)):
 				for j in range(2, len(alignSeqList2)):
@@ -220,11 +220,11 @@ class ReadCluster(object):
 				try:
 					templateNucleotide = templateSeq[colList[i]]
 				except IndexError:
-					print "Error happends at: %s"%(self.clusterName)
-					print "Please check it."
-					print "templateSeq is: %s"%(templateSeq)
-					print "index is:"
-					print colList[i]
+					print("Error happends at: %s"%(self.clusterName))
+					print("Please check it.")
+					print("templateSeq is: %s"%(templateSeq))
+					print("index is:")
+					print(colList[i])
 					sys.exit(1)
 				item = transformedList[i]
 				#print len(item)
@@ -351,7 +351,7 @@ class ReadCluster(object):
 			pass
 		start = alignSeqList2[0].index(self.clusterSeq)
 		end = alignSeqList2[0].index(self.clusterSeq)+len(self.clusterSeq)-1
-		colList = range(start-ReadCluster.headShiftStep, start+ReadCluster.headShiftStep+1)+range(end-ReadCluster.tailShiftStep, end+ReadCluster.tailShiftStep+1)
+		colList = list(range(start-ReadCluster.headShiftStep, start+ReadCluster.headShiftStep+1)) + list(range(end-ReadCluster.tailShiftStep, end+ReadCluster.tailShiftStep+1))
 		transformedListTmp = []
 		for i in range(len(colList)):
 			for j in range(1, len(alignSeqList2)):
