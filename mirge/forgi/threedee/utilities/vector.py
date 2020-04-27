@@ -180,8 +180,8 @@ def time_cob():
     t1 = timeit.Timer("time_cob1()", "from forgi.utilities.vector import time_cob1")
     t2 = timeit.Timer("time_cob2()", "from forgi.utilities.vector import time_cob2")
 
-    print t1.repeat(number=10000)
-    print t2.repeat(number=10000)
+    print(t1.repeat(number=10000))
+    print(t2.repeat(number=10000))
 
 def spherical_cartesian_to_polar(vec):
     '''
@@ -316,11 +316,11 @@ def change_basis2_benchmark():
 
 def time_basis1():
     t1 = timeit.Timer("change_basis1_benchmark()","from forgi.utilities.vector import change_basis1_benchmark")
-    print t1.repeat(number=10000)
+    print(t1.repeat(number=10000))
 
 def time_basis2():
     t2 = timeit.Timer("change_basis2_benchmark()","from forgi.utilities.vector import change_basis2_benchmark")
-    print t2.repeat(number=10000)
+    print(t2.repeat(number=10000))
 
 def vector_rejection(a, b):
     '''
@@ -475,8 +475,8 @@ def time_mag():
     t1 = timeit.Timer("time_mag1()", "from forgi.utilities.vector import time_mag1")
     t2 = timeit.Timer("time_mag2()", "from forgi.utilities.vector import time_mag2")
 
-    print t1.repeat(number=10000)
-    print t2.repeat(number=10000)
+    print(t1.repeat(number=10000))
+    print(t2.repeat(number=10000))
 
 
 def normalize(vec):
@@ -627,7 +627,7 @@ def closest_point_on_seg(seg_a, seg_b, circ_pos):
     mag = m.sqrt(sum(seg_v * seg_v))
 
     if m <= 0:
-        raise ValueError, "Invalid segment length"
+        raise ValueError("Invalid segment length")
     seg_v_unit = seg_v / mag
     proj = pt_v.dot(seg_v_unit)
     if proj <= 0:
@@ -650,7 +650,7 @@ def segment_circle(seg_a, seg_b, circ_pos, circ_rad):
     if m > circ_rad:
         return vec(0, 0)
     if mag(dist_v) <= 0:
-        raise ValueError, "Circle's center is exactly on segment"
+        raise ValueError("Circle's center is exactly on segment")
     offset = dist_v / mag(dist_v) * (circ_rad - mag(dist_v))
     return offset
 

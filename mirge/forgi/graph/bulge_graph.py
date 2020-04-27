@@ -22,7 +22,7 @@ import mirge.forgi.threedee.utilities.mcannotate as ftum
 import mirge.forgi.threedee.utilities.vector as cuv
 
 def error_exit(message):
-    print >> sys.stderr, message
+    print(message, file=sys.stderr)
     sys.exit(1)
 
 # A wrapper for a simple dictionary addition
@@ -64,7 +64,7 @@ def print_bulges(bulges):
         bulge_str = "define b%d 1" % (i)
         bulge = bulges[i]
         bulge_str += " %d %d" % (bulge[0]+1, bulge[1]+1)
-        print bulge_str
+        print(bulge_str)
 
 def condense_stem_pairs(stem_pairs):
     '''
@@ -109,7 +109,7 @@ def print_brackets(brackets):
     '''
     numbers = [chr(ord('0') + i % 10) for i in range(len(brackets))]
     tens = [chr(ord('0') + i / 10) for i in range(len(brackets))]
-    print "brackets:\n", brackets, "\n", "".join(tens), "\n" ,"".join(numbers)
+    print("brackets:\n", brackets, "\n", "".join(tens), "\n" ,"".join(numbers))
 
 def find_bulges_and_stems(brackets):
     '''
@@ -189,7 +189,7 @@ def find_bulges_and_stems(brackets):
         dots_end = i
         bulges = add_bulge(bulges, (dots_start, dots_end), context, "7")
     elif prev == '(':
-        print >>sys.stderr, "Unmatched bracket at the end"
+        print("Unmatched bracket at the end", file=sys.stderr)
         sys.exit(1)
     '''
     elif prev == ')':
@@ -208,7 +208,7 @@ def find_bulges_and_stems(brackets):
     return (finished_bulges, stems)
 
 def print_name(filename):
-    print "name", os.path.splitext(filename)[0]
+    print("name", os.path.splitext(filename)[0])
 
 
 
@@ -306,7 +306,7 @@ class BulgeGraph(object):
         # a method for sorting the defines
         def define_sorter(k):
             drni = self.define_residue_num_iterator(k, adjacent=True)
-            return drni.next()
+            return next(drni)
 
         for key in sorted(self.defines.keys(), key=define_sorter):
             defines_str += self.get_single_define_str(key)
@@ -435,7 +435,7 @@ class BulgeGraph(object):
         @return: A list of two-element lists
         '''
         a = iter(self.defines[node])
-        ranges = it.izip(a,a)
+        ranges = zip(a,a)
 
         if node[0] == 'i':
             # interior loops have to be treated specially because
@@ -886,7 +886,7 @@ class BulgeGraph(object):
     def compare_hairpins(self, b):
         connections = self.connections(b)
 
-        return (self.defines[connections[0]][1], sys.maxint)
+        return (self.defines[connections[0]][1], sys.maxsize)
 
     def relabel_nodes(self):
         '''
@@ -1209,7 +1209,8 @@ class BulgeGraph(object):
         seq = ''
 
         line_iter = iter(lines)
-        parts = line_iter.next().split(' ')
+        parts = next(line_iter).split(' ')
+        #parts = line_iter.next().split(' ')
 
         stems = []
         bulges = []
@@ -1301,11 +1302,11 @@ class BulgeGraph(object):
 
         @return: A dot-bracket representation of this BulgeGraph
         '''
-        out = ['.' for i in xrange(self.seq_length)]
+        out = ['.' for i in range(self.seq_length)]
         for s in self.stem_iterator():
-            for i in xrange(self.defines[s][0], self.defines[s][1]+1):
+            for i in range(self.defines[s][0], self.defines[s][1]+1):
                 out[i-1] = '('
-            for i in xrange(self.defines[s][2], self.defines[s][3]+1):
+            for i in range(self.defines[s][2], self.defines[s][3]+1):
                 out[i-1] = ')'
 
         return "".join(out)
@@ -1498,8 +1499,8 @@ class BulgeGraph(object):
 
         #print >>sys.stderr, "s1: %s b: %s" % (s1, b)
 
-        for i in xrange(4):
-            for k in xrange(len(bd)):
+        for i in range(4):
+            for k in range(len(bd)):
                 if s1d[i] - bd[k] == 1:
                     if i == 0:
                         s1b = 0
@@ -1548,7 +1549,7 @@ class BulgeGraph(object):
 
         #print >>sys.stderr, "s1: %s b: %s" % (s1, b)
 
-        for k in xrange(len(bd)):
+        for k in range(len(bd)):
             # before the stem on the 5' strand
             if s1d[0] - bd[k] == 1:
                 return (0, k)

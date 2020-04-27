@@ -196,7 +196,6 @@ class ReadPrecusor(object):
 				prunedPrecursorSeq = self.premiRNASeq[startPos1-self.prunedLength : newEndPos+1+self.prunedLength]
 				prunedPrecusorStr = self.premiRNAStructure[startPos1-self.prunedLength : newEndPos+1+self.prunedLength]
 			except TypeError:
-				#print self.premiRNASeqName
 				prunedPrecursorSeq = None
 				prunedPrecusorStr = None
 		else:
@@ -215,10 +214,7 @@ class ReadPrecusor(object):
 					newStartPos = pairedPos - otherCount
 				prunedPrecursorSeq = self.premiRNASeq[newStartPos-self.prunedLength : endPos1+self.prunedLength]
 				prunedPrecusorStr = self.premiRNAStructure[newStartPos-self.prunedLength : endPos1+self.prunedLength]
-				#print newStartPos
-				#print endPos1
 			except TypeError:
-				#print self.premiRNASeqName
 				prunedPrecursorSeq = None
 				prunedPrecusorStr = None
 		# Decorate the CorePrecusor structure.
@@ -420,21 +416,20 @@ class ReadPrecusor(object):
 				prunedPrecusorSeq = self.premiRNASeq[startPos1 : newEndPos+1]
 				prunedPrecusorStr = self.premiRNAStructure[startPos1 : newEndPos+1]
 			except TypeError:
-				#print self.premiRNASeqName
 				prunedPrecusorSeq = None
 				prunedPrecusorStr = None
 		else:
 			startPos1, endPos1 = getMiRNAPosition(selectedMiRNASeq, self.premiRNASeq)
 			endPos1 = len(self.premiRNASeq)
-			print startPos1
-			print endPos1
+			print(startPos1)
+			print(endPos1)
 			otherCount = 0 
 			for i in range(endPos1-1, -1, -1):
 				if self.premiRNAStructure[i] == ')':
 					break
 				otherCount = otherCount + 1
 			# Locate the partner of a base pair
-			print otherCount
+			print(otherCount)
 			try:
 				pairedPos = bg1.pairing_partner(endPos1-otherCount) - 1
 				if pairedPos - otherCount < 0:
@@ -443,10 +438,7 @@ class ReadPrecusor(object):
 					newStartPos = pairedPos - otherCount
 				prunedPrecusorSeq = self.premiRNASeq[newStartPos : endPos1]
 				prunedPrecusorStr = self.premiRNAStructure[newStartPos : endPos1]
-				#print newStartPos
-				#print endPos1
 			except TypeError:
-				#print self.premiRNASeqName
 				prunedPrecusorSeq = None
 				prunedPrecusorStr = None
 		# Decorate the CorePrecusor structure.
@@ -646,7 +638,6 @@ class ReadPrecusor(object):
 					corePrecusorSeq = self.premiRNASeq[startPos1 : newEndPos+1]
 					corePrecusorStr = self.premiRNAStructure[startPos1 : newEndPos+1]
 				except TypeError:
-					#print self.premiRNASeqName
 					corePrecusorSeq = None
 					corePrecusorStr = None
 			else:
@@ -665,10 +656,7 @@ class ReadPrecusor(object):
 						newStartPos = pairedPos - otherCount
 					corePrecusorSeq = self.premiRNASeq[newStartPos : endPos1]
 					corePrecusorStr = self.premiRNAStructure[newStartPos : endPos1]
-					#print newStartPos
-					#print endPos1
 				except TypeError:
-					#print self.premiRNASeqName
 					corePrecusorSeq = None
 					corePrecusorStr = None
 		else:
