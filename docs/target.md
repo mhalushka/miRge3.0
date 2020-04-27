@@ -80,7 +80,7 @@ ___
 **PREDICT**
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) cluster_basedon_location.py
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) convert2Fasta.py
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) fileExist.py
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) fileExist.py
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) generate_Seq.py
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) generate_featureFiles.py
 - [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) get_precursors.py
