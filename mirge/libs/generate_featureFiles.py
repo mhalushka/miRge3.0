@@ -1,15 +1,15 @@
 #Build a class of a read cluster including memeber reads and the clustered seq.
 #Define it's attributes and methods
-
 import os
 import sys
 from pathlib import Path
-#import cPickle
 import pickle
 from Bio.Seq import Seq
 from Bio import SeqIO
-from mirge.classes.readCluster import ReadCluster
+import Bio
+from Bio.Alphabet import generic_dna
 
+from mirge.classes.readCluster import ReadCluster
 
 def interset(l1,l2):
     outlist = []
@@ -272,3 +272,144 @@ def generate_featureFiles(outputdir2, infFile, chrSeqDic, chrSeqLenDic, miRNAchr
                         else:
                             outf.write(str(features[14])+'\n')
 
+def get_precursors(outputdir2, infFile, chrSeqDic):
+    infTmp = str(Path(outputdir2)/(infFile+"_features.tsv"))
+    outf_file = str(Path(outputdir2)/(infFile+"_precursor.fa"))
+    # The arguments of this function are as follows:
+    # /home/yin/lib/human/hg38.pckl  unmapped_mirna_SRR944031_vs_representative_seq_bowtie2_modified_selected.tsv
+    clusterSeqType = 'stableClusterSeq'
+    # To do, redefine the startPos and endPos....
+    outf = open(outf_file,"w+")
+    selectRangeList = [(20, 70)]
+    precusorList = []
+    precursor_counts=0
+    with open(infTmp,'r') as inf:
+        line = inf.readline()
+        clusterSeqTypeLabel = line.strip().split('\t').index(clusterSeqType)
+        headUnstableLengthLabel = line.strip().split('\t').index('headUnstableLength')
+        tailUnstableLengthLabel = line.strip().split('\t').index('tailUnstableLength')
+        alignedClusterSeqLabel = line.strip().split('\t').index('alignedClusterSeq')
+        line = inf.readline()
+        while line != "":
+            content = line.strip().split('\t')
+            temp =content[5]
+            neighborState = content[-1]
+            alignedClusterSeq = content[alignedClusterSeqLabel]
+            headDashCountTmp = headDashCount(alignedClusterSeq)
+            tailDashCountTmp = tailDashCount(alignedClusterSeq)
+            side = 'both'
+            if temp not in precusorList:
+                chr = temp.split(':')[2]
+                if chr in chrSeqDic.keys():
+                    startPos = int(temp.split(':')[3][:-1].split('_')[0].strip())
+                    endPos = int(temp.split(':')[3][:-1].split('_')[1].strip())
+                    strand = temp[-1]
+                    if clusterSeqType == 'stableClusterSeq':
+                        if strand == '+':
+                            startPos = startPos - headDashCountTmp + int(content[headUnstableLengthLabel])
+                            endPos = endPos + tailDashCountTmp - int(content[tailUnstableLengthLabel])
+                        else:
+                            startPos = startPos - tailDashCountTmp + int(content[tailUnstableLengthLabel])
+                            endPos = endPos + headDashCountTmp - int(content[headUnstableLengthLabel])
+                    for index, item in enumerate(selectRangeList):
+                        unpstream = item[1] # upstream = 70
+                        downstream = item[0] # downstream = 20
+                        # :precusor1_1 means extend around 70 bp upstream and 20 bp downstream
+                        # :precusor1_2 means extend around 20 bp upstream and 70 bp downstream
+                        if side == 'both':
+                            if startPos-1-unpstream >= 0:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_1\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                            else:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_1\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                            if startPos-1-downstream >= 0:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_2\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                            else:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_2\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                        elif side == 'downstream':
+                            if startPos-1-downstream >= 0:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_2\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                            else:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_2\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                        else:
+                            if startPos-1-unpstream >= 0:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_1\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                            else:
+                                precursor_counts+=1
+                                outf.write('>'+temp+':precusor_1\n')
+                                if strand == '+':
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).transcribe())
+                                else:
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                outf.write(rnaSeq+'\n')
+                    precusorList.append(temp)
+                else:
+                    pass
+            else:
+                pass
+            line = inf.readline()
+    outf.close()
+    return(precursor_counts)
+
+def renameStrFile(fastaFile, strFile, strFileNew):
+    fastaNameList = []
+    with open(fastaFile, 'r') as inf:
+        line = inf.readline()
+        while line != '':
+            fastaNameList.append(line)
+            line = inf.readline()
+            line = inf.readline()
+    outf = open(strFileNew, 'w')
+    i = 0
+    with open(strFile, 'r') as inf:
+        line = inf.readline()
+        while line != '':
+            outf.write(fastaNameList[i])
+            line = inf.readline()
+            outf.write(line)
+            line = inf.readline()
+            outf.write(line)
+            line = inf.readline()
+            i = i + 1
+    outf.close()
