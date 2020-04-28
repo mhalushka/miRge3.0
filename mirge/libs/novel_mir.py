@@ -30,6 +30,7 @@ import numpy as np
 from mirge.libs.processSam import split_fasta_from_sam, combineSam, decorateSam, parse_refine_sam
 from mirge.libs.generate_featureFiles import generate_featureFiles, get_precursors, renameStrFile
 from mirge.libs.screen_precusor_candidates import screen_precusor_candidates
+from mirge.libs.preprocess_featureFiles import preprocess_featureFiles, model_predict
 # from sklearn.externals import joblib 
 # /home/arun/.local/lib/python3.8/site-packages/sklearn/externals/joblib/__init__.py:15: FutureWarning: sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23. Please import this functionality directly from joblib, which can be installed with: pip install joblib. If this warning is raised when loading pickled models, you may need to re-serialize those models with scikit-learn 0.21+.
 # warnings.warn(msg, category=FutureWarning)
@@ -411,6 +412,12 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             renameStrFile(infile_pre, outfile_str, strFileOut)
             time12 = time.perf_counter()
             outfLog.write('Folding precursors with RNAfold time: %.1fs\n'%(time12-time11))
-            screen_precusor_candidates( str(Path(outputdir2)), files, str(Path(outputdir2)/(files+"_features.tsv")), strFileOut, rnafoldCmdTmp)
+            screen_precusor_candidates(str(Path(outputdir2)), files, str(Path(outputdir2)/(files+"_features.tsv")), strFileOut, rnafoldCmdTmp)
             outfLog.write('********************\n')
             outfLog.flush()
+            modelDirTmp = Path(__file__).resolve().parents[1]
+            modelDir = str(Path(modelDirTmp)/'models')
+            fileToPredict = Path(outputdir2)/(files+'_updated_stableClusterSeq_15.tsv')
+            preprocess_featureFiles(str(Path(outputdir2)), files, fileToPredict, str(Path(modelDir)/'total_features_namelist.txt'))
+            speciesType = args.organism_name
+            model_predict(str(outputdir2), files, str(Path(modelDir)/(speciesType+'_svc_model.pkl')))
