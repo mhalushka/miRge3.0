@@ -74,8 +74,8 @@ ___
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) quantReads.py (46)
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) runAnnotationPipeline.py (707)
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) trim_file.py (138)
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) summarize.py (66)
-- [ ] ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) writeDataToCSV.py (1615)
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) summarize.py (66)
+- [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) writeDataToCSV.py (1615)
 
 **PREDICT**
 - [x] ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) cluster_basedon_location.py
