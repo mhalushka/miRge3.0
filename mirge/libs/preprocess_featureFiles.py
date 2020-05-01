@@ -132,7 +132,7 @@ def model_predict(outputdir2, files, modelFile):
     array_predicted = np.column_stack((predictedValue, probability, data_raw[:,:3]))
     data_predicted_test = pd.DataFrame(array_predicted, columns=featureList_raw)
     data_predicted_test.to_csv(str(Path(outputdir2)/('predicted_'+files+'_detailed.csv')), index=False)
-    outf = open(str(Path(outputdir2)/(files++'_novel_miRNAs_miRge2.0.csv')),'w')
+    outf = open(str(Path(outputdir2)/(files+'_novel_miRNAs_miRge2.0.csv')),'w')
     contentList_tmp = []
     with open(str(Path(outputdir2)/('predicted_'+files+'_detailed.csv')), 'r') as inf:
         line = inf.readline()
