@@ -421,3 +421,6 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             preprocess_featureFiles(str(Path(outputdir2)), files, fileToPredict, str(Path(modelDir)/'total_features_namelist.txt'))
             speciesType = args.organism_name
             model_predict(str(outputdir2), files, str(Path(modelDir)/(speciesType+'_svc_model.pkl')))
+            novelmiRNALListFile = str(Path(modelDirTmp)/(files+'_novel_miRNAs_miRge2.0.csv'))
+            featureFile = fileToPredict
+            clusterFile = outfile4+'_modified_selected_sorted_cluster.txt'
