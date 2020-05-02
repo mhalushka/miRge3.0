@@ -31,6 +31,7 @@ from mirge.libs.processSam import split_fasta_from_sam, combineSam, decorateSam,
 from mirge.libs.generate_featureFiles import generate_featureFiles, get_precursors, renameStrFile
 from mirge.libs.screen_precusor_candidates import screen_precusor_candidates
 from mirge.libs.preprocess_featureFiles import preprocess_featureFiles, model_predict
+from mirge.libs.write_novel_report import write_novel_report
 # from sklearn.externals import joblib 
 # /home/arun/.local/lib/python3.8/site-packages/sklearn/externals/joblib/__init__.py:15: FutureWarning: sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23. Please import this functionality directly from joblib, which can be installed with: pip install joblib. If this warning is raised when loading pickled models, you may need to re-serialize those models with scikit-learn 0.21+.
 # warnings.warn(msg, category=FutureWarning)
@@ -306,7 +307,8 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
     samtoolsCmdTmp = Path(args.samtools_path)/"samtools " if args.samtools_path else "samtools "
     rnafoldCmdTmp = Path(args.RNAfold_path)/"RNAfold " if args.RNAfold_path else "RNAfold "
     infile = "unmapped.log"
-    logFile = Path(outputdir2)/infile
+    logFile = Path((Path(outputdir2).resolve().parents[0]))/infile
+    #logFile = Path(outputdir2)/infile
     rawReadCounts={}
     filteredReadCounts={}
     with open(logFile, 'w') as outfLog:
@@ -421,6 +423,9 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             preprocess_featureFiles(str(Path(outputdir2)), files, fileToPredict, str(Path(modelDir)/'total_features_namelist.txt'))
             speciesType = args.organism_name
             model_predict(str(outputdir2), files, str(Path(modelDir)/(speciesType+'_svc_model.pkl')))
-            novelmiRNALListFile = str(Path(modelDirTmp)/(files+'_novel_miRNAs_miRge2.0.csv'))
+            novelmiRNALListFile = str(Path(outputdir2)/(files+'_novel_miRNAs_miRge2.0.csv'))
             featureFile = fileToPredict
-            clusterFile = outfile4+'_modified_selected_sorted_cluster.txt'
+            clusterFile = str(Path((outputdir2)/(files+'_cluster.txt')))
+            write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmdTmp, str(Path(outputdir2)), files)
+    predict_end_time = time.perf_counter()
+    print('Prediction of novel miRNAs Completed (%.2f sec)'%(predict_end_time - predict_start_time))
