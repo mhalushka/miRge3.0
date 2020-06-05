@@ -319,7 +319,6 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
         #time.sleep(.555)
         time2 = time.perf_counter()
         outfLog.write('Execution time for reading and trimming unmapped Pandas Library took: %.4fs\n'%(time2-time1))
-        print('Execution time for reading and trimming unmapped Pandas Library took: %.4fs\n'%(time2-time1))
         outfLog.write('********************\n')
         outfLog.flush()
         for files in base_names:
@@ -428,4 +427,5 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             clusterFile = str(Path((outputdir2)/(files+'_cluster.txt')))
             write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmdTmp, str(Path(outputdir2)), files)
     predict_end_time = time.perf_counter()
+    os.system('rm -r %s'%(outputdir2))
     print('Prediction of novel miRNAs Completed (%.2f sec)'%(predict_end_time - predict_start_time))

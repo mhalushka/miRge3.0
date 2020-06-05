@@ -746,7 +746,10 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         isomir_gff = iso_gff_df.values.tolist()
         freq_list=[]
         for fname in base_names:
-            freq_list.append(1000000/Filtered_miRNA_Reads[fname])
+            try:
+                freq_list.append(1000000/Filtered_miRNA_Reads[fname])
+            except ZeroDivisionError:
+                freq_list.append(0)
         maxEntropy = math.log(len(base_names), 2)
 
         """

@@ -991,7 +991,10 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
     isomir_gff = iso_gff_df.values.tolist()
     freq_list=[]
     for fname in base_names:
-        freq_list.append(1000000/Filtered_miRNA_Reads[fname])
+        try:
+            freq_list.append(1000000/Filtered_miRNA_Reads[fname])
+        except ZeroDivisionError:
+            freq_list.append(0)
     for can_list_element in canonical_gff:
         if can_list_element[1] in mirMergedNameDic:
             miRName = mirMergedNameDic[can_list_element[1]]
@@ -1106,24 +1109,27 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
         #mirDic miRCounts 
         seqList = mirNameSeqDicTmp[mirName]
         for i in range(len(base_names)):
-            if 1000000.0*mirDic[mirName][i]/Filtered_miRNA_Reads_list[i] >= 1:
-                countListTmp = []
-                seqListTmp = []
-                for seqTmp in seqList:
-                    if 1000000.0*seqDic[seqTmp][i]/Filtered_miRNA_Reads_list[i] >= 1 or (seqDic[seqTmp][i] > 0):
-                        seqListTmp.append(seqTmp)
-                        countListTmp.append(seqDic[seqTmp][i])
-                if len(countListTmp) >1:
-                    if min(countListTmp) > 0:
-                        alignSeqListKept, positionList, a2IPositionCountDic, a2IPositionRatioDic, a2IPositionPvalueDic, countTrue, seqCountTrue, canonicalSeqCount = A2IEditing(targetSeq, seqListTmp, countListTmp, mirName, outfTmp, retainedSeqDic, startBase, endBase)
-                        for position in positionList:
-                            mirNamePosition = ':'.join([mirName, str(position)])
-                            if mirNamePosition not in mirNamePositionValueDict.keys():
-                                mirNamePositionList.append(mirNamePosition)
-                                mirNamePositionValueDict.update({mirNamePosition:[[] for t in range(len(sampleList))]})
-                                mirNamePositionValueDict[mirNamePosition][i] = mirNamePositionValueDict[mirNamePosition][i] + [alignSeqListKept, str(sum(countListTmp)), str(len([item1 for item1 in countListTmp if item1 >0])), str(countTrue), str(seqCountTrue), str(canonicalSeqCount), str(a2IPositionCountDic[position]), a2IPositionRatioDic[position], a2IPositionPvalueDic[position]]
-                            else:
-                                mirNamePositionValueDict[mirNamePosition][i] = mirNamePositionValueDict[mirNamePosition][i] + [alignSeqListKept, str(sum(countListTmp)), str(len([item1 for item1 in countListTmp if item1 >0])), str(countTrue), str(seqCountTrue), str(canonicalSeqCount), str(a2IPositionCountDic[position]), a2IPositionRatioDic[position], a2IPositionPvalueDic[position]]
+            try:
+                if 1000000.0*mirDic[mirName][i]/Filtered_miRNA_Reads_list[i] >= 1:
+                    countListTmp = []
+                    seqListTmp = []
+                    for seqTmp in seqList:
+                        if 1000000.0*seqDic[seqTmp][i]/Filtered_miRNA_Reads_list[i] >= 1 or (seqDic[seqTmp][i] > 0):
+                            seqListTmp.append(seqTmp)
+                            countListTmp.append(seqDic[seqTmp][i])
+                    if len(countListTmp) >1:
+                        if min(countListTmp) > 0:
+                            alignSeqListKept, positionList, a2IPositionCountDic, a2IPositionRatioDic, a2IPositionPvalueDic, countTrue, seqCountTrue, canonicalSeqCount = A2IEditing(targetSeq, seqListTmp, countListTmp, mirName, outfTmp, retainedSeqDic, startBase, endBase)
+                            for position in positionList:
+                                mirNamePosition = ':'.join([mirName, str(position)])
+                                if mirNamePosition not in mirNamePositionValueDict.keys():
+                                    mirNamePositionList.append(mirNamePosition)
+                                    mirNamePositionValueDict.update({mirNamePosition:[[] for t in range(len(sampleList))]})
+                                    mirNamePositionValueDict[mirNamePosition][i] = mirNamePositionValueDict[mirNamePosition][i] + [alignSeqListKept, str(sum(countListTmp)), str(len([item1 for item1 in countListTmp if item1 >0])), str(countTrue), str(seqCountTrue), str(canonicalSeqCount), str(a2IPositionCountDic[position]), a2IPositionRatioDic[position], a2IPositionPvalueDic[position]]
+                                else:
+                                    mirNamePositionValueDict[mirNamePosition][i] = mirNamePositionValueDict[mirNamePosition][i] + [alignSeqListKept, str(sum(countListTmp)), str(len([item1 for item1 in countListTmp if item1 >0])), str(countTrue), str(seqCountTrue), str(canonicalSeqCount), str(a2IPositionCountDic[position]), a2IPositionRatioDic[position], a2IPositionPvalueDic[position]]
+            except ZeroDivisionError:
+                pass
     outfTmp.close()
 
     basePairMismachCountList_total = []
@@ -1132,25 +1138,28 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
         for mirName in mirNameSeqDicTmp.keys():
             targetSeq = mirNameSeqDic[mirName]
             seqList = mirNameSeqDicTmp[mirName]
-            if 1000000.0*mirDic[mirName][i]/Filtered_miRNA_Reads_list[i] >= 1:
-                countListTmp = []
-                seqListTmp = []
-                for seqTmp in seqList:
-                    if 1000000.0*seqDic[seqTmp][i]/Filtered_miRNA_Reads_list[i] >= 1 or (seqDic[seqTmp][i] > 0):
-                        seqListTmp.append(seqTmp)
-                        countListTmp.append(seqDic[seqTmp][i])
-                if len(countListTmp) >1:
-                    if min(countListTmp) > 0:
-                        basePairMismachCountList = mismatchCountAnalysis(targetSeq, seqListTmp, countListTmp, retainedSeqDic)
-                        for indexTmp, s in enumerate(basePairMismachCountList):
-                            basePairMismachCountListTmp[indexTmp][0] = basePairMismachCountListTmp[indexTmp][0] + s[0]
-                            basePairMismachCountListTmp[indexTmp][1] = basePairMismachCountListTmp[indexTmp][1] + s[1]
-                            basePairMismachCountListTmp[indexTmp][2] = basePairMismachCountListTmp[indexTmp][2] + s[2]
+            try:
+                if 1000000.0*mirDic[mirName][i]/Filtered_miRNA_Reads_list[i] >= 1:
+                    countListTmp = []
+                    seqListTmp = []
+                    for seqTmp in seqList:
+                        if 1000000.0*seqDic[seqTmp][i]/Filtered_miRNA_Reads_list[i] >= 1 or (seqDic[seqTmp][i] > 0):
+                            seqListTmp.append(seqTmp)
+                            countListTmp.append(seqDic[seqTmp][i])
+                    if len(countListTmp) >1:
+                        if min(countListTmp) > 0:
+                            basePairMismachCountList = mismatchCountAnalysis(targetSeq, seqListTmp, countListTmp, retainedSeqDic)
+                            for indexTmp, s in enumerate(basePairMismachCountList):
+                                basePairMismachCountListTmp[indexTmp][0] = basePairMismachCountListTmp[indexTmp][0] + s[0]
+                                basePairMismachCountListTmp[indexTmp][1] = basePairMismachCountListTmp[indexTmp][1] + s[1]
+                                basePairMismachCountListTmp[indexTmp][2] = basePairMismachCountListTmp[indexTmp][2] + s[2]
+                        else:
+                            pass
                     else:
                         pass
                 else:
                     pass
-            else:
+            except ZeroDivisionError:
                 pass
         basePairMismachCountList_total.append(basePairMismachCountListTmp)
     #print(basePairMismachCountList_total)
@@ -1402,3 +1411,5 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
         RscriptDir = Path(RscriptDirTmp)/('rScripts')/('A-to-I_plot.R')
         outA2Ipdf = Path(workDir)/('a-to-I.heatmap.pdf')
         os.system('Rscript %s %s %s'%(RscriptDir, a2IEditingFileTrans, outA2Ipdf))
+    
+    os.remove(samToMapFasta)

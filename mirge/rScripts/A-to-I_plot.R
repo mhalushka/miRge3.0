@@ -1,4 +1,3 @@
-#library(gplots)
 library(ggplot2)
 options(warn=-1)
 args <- commandArgs(TRUE)
