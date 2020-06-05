@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
         name='mirge',
-        version='0.1.1',
+        version='0.1.3',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
         url='https://test.pypi.org/legacy/',
@@ -13,18 +13,12 @@ setup(
         long_description=long_description,
         keywords=['miRge', 'small RNA analysis', 'NGS', 'bioinformatics tools'],  # arbitrary keywords
         license='MIT',
-        #packages=['mirge','mirge.classes','mirge.libs', 'mirge.forgi.',],
-        #packages=['mirge',],
         package_dir={'mirge': 'mirge'},
         packages=find_packages(),
-        #packages=find_packages(where='mirge'),
-        #packages=find_namespace_packages(include=['classes','libs']),
-        #packages=find_packages('tstmirge1', exclude=['.txt']),
         package_data = {'':['models/*.pkl', 'models/*.txt', 'rScripts/*.R']},
-        install_requires=['cutadapt==2.7', 'biopython', 'dnaio', 'numpy',
-            'scipy', 'matplotlib', 'pandas','scikit-learn',
-            'reportlab',
-            ],
+        install_requires=['biopython==1.77','cutadapt==2.7','future==0.18.2','joblib==0.15.1','matplotlib==3.2.1',
+            'numpy==1.18.4','pandas==1.0.3','reportlab==3.5.42','scikit-learn==0.23.1','scipy==1.4.1',
+            'umi-tools==1.0.1'],
         entry_points={'console_scripts': ['miRge3.0 = mirge.__main__:main']},
         classifiers=[
             "Development Status :: 1 - Planning",
