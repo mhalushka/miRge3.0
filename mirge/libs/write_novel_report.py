@@ -55,7 +55,10 @@ def chunkListNew(number):
 def creatPDF(sampleName, novelmiRNANameNew, probability, chr, startPos, endPos, strand, armType, readCountSumMatureMiRNA, totalReadCountSum, matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr, matureMiRNASeq, passengerMiRNASeq, psFile, outFile, matureReadContentlist, passengerReadContentlist):
     matureMiRNALocationList = range(matureMiRNAPrecusorSeq.index(matureMiRNASeq), matureMiRNAPrecusorSeq.index(matureMiRNASeq)+len(matureMiRNASeq))
     if passengerMiRNASeq != 'None':
-        starMiRNALocationList = range(matureMiRNAPrecusorSeq.index(passengerMiRNASeq), matureMiRNAPrecusorSeq.index(passengerMiRNASeq)+len(passengerMiRNASeq))
+        try:
+            starMiRNALocationList = range(matureMiRNAPrecusorSeq.index(passengerMiRNASeq), matureMiRNAPrecusorSeq.index(passengerMiRNASeq)+len(passengerMiRNASeq))
+        except ValueError:
+            starMiRNALocationList = []
     else:
         starMiRNALocationList = []
 
@@ -674,6 +677,9 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
                 readContentlist.append((readSeq, ReadSeqStart, ReadSeqEnd, readCount))
             clusterNameClusterSeqDic.update({clusterNameTmp:readContentlist})
     
+    #print(clusterNameClusterSeqDic)
+    #print()
+    
     # Output the novel miRNA report csv file
     #print precursorSeqclusterNameDic[('CUGACUGCCGAGGGGGCCCUGGCCUGGAUCCAUGCUGGGCAGAAGCAGCUGGACACUGACCAGGACCCCCCAGGGCCGGAGGAACC', 'chr9', '+')]
     finalFile = str(Path(dir_tmp)/(files+'_novel_miRNAs_report.csv'))
@@ -688,6 +694,7 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
         precursorSeq = clusterNameFeatureDic[novelmiRNA][-2]
         clusterNameList = precursorSeqclusterNameDic[(precursorSeq, clusterNameFeatureDic[novelmiRNA][0], clusterNameFeatureDic[novelmiRNA][3])]
         for clusterNameListTmp in chunkInto2(clusterNameList):
+            flag_padClust = 0
             if len(clusterNameListTmp) == 1:
                 matureMiRNAName = clusterNameListTmp[0]
                 passengerMiRNAName = 'None'
@@ -731,16 +738,34 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
                 passengerEndPos = clusterNameFeatureDic[passengerMiRNAName][2]
                 passengerStrand = clusterNameFeatureDic[passengerMiRNAName][3]
             # Pad the head and tail part with '.' according to the allignment to the precursor miRNA.
-            matureReadContentlist = padClusteredList(matureReadContentlistRaw, matureMiRNASeq, matureMiRNAPrecusorSeq, startPos, endPos, strand)
+            try:
+                startTmp = matureMiRNAPrecusorSeq.index(matureMiRNASeq)
+                flag_padClust = 0
+            except ValueError:
+                flag_padClust = 1
+            
+            if flag_padClust == 1:
+                continue
+            else:
+                matureReadContentlist = padClusteredList(matureReadContentlistRaw, matureMiRNASeq, matureMiRNAPrecusorSeq, startPos, endPos, strand)
+
             if passengerReadContentlistRaw != 'None':
-                passengerReadContentlist = padClusteredList(passengerReadContentlistRaw, passengerMiRNASeq, matureMiRNAPrecusorSeq, passengerStartPos, passengerEndPos, passengerStrand)
-                totalReadCountSum = int(readCountSumMatureMiRNA) + int(readCountSumPassengerMiRNA)
+                try:
+                    #startTmp = matureMiRNAPrecusorSeq.index(passengerMiRNASeq)
+                    passengerReadContentlist = padClusteredList(passengerReadContentlistRaw, passengerMiRNASeq, matureMiRNAPrecusorSeq, passengerStartPos, passengerEndPos, passengerStrand)
+                    totalReadCountSum = int(readCountSumMatureMiRNA) + int(readCountSumPassengerMiRNA)
+                except ValueError:
+                    passengerReadContentlist = 'None'
+                    totalReadCountSum = int(readCountSumMatureMiRNA)
             else:
                 passengerReadContentlist = 'None'
                 totalReadCountSum = int(readCountSumMatureMiRNA)
             if armType != 'loop':
                 novelmiRNANameNew = str(files)+'_novel_miRNA_'+str(i)
-                outf1.write(','.join([novelmiRNANameNew, clusterNameProbabilityDic[matureMiRNAName], chr, str(startPos), str(endPos), strand, matureMiRNASeq, armType, passengerMiRNASeq, str(readCountSumMatureMiRNA), str(readCountSumPassengerMiRNA), matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr]))
+                try:
+                    outf1.write(','.join([novelmiRNANameNew, clusterNameProbabilityDic[matureMiRNAName], chr, str(startPos), str(endPos), strand, matureMiRNASeq, armType, passengerMiRNASeq, str(readCountSumMatureMiRNA), str(readCountSumPassengerMiRNA), matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr]))
+                except KeyError:
+                    outf1.write(','.join([novelmiRNANameNew, "1", chr, str(startPos), str(endPos), strand, matureMiRNASeq, armType, passengerMiRNASeq, str(readCountSumMatureMiRNA), str(readCountSumPassengerMiRNA), matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr]))
                 outf1.write('\n')
                 # Prepare to plot the precurosr sturcuture, cluster seuqences into a pdf file.
                 with open(str(Path(outputdir2)/(files+'_precusorTmp.fa')), 'w') as outf:
@@ -748,22 +773,13 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
                     outf.write(fa_tmp+'\n')
                 f1 = str(files+'_precusorTmp.fa')
                 f2 = str(files+'_precusorTmp.str')
-                #f1 = str(Path(outputdir2)/(files+'_precusorTmp.fa'))
-                #f2 = str(Path(outputdir2)/(files+'_precusorTmp.str'))
                 os.system('cd %s && %s -d 0 < %s > %s'%(Path(outputdir2), rnafoldCmdTmp, f1, f2))
-                #os.system('%s -d 0 < %s > %s'%(rnafoldCmdTmp, f1, f2))
-                #rnafld_exec = str(rnafoldCmdTmp) + " -d 0 " + str(f1) + " > " + str(f2)
-                #rnafldRun = subprocess.run(str(rnafld_exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
-                #if rnafldRun.returncode==0:
-                #    bwtOut = rnafldRun.stdout
-                #    bwtErr = rnafldRun.stderr
-                #    print("\nPrinting BwtOut")
-                #    print(bwtOut)
-                #    print("\nPrinting BwtERR")
-                #    print(bwtErr)
                 f3 = str(Path(outputdir2)/(files+'_novel_miRNA_'+str(i)+'_ss.ps'))
                 f4 = str(Path(dir_tmp)/(files+'_novel_miRNA_'+str(i)+'.pdf'))
-                creatPDF(sampleName, novelmiRNANameNew, clusterNameProbabilityDic[matureMiRNAName], chr, startPos, endPos, strand, armType, readCountSumMatureMiRNA, totalReadCountSum, matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr, matureMiRNASeq, passengerMiRNASeq, f3, f4, matureReadContentlist, passengerReadContentlist)
+                try:
+                    creatPDF(sampleName, novelmiRNANameNew, clusterNameProbabilityDic[matureMiRNAName], chr, startPos, endPos, strand, armType, readCountSumMatureMiRNA, totalReadCountSum, matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr, matureMiRNASeq, passengerMiRNASeq, f3, f4, matureReadContentlist, passengerReadContentlist)
+                except KeyError:
+                    creatPDF(sampleName, novelmiRNANameNew, "1", chr, startPos, endPos, strand, armType, readCountSumMatureMiRNA, totalReadCountSum, matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr, matureMiRNASeq, passengerMiRNASeq, f3, f4, matureReadContentlist, passengerReadContentlist)
                 
                 i = i + 1
             # Delete the clusterNames in clusterNameListTmp
