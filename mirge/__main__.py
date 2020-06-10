@@ -31,6 +31,9 @@ def main():
     workDir = Path(args.outDir)/ourDir if args.outDir else Path.cwd()/ourDir
     Path(workDir).mkdir(exist_ok=True, parents=True)
     db_keys = {"mirbase":"miRBase", "mirgenedb":"MirGeneDB"}
+    if args.tRNA_frag and args.organism_name != "human":
+        sys.exit("ERROR: Detection of tRF(tRNA fragments) is only supported for human.")
+
     if args.threads == 0:
         args.threads = multiprocessing.cpu_count()
 
@@ -83,11 +86,11 @@ def main():
     pdMapped.to_csv(mappedfileToCSV)
     pdUnmapped.to_csv(unmappedfileToCSV)
     summary_End_time = time.perf_counter()
+    print(f'Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n')     
     if args.novel_miRNA:
         print("Predicting novel miRNAs\n")
         predict_nmir(args, workDir, ref_db, base_names, pdUnmapped)
     globalend_time = time.perf_counter()
-    print(f'Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n')     
     print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     
 
 
