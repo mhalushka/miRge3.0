@@ -421,7 +421,12 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             fileToPredict = Path(outputdir2)/(files+'_updated_stableClusterSeq_15.tsv')
             preprocess_featureFiles(str(Path(outputdir2)), files, fileToPredict, str(Path(modelDir)/'total_features_namelist.txt'))
             speciesType = args.organism_name
-            model_predict(str(outputdir2), files, str(Path(modelDir)/(speciesType+'_svc_model.pkl')))
+            if args.organism_name == "human" or args.organism_name == "mouse":
+                mf = str(Path(modelDir)/(speciesType+'_svc_model.pkl'))
+            else:
+                mf = str(Path(modelDir)/"others_svc_model.pkl")
+            model_predict(str(outputdir2), files, mf)
+            #model_predict(str(outputdir2), files, str(Path(modelDir)/(speciesType+'_svc_model.pkl')))
             novelmiRNALListFile = str(Path(outputdir2)/(files+'_novel_miRNAs_miRge2.0.csv'))
             featureFile = fileToPredict
             clusterFile = str(Path((outputdir2)/(files+'_cluster.txt')))
