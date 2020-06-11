@@ -99,7 +99,6 @@ Data pre-processing:
   
 
 Predicting novel miRNAs:
-  novel miRNA detection is confined to human and mouse only (with "-on" argument):
   -nmir, --novel_miRNA        include prediction of novel miRNAs
   -c,    --minReadCounts      the minimum read counts supporting novel miRNA detection (default: 2)
   -mloc, --maxMappingLoci     the maximum number of mapping loci for the retained reads for novel miRNA detection (default: 3)
