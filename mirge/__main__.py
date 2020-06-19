@@ -24,14 +24,21 @@ from mirge.libs.novel_mir import predict_nmir
 def main():
     globalstart = time.perf_counter()     
     args = parseArg()
-    check_dependencies(args)
     samples = args.samples
     tStamp = time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
     ourDir = "miRge." + tStamp
     workDir = Path(args.outDir)/ourDir if args.outDir else Path.cwd()/ourDir
     Path(workDir).mkdir(exist_ok=True, parents=True)
     db_keys = {"mirbase":"miRBase", "mirgenedb":"MirGeneDB"}
+    runlogFile = Path(workDir)/"run.log"
+    outlog = open(str(runlogFile),"a+")
+    outlog.write(" ".join(sys.argv))
+    outlog.write("\n")
+    outlog.close()
+    check_dependencies(args, str(runlogFile))
+    outlog = open(str(runlogFile),"a+")
     if args.tRNA_frag and args.organism_name != "human":
+        outlog.write("ERROR: Detection of tRF(tRNA fragments) is only supported for human.\n")
         sys.exit("ERROR: Detection of tRF(tRNA fragments) is only supported for human.")
 
     if args.threads == 0:
@@ -58,22 +65,31 @@ def main():
             somewhere[1] = 'GTTCAGAGTTCTACAGTCCGACGATC'
             args.adapters[0] = tuple(somewhere)
 
-    print("Collecting and validating input files...")
+    if not args.quiet:
+        print("Collecting and validating input files...")
+    outlog.write("Collecting and validating input files...\n")
     file_exts = ['.txt', '.csv']
     file_list = samples[0].split(',')
     if Path(file_list[0]).is_dir():
         file_list = [str(x) for x in Path(file_list[0]).iterdir() if x.is_file()]
-        fastq_fullPath,base_names = validate_files(file_list)
+        fastq_fullPath,base_names = validate_files(file_list, str(runlogFile))
     elif Path(file_list[0]).exists() and Path(file_list[0]).suffix in file_exts: # READ TXT OR CSV FILE HERE
         with open(file_list[0]) as file:
             lines = [line.strip() for line in file]
-            fastq_fullPath, base_names = validate_files(lines)
+            fastq_fullPath, base_names = validate_files(lines, str(runlogFile))
     else:  # READ FASTQ OR FASTQ.gz FILES HERE
-        fastq_fullPath, base_names = validate_files(file_list)
-    print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
+        fastq_fullPath, base_names = validate_files(file_list, str(runlogFile))
+    if not args.quiet:
+        print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
+    outlog.write(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n\n")
+    outlog.close()
     pdDataFrame,sampleReadCounts,trimmedReadCounts,trimmedReadCountsUnique = baking(args, fastq_fullPath, base_names, workDir)
     pdDataFrame = bwtAlign(args,pdDataFrame,workDir,ref_db)
-    print(f"Summarizing and tabulating results...")
+    outlog = open(str(runlogFile),"a+")
+    if not args.quiet:
+        print(f"Summarizing and tabulating results...")
+    outlog.write("\nSummarizing and tabulating results...\n")
+    outlog.close()
     summary_Start_time = time.perf_counter()
     pdMapped = pdDataFrame[pdDataFrame.annotFlag.eq(1)]
     pdUnmapped = pdDataFrame[pdDataFrame.annotFlag.eq(0)]
@@ -86,12 +102,27 @@ def main():
     pdMapped.to_csv(mappedfileToCSV)
     pdUnmapped.to_csv(unmappedfileToCSV)
     summary_End_time = time.perf_counter()
-    print(f'Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n')     
+    outlog = open(str(runlogFile),"a+")
+    if not args.quiet:
+        print(f'Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n')     
+    outlog.write(f"Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n")
     if args.novel_miRNA:
-        print("Predicting novel miRNAs\n")
+        if not args.quiet:
+            print("Predicting novel miRNAs\n")
+        outlog.write("Predicting novel miRNAs\n")
+        outlog.close()
         predict_nmir(args, workDir, ref_db, base_names, pdUnmapped)
+        outlog = open(str(runlogFile),"a+")
+    try:
+        allSamFiles = Path(workDir)/"*.sam"
+        os.system('rm -r %s'%(allSamFiles))
+    except OSError:    
+        pass
     globalend_time = time.perf_counter()
-    print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     
+    if not args.quiet:
+        print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     
+    outlog.write(f"\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n")
+    outlog.close()
 
 
 
