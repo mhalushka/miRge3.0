@@ -74,7 +74,11 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     begningTime = time.perf_counter()
     bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
     bwtInput = Path(workDir)/"bwtInput.fasta"
-    print("Alignment in progress ...")
+    runlogFile = Path(workDir)/"run.log"
+    outlog = open(str(runlogFile),"a+")
+    if not args.quiet:
+        print("Alignment in progress ...")
+    outlog.write("Alignment in progress ...\n")
     indexNames = ['_mirna_', '_hairpin_', '_mature_trna', '_pre_trna', '_snorna', '_rrna', '_ncrna_others', '_mrna', '_mirna_', '_spike-in']
     parameters = [' -n 0 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -v 1 -f -a --best --strata --norc -S --threads ', ' -v 0 -f -a --best --strata --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 1 -f --norc -S --threads ', ' -n 0 -f --norc -S --threads ', ' -5 1 -3 2 -v 2 -f --norc --best -S --threads ', ' -n 0 -f --norc -S --threads ']
     if args.spikeIn:
@@ -133,5 +137,8 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     
     os.remove(bwtInput)
     pdDataFrame = pdDataFrame.fillna('')
-    print(f'Alignment completed in {round(finish-begningTime, 4)} second(s)\n')
+    if not args.quiet:
+        print(f'Alignment completed in {round(finish-begningTime, 4)} second(s)\n')
+    outlog.write(f'Alignment completed in {round(finish-begningTime, 4)} second(s)\n')
+    outlog.close()
     return pdDataFrame

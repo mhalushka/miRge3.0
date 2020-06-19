@@ -25,6 +25,7 @@ def parseArg():
 -bam   --bam-out            switch to output isomiR results in gff format (Default: off) 
 -trf   --tRNA-frag          switch to analyze tRNA fragment and halves (Default: off)
 -o     --outDir             the directory of the outputs (Default: current directory) 
+-shh   --quiet              enable quiet/silent mode, only show warnings and errors (Default: off)
 ''')
     group.add_argument('-s','--samples', nargs='*', required=True, help=argparse.SUPPRESS)
     group.add_argument('-db', '--mir-DB', default='miRBase', required=True, help=argparse.SUPPRESS) 
@@ -41,7 +42,7 @@ def parseArg():
     group.add_argument('-gff', '--gff-out', action='store_true', default=False, help=argparse.SUPPRESS)
     group.add_argument('-trf', '--tRNA-frag', action='store_true', default=False, help=argparse.SUPPRESS)
     group.add_argument('-o', '--outDir', help=argparse.SUPPRESS)
-    group.add_argument('-shh',"--quiet", default=True, action='store_true', help=argparse.SUPPRESS)
+    group.add_argument('-shh',"--quiet", default=False, action='store_true', help=argparse.SUPPRESS)
 
     group1 = parser.add_argument_group("Data pre-processing", description='''-a,    --adapter            Sequence of a 3' adapter. The adapter and subsequent bases are trimmed
 -g,    --front              Sequence of a 5' adapter. The adapter and any preceding bases are trimmed

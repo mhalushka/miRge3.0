@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 
 
-def check_dependencies(args):
+def check_dependencies(args, runlogFile):
     """
     THIS FUNCTION LOOKS FOR DEPENDENCIES REQUIRED TO EXECUTE miRge3.0. 
     """
@@ -10,42 +10,54 @@ def check_dependencies(args):
     samtoolsCommand = Path(args.samtools_path)/"samtools --version" if args.samtools_path else "samtools --version"
     cutadaptCommand = "cutadapt --version"
     rnaFoldCommand = Path(args.RNAfold_path)/"RNAfold --version" if args.RNAfold_path else "RNAfold --version"
-
+    outlog = open(str(runlogFile),"a+")
     # Checking bowtie version #
     bowtie = subprocess.run(str(bwtCommand), shell=True, capture_output=True, text=True)
     bwtver = ["1.2.1", "1.2.2", "1.2.3"]
     if bowtie.returncode==0:
         if not (bowtie.stdout.split('\n')[0].split(' ')[2]) in bwtver:
             print("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2 or 1.2.3) \nUse argument -pbwt <name of the directory>")
+            outlog.write("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2 or 1.2.3) \nUse argument -pbwt <name of the directory>\n")
             exit()
         else:
-            print("bowtie version: "+ str(bowtie.stdout.split('\n')[0].split(' ')[2]))
+            outlog.write("bowtie version: "+ str(bowtie.stdout.split('\n')[0].split(' ')[2])+"\n")
+            if not args.quiet:
+                print("bowtie version: "+ str(bowtie.stdout.split('\n')[0].split(' ')[2]))
     else:
         print("bowtie error!: bowtie, command not found \nUse argument -pbwt <name of the directory>")
+        outlog.write("bowtie error!: bowtie, command not found \nUse argument -pbwt <name of the directory>\n")
         exit()
 
     # Checking cutadapt version #
     cutadapt = subprocess.run(str(cutadaptCommand), shell=True, capture_output=True, text=True)
     try:
         if not cutadapt.returncode==0 and float(cutadapt.stdout.strip()) >= 2.7:
-            print("cutadapt error!. Required: cutadapt =2.7")
+            outlog.write("cutadapt error!. Required: cutadapt =2.7\n")
+            print("cutadapt error!. Required: cutadapt =2.7\n")
             exit()
         else:
-            print("cutadapt version: "+ str(cutadapt.stdout.strip()))
+            if not args.quiet:
+                print("cutadapt version: "+ str(cutadapt.stdout.strip()))
+            outlog.write("cutadapt version: "+ str(cutadapt.stdout.strip())+"\n")
     except ValueError:
-        print("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.")
+        print("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
+        outlog.write("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
 
     # Checking samtools version #
     samtools = subprocess.run(str(samtoolsCommand), shell=True, capture_output=True, text=True)
     if samtools.returncode==0:
         if not float(samtools.stdout.split('\n')[0].split(' ')[1]) >= 1.5:
     #if not samtools.returncode==0 and float(samtools.stdout.split('\n')[0].split(' ')[1]) >= 1.5:
-            print("Samtools error!: incorrect version. Require - samtools >1.5\nUse argument -psam <name of the directory>")
+            print("Samtools error!: incorrect version. Require - samtools >1.5\nUse argument -psam <name of the directory>\n")
+            outlog.write("Samtools error!: incorrect version. Require - samtools >1.5\nUse argument -psam <name of the directory>\n")
             exit()
         else:
-            print("Samtools version: "+ str(samtools.stdout.split('\n')[0].split(' ')[1]))
+            if not args.quiet:
+                print("Samtools version: "+ str(samtools.stdout.split('\n')[0].split(' ')[1]))
+            outlog.write("Samtools version: "+ str(samtools.stdout.split('\n')[0].split(' ')[1])+"\n")
     else:
         print("Samtools error!: samtools, command not found\n Use argument -psam <name of the directory>")
+        outlog.write("Samtools error!: samtools, command not found\n Use argument -psam <name of the directory>\n")
         exit()
     
     """
@@ -57,21 +69,29 @@ def check_dependencies(args):
         if rnafold.returncode==0:
             if not str(rnafold.stdout.split('\n')[0].split(' ')[1]) == "2.4.14":
                 print("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>")
+                outlog.write("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>\n")
                 exit()
             else:
-                print("RNAfold version: "+ str(rnafold.stdout.split('\n')[0].split(' ')[1]))
+                if not args.quiet:
+                    print("RNAfold version: "+ str(rnafold.stdout.split('\n')[0].split(' ')[1]))
+                outlog.write("RNAfold version: "+ str(rnafold.stdout.split('\n')[0].split(' ')[1])+"\n")
         else:
             print("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>")
+            outlog.write("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>\n")
             exit()
         if args.organism_name  not in ['human', 'mouse']:
-            print(f"NOTICE: For {args.organism_name}, the predictive model is trained on \"human\" and \"mouse\".")
+            if not args.quiet:
+                print(f"NOTICE: For {args.organism_name}, the predictive model is trained on \"human\" and \"mouse\".")
+            outlog.write(f"NOTICE: For {args.organism_name}, the predictive model is trained on \"human\" and \"mouse\".\n")
+    outlog.close()
 
 
 
-def validate_files(in_fileArray, fastq_fullPath=[], base_names=[]):
+def validate_files(in_fileArray, runlogFile, fastq_fullPath=[], base_names=[]):
     """
     THIS FUNCTION VERIFIES THE INPUT FILES TO BE RUN FOR EXTENSIONS ENDING WITH EITHER .fastq (OR) .fasta.gz. THERE BY OMIT OTHER FILES FROM RUNNING THROUGH miRge3.0
     """
+    outlog = open(str(runlogFile),"a+")
     for files in in_fileArray:
        filetype = ''.join(Path(files).suffixes) if Path(files).suffix == ".gz" else Path(files).suffix
        if Path(files).exists() and (filetype.endswith(".fastq") or filetype.endswith(".fastq.gz")):
@@ -81,12 +101,17 @@ def validate_files(in_fileArray, fastq_fullPath=[], base_names=[]):
            base_names.append(('.').join(files.split('.')[:-2]) if Path(files).suffix == ".gz" else ('.').join(files.split('.')[:-1]))
            #base_names.append(Path(str(Path(files)).replace(''.join(Path(files).suffixes),'')).stem if Path(files).suffix == ".gz" else Path(files).stem)
        else:
-           print(f"\nWARNING: File {files} does not exists!") if not Path(files).exists() else print(f"\nWARNING: File {files} is neither fastq or fastq.gz format!")
-           print(f"Omitting file {files}")
+            if not args.quiet:
+               print(f"\nWARNING: File {files} does not exists!") if not Path(files).exists() else print(f"\nWARNING: File {files} is neither fastq or fastq.gz format!")
+               print(f"Omitting file {files}")
+            outlog.write(f"\nWARNING: File {files} does not exists!\n") if not Path(files).exists() else print(f"\nWARNING: File {files} is neither fastq or fastq.gz format!\n")
+            outlog.write(f"Omitting file {files}\n")
     #Validating files in the list where the list should not be empty:
     if not fastq_fullPath:
-        print("\nERROR!: No valid input files were available!\nPlease verify miRge -s arguments")
+        print("\nERROR!: No valid input files were available!\nPlease verify miRge -s arguments\n")
+        outlog.write("\nERROR!: No valid input files were available!\nPlease verify miRge -s arguments\n")
         exit()
+    outlog.close()
     return fastq_fullPath, base_names
 
 

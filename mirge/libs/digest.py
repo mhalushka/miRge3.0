@@ -107,6 +107,8 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     sampleReadCounts={}
     trimmedReadCounts={}
     trimmedReadCountsUnique={}
+    runlogFile = Path(workDir)/"run.log"
+    outlog = open(str(runlogFile),"a+")
     for index, FQfile in enumerate(inFileArray):
         start = time.perf_counter()
         finish2=finish3=finish4=finish5=0
@@ -154,7 +156,9 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         trimmedReadCounts.update(digestReadCounts)
         trimmedReadCountsUnique.update(uniqTrimmedReads)
         finish2 = time.perf_counter()
-        print(f'Cutadapt finished for file {inFileBaseArray[index]} in {round(finish2-start, 4)} second(s)')
+        if not args.quiet:
+            print(f'Cutadapt finished for file {inFileBaseArray[index]} in {round(finish2-start, 4)} second(s)')
+        outlog.write(f'Cutadapt finished for file {inFileBaseArray[index]} in {round(finish2-start, 4)} second(s)\n')
         """
         CREATING PANDAS MATRIX FOR ALL THE SAMPLES THAT CAME THROUGH 
         WILL BE EDITED TO A FUNCTION, ONCE UMI COMES IN PICTURE
@@ -180,7 +184,9 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
             collapsed_df = pd.DataFrame() 
         complete_set = complete_set.fillna(0).astype(int)
         finish3 = time.perf_counter()
-        print(f'Collapsing finished for file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
+        if not args.quiet:
+            print(f'Collapsing finished for file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
+        outlog.write(f'Collapsing finished for file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
     
     #complete_set['SeqLength'] = complete_set.index.str.len()
     initialFlags = ['exact miRNA','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','isomiR miRNA','spike-in'] # keeping other columns ready for next assignment
@@ -193,9 +199,14 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     complete_set = complete_set.reindex(columns=finalColumns)
     complete_set = complete_set.astype({"annotFlag": int})
     finish4 = time.perf_counter()
-    print(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
+    if not args.quiet:
+        print(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
+    outlog.write(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
     EndTime = time.perf_counter()
-    print(f'Completed in {round(EndTime-begningTime, 4)} second(s)\n')
+    if not args.quiet:
+        print(f'Data pre-processing completed in {round(EndTime-begningTime, 4)} second(s)\n')
+    outlog.write(f'\nData pre-processing completed in {round(EndTime-begningTime, 4)} second(s)\n\n')
+    outlog.close()
     return(complete_set, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique)
 
 

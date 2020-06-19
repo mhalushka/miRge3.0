@@ -211,8 +211,13 @@ def preTrimClusteredSeq(CoordinateDic, cluster_file, files, clusterSeqLenCutoff,
 
 def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
     predict_start_time = time.perf_counter()
-    print('\nPerforming prediction of novel miRNAs...')
-    print('Start to predict')
+    runlogFile = Path(workDir)/"run.log"
+    outlog = open(str(runlogFile),"a+")
+    if not args.quiet:
+        print('\nPerforming prediction of novel miRNAs...')
+        print('Start to predict')
+    outlog.write('\nPerforming prediction of novel miRNAs...')
+    outlog.write('Start to predict')
     samtoolsBinary = Path(args.samtools_path)/"samtools " if args.samtools_path else "samtools " 
     rnafoldBinary = Path(args.RNAfold_path)/"RNAfold " if args.RNAfold_path else "RNAfold "
     species = args.organism_name
@@ -244,6 +249,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
     genome_index = Path(args.libraries_path)/args.organism_name/'index.Libs'/genome_idx
     if not Path(indexPath).exists():
         print(f'ERROR: The bowtie index file of {species}_genome.*.ebwt is not located at {indexPath}, please check it.')
+        outlog.write(f'ERROR: The bowtie index file of {species}_genome.*.ebwt is not located at {indexPath}, please check it.')
         exit()
     try:
         with open(genome_repeats, 'rb') as f:
@@ -368,6 +374,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
                 split_fasta_from_sam(outfile4, fileNameTemp, str(imperfect_FASTA))
             except IOError:
                 print('No cluster sequences are generated and prediction is aborted.')
+                outlog.write('No cluster sequences are generated and prediction is aborted.')
                 os.system('rm -r %s'%(outputdir2))
                 sys.exit(1)
             # Align the rest part of reads to the cluster sequences with up to 1 mismatches with special 5 vs 3 prime considerations.
@@ -433,4 +440,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmdTmp, str(Path(outputdir2)), files)
     predict_end_time = time.perf_counter()
     os.system('rm -r %s'%(outputdir2))
-    print('Prediction of novel miRNAs Completed (%.2f sec)'%(predict_end_time - predict_start_time))
+    if not args.quiet:
+        print('Prediction of novel miRNAs Completed (%.2f sec)'%(predict_end_time - predict_start_time))
+    outlog.write('Prediction of novel miRNAs Completed (%.2f sec)'%(predict_end_time - predict_start_time))
+    outlog.close()
