@@ -72,13 +72,13 @@ def main():
     file_list = samples[0].split(',')
     if Path(file_list[0]).is_dir():
         file_list = [str(x) for x in Path(file_list[0]).iterdir() if x.is_file()]
-        fastq_fullPath,base_names = validate_files(file_list, str(runlogFile))
+        fastq_fullPath,base_names = validate_files(args, file_list, str(runlogFile))
     elif Path(file_list[0]).exists() and Path(file_list[0]).suffix in file_exts: # READ TXT OR CSV FILE HERE
         with open(file_list[0]) as file:
             lines = [line.strip() for line in file]
-            fastq_fullPath, base_names = validate_files(lines, str(runlogFile))
+            fastq_fullPath, base_names = validate_files(args, lines, str(runlogFile))
     else:  # READ FASTQ OR FASTQ.gz FILES HERE
-        fastq_fullPath, base_names = validate_files(file_list, str(runlogFile))
+        fastq_fullPath, base_names = validate_files(args, file_list, str(runlogFile))
     if not args.quiet:
         print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
     outlog.write(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n\n")
@@ -113,11 +113,16 @@ def main():
         outlog.close()
         predict_nmir(args, workDir, ref_db, base_names, pdUnmapped)
         outlog = open(str(runlogFile),"a+")
-    try:
-        allSamFiles = Path(workDir)/"*.sam"
-        os.system('rm -r %s'%(allSamFiles))
-    except OSError:    
-        pass
+
+    for fname in os.listdir(str(Path(workDir))):
+        if fname.endswith('.sam'):
+            try:
+                allSamFiles = Path(workDir)/"*.sam"
+                os.system('rm -r %s'%(allSamFiles))
+                break
+            except OSError:    
+                pass
+
     globalend_time = time.perf_counter()
     if not args.quiet:
         print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     
