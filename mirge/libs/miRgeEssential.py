@@ -87,7 +87,7 @@ def check_dependencies(args, runlogFile):
 
 
 
-def validate_files(in_fileArray, runlogFile, fastq_fullPath=[], base_names=[]):
+def validate_files(args, in_fileArray, runlogFile, fastq_fullPath=[], base_names=[]):
     """
     THIS FUNCTION VERIFIES THE INPUT FILES TO BE RUN FOR EXTENSIONS ENDING WITH EITHER .fastq (OR) .fasta.gz. THERE BY OMIT OTHER FILES FROM RUNNING THROUGH miRge3.0
     """
