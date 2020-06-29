@@ -143,6 +143,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 gen_start = int(mature_cor_start[seq_master])
                 gen_end = int(mature_cor_end[seq_master])
                 gen_strand = mature_strand[seq_master] 
+                #print(master_seq, req_precursor_name, gen_chr, gen_start, gen_end, gen_strand)
             else:
                 seq_master = seq_master.replace("-3p","")
                 seq_master = seq_master.replace("-5p","")
@@ -154,7 +155,9 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 gen_start = int(mature_cor_start[seq_master])
                 gen_end = int(mature_cor_end[seq_master])
                 gen_strand = mature_strand[seq_master] 
+                #print(master_seq, req_precursor_name, gen_chr, gen_start, gen_end, gen_strand)
             precursorSeq = pre_mirDict[req_precursor_name] # # Fetch sequence of the corresponding precursor miRNA 
+            #print(precursorSeq)
 
             if precursorSeq != "":
                 start = precursorSeq.find(master_seq) + 1 # This is to calculate coordinates of the mature miRNA seq wrt precursor 
@@ -175,6 +178,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 # Finally to write GFF output for ref_miRNA 
 
                 mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant=NA; Cigar="+cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
+                #print(mi_var)
                 gffwrite.write(mi_var)
                 bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ cigar + "\t"+ gen_strand 
                     #bow2bam
@@ -563,7 +567,6 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     subpdMapped = pdMapped[(pdMapped['exact miRNA'].astype(bool) | pdMapped['isomiR miRNA'].astype(bool))]
     cannonical = pdMapped[pdMapped['exact miRNA'].astype(bool)]
     isomirs = pdMapped[pdMapped['isomiR miRNA'].astype(bool)]
-
     cannonical_4ie = cannonical
     isomirs_4ie = isomirs
     if args.gff_out or args.bam_out:
@@ -588,8 +591,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
             if '>' in srow:
                 srow = srow.replace(">","")
                 headmil = srow.split(" ")[0]
-                if "MirGeneDB" in ref_db:
-                    headmil = headmil.split("_")[0]
+                #if "MirGeneDB" in ref_db:
+                #    headmil = headmil.split("_")[0]
             else:
                 #headmil = '-'.join(headmil.split('-')[:-1])
                 pre_mirDict[headmil] = srow
@@ -599,8 +602,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
                 mil = mil.strip()
                 if '>' in mil:
                     headmil_mi = mil.replace(">","")
-                    if "MirGeneDB" in ref_db:
-                        headmil_mi = headmil_mi.split("_")[0]
+                    #if "MirGeneDB" in ref_db:
+                    #    headmil_mi = headmil_mi.split("_")[0]
                 else:
                     mirDict[headmil_mi] = mil
         d = Differ()
