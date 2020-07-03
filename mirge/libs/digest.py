@@ -144,10 +144,6 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                             completeDict[varx[0]] = int(varx[1])
                             trimmed+=int(varx[1])
                 readobj=[]
-        """
-        TO DO: 
-        CREATE A DATAFRAME OF SUMMARY STATISTICS AND RETURN TO MAIN FUNCTION, WHICH CAN BE USED FOR ALIGNMENT SUMMARY.
-        """
         digestReadCounts = {inFileBaseArray[index]:trimmed}
         uniqTrimmedReads = {inFileBaseArray[index]:len(completeDict)}
         #digestReadCounts = {inFileBaseArray[index]:sum(completeDict.values())}
@@ -210,9 +206,12 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     return(complete_set, sampleReadCounts, trimmedReadCounts, trimmedReadCountsUnique)
 
 
-def UMIParser(s, n=4):
+def UMIParser(s, f, b):
     #front = s[:n]
-    center = s[n:-n]
+    if int(b) != 0:
+        center = s[f:-b]
+    else:
+        center = s[f:]
     #end = s[-n:]
     return (center)
     #return (front, center, end)
@@ -228,7 +227,8 @@ def cutadapt(fq):
         if umi:
             if int(len(fqreads.sequence)) >= int(min_len):
                 #print(str(fqreads.sequence)+"\n")
-                seq = UMIParser(fqreads.sequence, 4)
+                umi_cut = umi.split(",")
+                seq = UMIParser(fqreads.sequence, int(umi_cut[0]), int(umi_cut[1]))
                 #start,seq,end = UMIParser(fqreads.sequence, 4)
                 #print(str(start)+str(end)+"\n")
                 if int(len(seq)) >= int(min_len):

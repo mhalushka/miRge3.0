@@ -54,7 +54,7 @@ def parseArg():
                             modifications are applied after adapter trimming
 -NX,   --trim-n             Trim N's on ends of reads
 -m,    --minimum-length     Discard reads shorter than LEN. (Default: 16)
--umi,  --uniq-mol-ids       Removes 4bp from both ends of the read. Modification applied after adapter trimming
+-umi,  --uniq-mol-ids       Removes PCR duplicates and trim UMI of length by specifying two comma-separated cutoffs as 5’ cutoff,3’ bp from both ends of the read. eg: 4,4 or 0,4 
 
 ''')
     group1.add_argument("-a", "--adapter", type=lambda x: ("back", x), action="append",
@@ -67,7 +67,7 @@ def parseArg():
     group1.add_argument("--length", "-l", type=int, default=3, metavar="LENGTH", help=argparse.SUPPRESS)
     group1.add_argument("-NX", "--trim-n", action='store_true', default=False, help=argparse.SUPPRESS)
     group1.add_argument("-m", "--minimum-length", default=16, help=argparse.SUPPRESS)
-    group1.add_argument("-umi", "--uniq-mol-ids", default=None, help=argparse.SUPPRESS, action='store_true')
+    group1.add_argument("-umi", "--uniq-mol-ids", default=None, help=argparse.SUPPRESS)
     #### we use none of the following cutadapt options but are required to pass default values for miRNA and cutadapt pipeline
     group1.add_argument("-op", "--output", metavar="FILE", help=argparse.SUPPRESS) #"Default: write to standard output"
     group1.add_argument("--compression-level", type=int, default=6, help=argparse.SUPPRESS)
