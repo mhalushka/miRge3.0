@@ -276,7 +276,6 @@ def get_precursors(outputdir2, infFile, chrSeqDic):
     infTmp = str(Path(outputdir2)/(infFile+"_features.tsv"))
     outf_file = str(Path(outputdir2)/(infFile+"_precursor.fa"))
     # The arguments of this function are as follows:
-    # /home/yin/lib/human/hg38.pckl  unmapped_mirna_SRR944031_vs_representative_seq_bowtie2_modified_selected.tsv
     clusterSeqType = 'stableClusterSeq'
     # To do, redefine the startPos and endPos....
     outf = open(outf_file,"w+")

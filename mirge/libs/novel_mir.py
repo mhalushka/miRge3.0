@@ -420,7 +420,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             renameStrFile(infile_pre, outfile_str, strFileOut)
             time12 = time.perf_counter()
             outfLog.write('Folding precursors with RNAfold time: %.1fs\n'%(time12-time11))
-            screen_precusor_candidates(str(Path(outputdir2)), files, str(Path(outputdir2)/(files+"_features.tsv")), strFileOut, rnafoldCmdTmp)
+            screen_precusor_candidates(str(Path(outputdir2)), files, str(Path(outputdir2)/(files+"_features.tsv")), strFileOut, str(rnafoldCmdTmp))
             outfLog.write('********************\n')
             outfLog.flush()
             modelDirTmp = Path(__file__).resolve().parents[1]
@@ -437,7 +437,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             novelmiRNALListFile = str(Path(outputdir2)/(files+'_novel_miRNAs_miRge2.0.csv'))
             featureFile = fileToPredict
             clusterFile = str(Path((outputdir2)/(files+'_cluster.txt')))
-            write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmdTmp, str(Path(outputdir2)), files)
+            write_novel_report(novelmiRNALListFile, featureFile, clusterFile, str(rnafoldCmdTmp), str(Path(outputdir2)), files)
     predict_end_time = time.perf_counter()
     os.system('rm -r %s'%(outputdir2))
     if not args.quiet:

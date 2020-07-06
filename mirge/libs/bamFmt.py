@@ -7,7 +7,7 @@ import os, sys
 
 def fetchGenCor(args, index_file_name, dict_gen_coordinates):
     bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
-    bwtExec = bwtCommand+" -n "+ str(index_file_name)
+    bwtExec = str(bwtCommand) +" -n "+ str(index_file_name)
     bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
     if bowtie.returncode==0:
         bwtOut = bowtie.stdout

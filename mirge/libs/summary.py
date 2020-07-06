@@ -581,7 +581,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         annotation_lib = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/annotation_pre_fname
 
         bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
-        bwtExec = bwtCommand+" -a 20000 -e "+ str(precursor_file)
+        bwtExec = str(bwtCommand) + " -a 20000 -e "+ str(precursor_file)
         bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
         #READING PRECURSOR miRNA SEQUENCES INFORMATION IN A DICTIONARY (pre_mirDict)
         if bowtie.returncode==0:
@@ -669,7 +669,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     miRgeRPMToCSV = Path(workDir)/"miR.RPM.csv"
     indexName  = str(args.organism_name) + '_mirna_' + str(ref_db)
     indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-    bwtExec = "bowtie-inspect -n " + str(indexFiles)
+    bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
+    bwtExec = str(bwtCommand) + " -n " + str(indexFiles)
     #bwtExec = "bowtie-inspect -n /home/arun/repositories/Project_120919/mirge/Libs/human/index.Libs/human_mirna_miRBase"
     bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
     if bowtie.returncode==0:
@@ -974,7 +975,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         file_pre_tRNA = args.organism_name+'_pre_trna'
         indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/file_pre_tRNA
         bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
-        bwtExec = bwtCommand+" -a 20000 -e "+ str(indexFiles)
+        bwtExec = str(bwtCommand) +" -a 20000 -e "+ str(indexFiles)
         bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
         #READING PRECURSOR miRNA SEQUENCES INFORMATION IN A DICTIONARY (pre_mirDict)
         if bowtie.returncode==0:
