@@ -227,7 +227,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
     genome_repeats = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/genomRepeats
     genome_fa = Path(args.libraries_path)/args.organism_name/"fasta.Libs"/genomFasta
     mature_miRNA_fa = Path(args.libraries_path)/args.organism_name/"fasta.Libs"/genom_miRDB
-    nameAbbrNameDic ={'human':'hsa', 'zebrafish':'dre', 'mouse':'mmu', 'rat':'rno', 'fruitfly':'dme', 'nematode':'cel'}
+    nameAbbrNameDic ={'human':'hsa', 'zebrafish':'dre', 'mouse':'mmu', 'rat':'rno', 'fruitfly':'dme', 'nematode':'cel', 'hamster':'mau'}
     abbrName = nameAbbrNameDic[species]
     speciesNameDic = {species:abbrName}
     if args.organism_name  not in ['human', 'mouse']:
@@ -328,6 +328,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
         outfLog.write('********************\n')
         outfLog.flush()
         for files in base_names:
+            errorTrue = 0
             outfLog.write(f'Processing {files}\n')
             outfLog.write(f'**There are {str(rawReadCounts[files])} collapsed reads in the raw fasta file\n')
             outfLog.write(f'**After filtering, there are {str(filteredReadCounts[files])} reads left\n')
@@ -363,81 +364,92 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             #os.system('%s -f %s_clusters_trimmed_orig.fa %s_representative_seq >> %s 2>&1'%(bwtBuildCmdTmp, outfile2, outfile3, outLogTemp))
             outfile3 = Path(outputdir2)/(files+"_representative_seq")
             bwtBuildExec = str(bwtBuildCmdTmp) +" -f "+ str(clusterTrimedFile_orig_FASTA) + " " + str(outfile3) + " --threads " + str(args.threads) 
-            bowtie = subprocess.run(str(bwtBuildExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+            try:
+                bowtie = subprocess.run(str(bwtBuildExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+            except subprocess.CalledProcessError:
+                errorTrue = 1
+                pass
             # Align the total reads to the cluster sequences with exact match. '--norc' only considers matching to the forwad reference strand.
             outfile4 = Path(outputdir2)/(files+"_tmp1.sam")
             bwt2Exec = str(bwtCmdTmp) +" "+ str(outfile3) + " " + str(fileNameTemp) + " -f -n 0 --best -a --norc --threads " + str(args.threads) + " -m " + str(mapping_loc) + " -l "+ str(seedLength) + " -S " + str(outfile4)
-            bowtie = subprocess.run(str(bwt2Exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+            try:
+                bowtie = subprocess.run(str(bwt2Exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+            except subprocess.CalledProcessError:
+                errorTrue = 1
+                pass
             #Generate the reads that can't align to the cluster reads.
             try:
                 imperfect_FASTA=Path(outputdir2)/(files+"_imperfectMath2Cluster.fa")
                 split_fasta_from_sam(outfile4, fileNameTemp, str(imperfect_FASTA))
             except IOError:
-                print('No cluster sequences are generated and prediction is aborted.')
-                outlog.write('No cluster sequences are generated and prediction is aborted.')
-                os.system('rm -r %s'%(outputdir2))
-                sys.exit(1)
+                errorTrue = 1
+                outlog.write(f'No cluster sequences are generated and prediction is aborted for {files}.\n')
+                #os.system('rm -r %s'%(outputdir2))
+                #sys.exit(1)
             # Align the rest part of reads to the cluster sequences with up to 1 mismatches with special 5 vs 3 prime considerations.
             # The alignments in the best stratum are those having the least number of mismatches.
             # '--norc' only considers matching to the forwad reference strand.
-            outfile4_tmp2 = Path(outputdir2)/(files+"_tmp2.sam")
-            bwt3Exec = str(bwtCmdTmp) +" "+ str(outfile3) + " " + str(imperfect_FASTA) + " -f -n 1 -l 15 -5 1 -3 3 --best --strata -a --norc --threads " + str(args.threads) + " -S " + str(outfile4_tmp2)
-            bowtie = subprocess.run(str(bwt3Exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
-            # Combine the aligned result of the two type of reads: perfect matched reads and imperfect matched reads.
-            combined_Sam = Path(outputdir2)/(files+".sam")  
-            combineSam(str(outfile4), str(outfile4_tmp2), str(combined_Sam))
-            time8 = time.perf_counter()
-            outfLog.write('Building bowtie index file and mapping reads to the clustered seqneces time: %.1fs\n'%(time8-time7))
-            outfLog.write('Decorating bowtie output sam files\n')
-            outfile_modifiedSam = Path(outputdir2)/(files+"_modified.sam")
-            outfile_modSam_RepSeq = Path(outputdir2)/(files+"_RepSeq_modified.sam")
-            decorateSam(str(combined_Sam), str(fileNameTemp), str(outfile_modifiedSam), str(clusterTrimedFile_orig_FASTA)) #Decorate SAM handles two different inputs and produce two outputs!!!
-            decorateSam(str(outfile2), str(fileNameTemp), str(outfile_modSam_RepSeq))
-            outfLog.write('Decorating is done\n')
-            outfileSelectTSV = Path(outputdir2)/(files+"_selected.tsv")
-            outfileRevKeptTSV = Path(outputdir2)/(files+"_selected_reverseKept.tsv")
-            parse_refine_sam(str(outfile_modifiedSam), str(outfileSelectTSV), str(outfileRevKeptTSV))
-            #os.system('rm %s.bam %s.sam %s.bai %s.bam'%(outfile1, outfile1, outfile2, outfile2))
-            os.system('sort -k6,6 -k1,1 %s > %s'%(str(outfileSelectTSV), str(Path(outputdir2)/(files+"_modified_selected_sorted.tsv"))))
-            os.system('sort -k6,6 -k1,1 %s > %s'%(str(outfileRevKeptTSV), str(Path(outputdir2)/(files+"_modified_selected_reverseKept_sorted.tsv"))))
-            # Trimming the clustered seuences based on the alligned results of all the reads (secondary filtering)
-            #generate_featureFiles(outfile4+'_modified_selected_sorted.tsv', chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDic, exactmiRNASeqDic)
-            generate_featureFiles(str(Path(outputdir2)), files, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDic, exactmiRNASeqDic)
-            outfLog.write('feature file is generated\n')
-            outfLog.write('Generating the precusors based on the clustered sequences\n')
-            time9 = time.perf_counter()
-            precursor_count = get_precursors(str(Path(outputdir2)), files, chrSeqDic)
-            time10 = time.perf_counter()
-            outfLog.write('Generating the precusors based on the clustered sequences time: %.1fs\n'%(time10-time9))
-            outfLog.write(f'**There are {str(precursor_count)} precusors generated\n')
-            outfLog.write('Folding precursors with RNAfold\n')
-            time11 = time.perf_counter()
-            infile_pre = str(Path(outputdir2)/(files+"_precursor.fa"))
-            outfile_str = str(Path(outputdir2)/(files+"_precursor_tmp.str"))
-            rnafld_exec = str(rnafoldCmdTmp) + " " + str(infile_pre) + " --noPS --noLP > " + str(outfile_str)
-            rnafldRun = subprocess.run(str(rnafld_exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
-            strFileOut= str(Path(outputdir2)/(files+"_precursor.str"))
-            renameStrFile(infile_pre, outfile_str, strFileOut)
-            time12 = time.perf_counter()
-            outfLog.write('Folding precursors with RNAfold time: %.1fs\n'%(time12-time11))
-            screen_precusor_candidates(str(Path(outputdir2)), files, str(Path(outputdir2)/(files+"_features.tsv")), strFileOut, str(rnafoldCmdTmp))
-            outfLog.write('********************\n')
-            outfLog.flush()
-            modelDirTmp = Path(__file__).resolve().parents[1]
-            modelDir = str(Path(modelDirTmp)/'models')
-            fileToPredict = Path(outputdir2)/(files+'_updated_stableClusterSeq_15.tsv')
-            preprocess_featureFiles(str(Path(outputdir2)), files, fileToPredict, str(Path(modelDir)/'total_features_namelist.txt'))
-            speciesType = args.organism_name
-            if args.organism_name == "human" or args.organism_name == "mouse":
-                mf = str(Path(modelDir)/(speciesType+'_svc_model.pkl'))
-            else:
-                mf = str(Path(modelDir)/"others_svc_model.pkl")
-            model_predict(str(outputdir2), files, mf)
-            #model_predict(str(outputdir2), files, str(Path(modelDir)/(speciesType+'_svc_model.pkl')))
-            novelmiRNALListFile = str(Path(outputdir2)/(files+'_novel_miRNAs_miRge2.0.csv'))
-            featureFile = fileToPredict
-            clusterFile = str(Path((outputdir2)/(files+'_cluster.txt')))
-            write_novel_report(novelmiRNALListFile, featureFile, clusterFile, str(rnafoldCmdTmp), str(Path(outputdir2)), files)
+            if errorTrue != 1:
+                outfile4_tmp2 = Path(outputdir2)/(files+"_tmp2.sam")
+                bwt3Exec = str(bwtCmdTmp) +" "+ str(outfile3) + " " + str(imperfect_FASTA) + " -f -n 1 -l 15 -5 1 -3 3 --best --strata -a --norc --threads " + str(args.threads) + " -S " + str(outfile4_tmp2)
+                bowtie = subprocess.run(str(bwt3Exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+                # Combine the aligned result of the two type of reads: perfect matched reads and imperfect matched reads.
+                combined_Sam = Path(outputdir2)/(files+".sam")  
+                combineSam(str(outfile4), str(outfile4_tmp2), str(combined_Sam))
+                time8 = time.perf_counter()
+                outfLog.write('Building bowtie index file and mapping reads to the clustered seqneces time: %.1fs\n'%(time8-time7))
+                outfLog.write('Decorating bowtie output sam files\n')
+                outfile_modifiedSam = Path(outputdir2)/(files+"_modified.sam")
+                outfile_modSam_RepSeq = Path(outputdir2)/(files+"_RepSeq_modified.sam")
+                decorateSam(str(combined_Sam), str(fileNameTemp), str(outfile_modifiedSam), str(clusterTrimedFile_orig_FASTA)) #Decorate SAM handles two different inputs and produce two outputs!!!
+                decorateSam(str(outfile2), str(fileNameTemp), str(outfile_modSam_RepSeq))
+                outfLog.write('Decorating is done\n')
+                outfileSelectTSV = Path(outputdir2)/(files+"_selected.tsv")
+                outfileRevKeptTSV = Path(outputdir2)/(files+"_selected_reverseKept.tsv")
+                parse_refine_sam(str(outfile_modifiedSam), str(outfileSelectTSV), str(outfileRevKeptTSV))
+                #os.system('rm %s.bam %s.sam %s.bai %s.bam'%(outfile1, outfile1, outfile2, outfile2))
+                os.system('sort -k6,6 -k1,1 %s > %s'%(str(outfileSelectTSV), str(Path(outputdir2)/(files+"_modified_selected_sorted.tsv"))))
+                os.system('sort -k6,6 -k1,1 %s > %s'%(str(outfileRevKeptTSV), str(Path(outputdir2)/(files+"_modified_selected_reverseKept_sorted.tsv"))))
+                # Trimming the clustered seuences based on the alligned results of all the reads (secondary filtering)
+                #generate_featureFiles(outfile4+'_modified_selected_sorted.tsv', chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDic, exactmiRNASeqDic)
+                generate_featureFiles(str(Path(outputdir2)), files, chrSeqDic, chrSeqLenDic, miRNAchrCoordivateDic, exactmiRNASeqDic)
+                outfLog.write('feature file is generated\n')
+                outfLog.write('Generating the precusors based on the clustered sequences\n')
+                time9 = time.perf_counter()
+                precursor_count = get_precursors(str(Path(outputdir2)), files, chrSeqDic)
+                time10 = time.perf_counter()
+                outfLog.write('Generating the precusors based on the clustered sequences time: %.1fs\n'%(time10-time9))
+                outfLog.write(f'**There are {str(precursor_count)} precusors generated\n')
+                outfLog.write('Folding precursors with RNAfold\n')
+                time11 = time.perf_counter()
+                infile_pre = str(Path(outputdir2)/(files+"_precursor.fa"))
+                outfile_str = str(Path(outputdir2)/(files+"_precursor_tmp.str"))
+                rnafld_exec = str(rnafoldCmdTmp) + " " + str(infile_pre) + " --noPS --noLP > " + str(outfile_str)
+                rnafldRun = subprocess.run(str(rnafld_exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+                strFileOut= str(Path(outputdir2)/(files+"_precursor.str"))
+                renameStrFile(infile_pre, outfile_str, strFileOut)
+                time12 = time.perf_counter()
+                outfLog.write('Folding precursors with RNAfold time: %.1fs\n'%(time12-time11))
+                screen_precusor_candidates(str(Path(outputdir2)), files, str(Path(outputdir2)/(files+"_features.tsv")), strFileOut, str(rnafoldCmdTmp))
+                outfLog.write('********************\n')
+                outfLog.flush()
+                modelDirTmp = Path(__file__).resolve().parents[1]
+                modelDir = str(Path(modelDirTmp)/'models')
+                fileToPredict = Path(outputdir2)/(files+'_updated_stableClusterSeq_15.tsv')
+                preprocess_featureFiles(str(Path(outputdir2)), files, fileToPredict, str(Path(modelDir)/'total_features_namelist.txt'))
+                speciesType = args.organism_name
+                if args.organism_name == "human" or args.organism_name == "mouse":
+                    mf = str(Path(modelDir)/(speciesType+'_svc_model.pkl'))
+                else:
+                    mf = str(Path(modelDir)/"others_svc_model.pkl")
+                model_predict(str(outputdir2), files, mf)
+                #model_predict(str(outputdir2), files, str(Path(modelDir)/(speciesType+'_svc_model.pkl')))
+                novelmiRNALListFile = str(Path(outputdir2)/(files+'_novel_miRNAs_miRge2.0.csv'))
+                featureFile = fileToPredict
+                clusterFile = str(Path((outputdir2)/(files+'_cluster.txt')))
+                write_novel_report(novelmiRNALListFile, featureFile, clusterFile, str(rnafoldCmdTmp), str(Path(outputdir2)), files)
+    if errorTrue ==1: 
+        print(f'No cluster sequences are generated and prediction is aborted.')
     predict_end_time = time.perf_counter()
     os.system('rm -r %s'%(outputdir2))
     if not args.quiet:

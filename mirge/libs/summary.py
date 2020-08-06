@@ -96,9 +96,11 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         pre_name = annlib_list[8].split(";")[0]
                         pre_name = pre_name.replace("ID=","")
                         pre_strand[pre_name] = annlib_list[6]
+                        #print(pre_name)
                     else:
                         mature_name = annlib_list[8].split(";")[0]
                         mature_name = mature_name.replace("ID=","")
+                        #print(mature_name)
                         if mature_name not in pre_cur_name:
                             pre_cur_name[mature_name] = pre_name
                             mature_chromosome[mature_name] = annlib_list[0]
@@ -121,6 +123,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                             mature_strand[mature_name] =  annlib_list[6] # Genomic strand 
             except IndexError:
                 pass
+    #print(pre_cur_name)
     bam_can_dict={}
     bam_expression_dict={}
     for cans in canonical_gff:
@@ -135,6 +138,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
         canonical_expression = ','.join(str(x) for x in cans[2:]) # Expression/collapsed counts for each sample - joining by ','
         bam_expression_dict[seq_m] = [int(x) for x in cans[2:]]
         new_string=""
+        #print(seq_master)
         try:
             if seq_master in pre_cur_name:
                 master_seq = mirDict[seq_master] # Fetch mature miRNA sequence 
@@ -149,13 +153,18 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 seq_master = seq_master.replace("-5p","")
                 seq_master = seq_master.replace("-3p*","")
                 seq_master = seq_master.replace("-5p*","")
+                #print(seq_master)
                 master_seq = mirDict[seq_master] # Fetch mature miRNA sequence
                 req_precursor_name = pre_cur_name[seq_master] # Fetch name of the corresponding precursor miRNA name
+                #print(req_precursor_name)
                 gen_chr = mature_chromosome[seq_master]
+                #print(gen_chr)
                 gen_start = int(mature_cor_start[seq_master])
                 gen_end = int(mature_cor_end[seq_master])
                 gen_strand = mature_strand[seq_master] 
+                #print(gen_start, gen_end, gen_strand)
                 #print(master_seq, req_precursor_name, gen_chr, gen_start, gen_end, gen_strand)
+            #print(req_precursor_name)
             precursorSeq = pre_mirDict[req_precursor_name] # # Fetch sequence of the corresponding precursor miRNA 
             #print(precursorSeq)
 

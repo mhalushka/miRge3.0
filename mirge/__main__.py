@@ -45,6 +45,10 @@ def main():
         args.threads = multiprocessing.cpu_count()
 
     ref_db = db_keys.get(args.mir_DB.lower()) if args.mir_DB.lower() in db_keys else sys.exit("ERROR: Require valid database (-d miRBase or MirGeneDB)")
+    if args.organism_name == "hamster":
+        if "mirbase" in args.mir_DB.lower():
+            print("Library for hamster is not developed for miRBase, therefore, MirGeneDB is used")
+        ref_db = "MirGeneDB"
     if len(args.adapters) == 2:
         back = list(args.adapters[0])
         if back[1] == "illumina":
