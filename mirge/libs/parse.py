@@ -42,6 +42,7 @@ def parseArg():
     group.add_argument('-gff', '--gff-out', action='store_true', default=False, help=argparse.SUPPRESS)
     group.add_argument('-trf', '--tRNA-frag', action='store_true', default=False, help=argparse.SUPPRESS)
     group.add_argument('-o', '--outDir', help=argparse.SUPPRESS)
+    group.add_argument('-onam', '--outDirName', help=argparse.SUPPRESS)
     group.add_argument('-shh',"--quiet", default=False, action='store_true', help=argparse.SUPPRESS)
 
     group1 = parser.add_argument_group("Data pre-processing", description='''-a,    --adapter            Sequence of a 3' adapter. The adapter and subsequent bases are trimmed
