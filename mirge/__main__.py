@@ -25,9 +25,13 @@ def main():
     globalstart = time.perf_counter()     
     args = parseArg()
     samples = args.samples
-    tStamp = time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
-    ourDir = "miRge." + tStamp
-    workDir = Path(args.outDir)/ourDir if args.outDir else Path.cwd()/ourDir
+    if args.outDirName:
+        ourDir_n = str(args.outDirName)
+        workDir = Path(args.outDir)/ourDir_n if args.outDir else Path.cwd()/ourDir_n
+    else:
+        tStamp = time.strftime('%Y-%m-%d_%H-%M-%S',time.localtime(time.time()))
+        ourDir = "miRge." + tStamp
+        workDir = Path(args.outDir)/ourDir if args.outDir else Path.cwd()/ourDir
     Path(workDir).mkdir(exist_ok=True, parents=True)
     db_keys = {"mirbase":"miRBase", "mirgenedb":"MirGeneDB"}
     runlogFile = Path(workDir)/"run.log"
