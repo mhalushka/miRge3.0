@@ -93,13 +93,15 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     THIS FUNCTION IS CALLED FIRST FROM THE miRge3.0. 
     THIS FUNCTION PREPARES FUNCTIONS REQUIRED TO RUN IN CUTADAPT 2.7 AND PARSE ONE FILE AT A TIME. 
     """
-    global ingredients, threads, buffer_size, trimmed_reads, fasta, fileTowriteFasta, min_len, umi
+    global ingredients, threads, buffer_size, trimmed_reads, fasta, fileTowriteFasta, min_len, umi, qiagenumi, qiaAdapter
     numlines=10000
     umi = args.uniq_mol_ids
+    qiagenumi = args.qiagenumi
     fasta = args.fasta
     threads = args.threads
     buffer_size = args.buffer_size
     min_len = args.minimum_length
+    qiaAdapter = str(args.adapters[0][1])
     ingredients = stipulate(args)
     df_mirged=pd.DataFrame()
     complete_set=pd.DataFrame()
@@ -144,7 +146,44 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                             completeDict[varx[0]] = int(varx[1])
                             trimmed+=int(varx[1])
                 readobj=[]
-        digestReadCounts = {inFileBaseArray[index]:trimmed}
+        if umi:
+            trimmed=0
+            umicompleteDict=dict()
+            umi_cut = umi.split(",")
+            if not args.umiDedup:
+                for s, c in completeDict.items():
+                    pureSeq, cutumiSeq = UMIParser(s, int(umi_cut[0]), int(umi_cut[1]))
+                    if len(pureSeq) >= int(min_len):
+                        if pureSeq in umicompleteDict:
+                            umicompleteDict[pureSeq] += c
+                            trimmed += c
+                        else:
+                            umicompleteDict[pureSeq] = c
+                            trimmed += c
+                completeDict = umicompleteDict 
+            elif args.umiDedup:
+                intermediate_umi = inFileBaseArray[index]+"_umiCounts.csv"
+                temp_umiFile = Path(workDir)/intermediate_umi
+                iumiFile = open(temp_umiFile,"a+")
+                iumiFile.write("UMISeq" + "," +"transcriptSeq," + "UMICounts" +"\n")
+                for s, c in completeDict.items():
+                    pureSeq, cutumiSeq = UMIParser(s, int(umi_cut[0]), int(umi_cut[1]))
+                    if len(pureSeq) >= int(min_len):
+                        iumiFile.write(str(cutumiSeq) + "," + str(pureSeq) + "," + str(c) +"\n")
+                        if pureSeq in umicompleteDict:
+                            umicompleteDict[pureSeq] += 1
+                            trimmed += 1
+                        else:
+                            umicompleteDict[pureSeq] = 1
+                            trimmed += 1
+                completeDict = umicompleteDict 
+                digestReadCounts = {inFileBaseArray[index]:trimmed}
+                iumiFile.close()
+        else:
+            digestReadCounts = {inFileBaseArray[index]:trimmed}
+            # umi_seq = umi_seq[:umi_cut[1]]
+            # max_ad = 19 + int(umi_cut[1])
+            # umi_seq = umi_seq[:max_ad][-int(umi_cut[1]):]
         uniqTrimmedReads = {inFileBaseArray[index]:len(completeDict)}
         #digestReadCounts = {inFileBaseArray[index]:sum(completeDict.values())}
         inputReadCounts = {inFileBaseArray[index]:count}
@@ -207,13 +246,16 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
 
 
 def UMIParser(s, f, b):
-    #front = s[:n]
+    front = ""
+    end = ""
+    front = s[:f]
     if int(b) != 0:
         center = s[f:-b]
     else:
         center = s[f:]
-    #end = s[-n:]
-    return (center)
+    end = s[-b:]
+    umiseqreq = front + end
+    return (center, umiseqreq)
     #return (front, center, end)
 
 
@@ -222,21 +264,34 @@ def cutadapt(fq):
     readDict={}
     for fqreads in fq:
         matches=[]
-        for modifier in ingredients:
-            fqreads = modifier(fqreads, matches)
-        if umi:
-            if int(len(fqreads.sequence)) >= int(min_len):
-                #print(str(fqreads.sequence)+"\n")
+        if qiagenumi:
+            currentSeq = fqreads.sequence
+            umi_seq = ""
+            for modifier in ingredients:
+                fqreads = modifier(fqreads, matches)
+            try:
+                umi_seq = currentSeq.split(str(fqreads.sequence))[1]
                 umi_cut = umi.split(",")
-                seq = UMIParser(fqreads.sequence, int(umi_cut[0]), int(umi_cut[1]))
-                #start,seq,end = UMIParser(fqreads.sequence, 4)
-                #print(str(start)+str(end)+"\n")
-                if int(len(seq)) >= int(min_len):
-                    if str(seq) in readDict:
-                        readDict[str(seq)]+=1
-                    else:
-                        readDict[str(seq)]=1
+                max_ad = len(qiaAdapter) + int(umi_cut[1])
+                umi_seq = umi_seq[:max_ad][-int(umi_cut[1]):]
+            except ValueError:
+                umi_seq = ""
+                #if qiaAdapter in currentSeq:
+                    #umi_seq = currentSeq.split(str(qiaAdapter))[1]
+                    #umi_cut = umi.split(",")
+                    #max_ad = len(qiaAdapter) + int(umi_cut[1])
+                    #umi_seq = umi_seq[:max_ad][-int(umi_cut[1]):]
+                #else:
+                #umi_seq = ""
+            final_seq = fqreads.sequence + umi_seq
+            if int(len(final_seq)) >= int(min_len):
+                if str(final_seq) in readDict:
+                    readDict[str(final_seq)]+=1
+                else:
+                    readDict[str(final_seq)]=1
         else:
+            for modifier in ingredients:
+                fqreads = modifier(fqreads, matches)
             if int(len(fqreads.sequence)) >= int(min_len):
                 if str(fqreads.sequence) in readDict:
                     readDict[str(fqreads.sequence)]+=1
