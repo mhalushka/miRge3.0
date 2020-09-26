@@ -93,7 +93,7 @@ def parseArg():
 
     ## group - 3 ##
 
-    group2 = parser.add_argument_group('Predicting novel miRNAs',description='''novel miRNA detection is confined to human and mouse only (with "-on" argument):
+    group2 = parser.add_argument_group('Predicting novel miRNAs',description='''The predictive model for novel miRNA detection is trained on human and mouse!
 -nmir, --novel-miRNA        include prediction of novel miRNAs
 -minl, --minLength          the minimum length of the reatined reads for novel miRNA detection (default: 16)
 -maxl, --maxLength          the maximum length of the reatined reads for novel miRNA detection (default: 25)

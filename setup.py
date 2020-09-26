@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
         name='mirge',
-        version='0.1.51',
+        version='0.1.52',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
         url='https://test.pypi.org/legacy/',
