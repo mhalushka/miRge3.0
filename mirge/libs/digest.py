@@ -5,6 +5,7 @@ import time
 import concurrent.futures
 import pandas as pd
 from pathlib import Path
+import numpy as np
 
 from cutadapt.adapters import warn_duplicate_adapters
 from cutadapt.parser import AdapterParser
@@ -101,7 +102,8 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     threads = args.threads
     buffer_size = args.buffer_size
     min_len = args.minimum_length
-    qiaAdapter = str(args.adapters[0][1])
+    if qiagenumi:
+        qiaAdapter = str(args.adapters[0][1])
     ingredients = stipulate(args)
     df_mirged=pd.DataFrame()
     complete_set=pd.DataFrame()
@@ -109,6 +111,8 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     sampleReadCounts={}
     trimmedReadCounts={}
     trimmedReadCountsUnique={}
+    digestReadCounts={}
+    visual_treat = {'rlen':{}, 'hist':{}}
     runlogFile = Path(workDir)/"run.log"
     outlog = open(str(runlogFile),"a+")
     for index, FQfile in enumerate(inFileArray):
@@ -127,6 +131,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                         for fqres_pairs in concurrent.futures.as_completed(future): 
                             for each_list in fqres_pairs.result(): # retreving results from parallel execution
                                 varx = list(each_list)
+                                try:
+                                    visual_treat['rlen'][str(inFileBaseArray[index])].append(len(varx[0]))
+                                except KeyError:
+                                    visual_treat['rlen'][str(inFileBaseArray[index])]= [len(varx[0])]
                                 if varx[0] in completeDict: # Collapsing, i.e., counting the occurance of each read for each data 
                                     completeDict[varx[0]] += int(varx[1])
                                     trimmed+=int(varx[1])
@@ -139,6 +147,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                 for fqres_pairs in concurrent.futures.as_completed(future):
                     for each_list in fqres_pairs.result(): # retreving results from parallel execution
                         varx = list(each_list)
+                        try:
+                            visual_treat['rlen'][str(inFileBaseArray[index])].append(len(varx[0]))
+                        except KeyError:
+                            visual_treat['rlen'][str(inFileBaseArray[index])]= [len(varx[0])]
                         if varx[0] in completeDict: # Collapsing, i.e., counting the occurance of each read for each data 
                             completeDict[varx[0]] += int(varx[1])
                             trimmed+=int(varx[1])
@@ -153,6 +165,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
             if not args.umiDedup:
                 for s, c in completeDict.items():
                     pureSeq, cutumiSeq = UMIParser(s, int(umi_cut[0]), int(umi_cut[1]))
+                    try:
+                        visual_treat['hist'][str(inFileBaseArray[index])].append(c)
+                    except KeyError:
+                        visual_treat['hist'][str(inFileBaseArray[index])] = [c]
                     if len(pureSeq) >= int(min_len):
                         if pureSeq in umicompleteDict:
                             umicompleteDict[pureSeq] += c
@@ -161,6 +177,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                             umicompleteDict[pureSeq] = c
                             trimmed += c
                 completeDict = umicompleteDict 
+                digestReadCounts = {inFileBaseArray[index]:trimmed}
             elif args.umiDedup:
                 intermediate_umi = inFileBaseArray[index]+"_umiCounts.csv"
                 temp_umiFile = Path(workDir)/intermediate_umi
@@ -168,6 +185,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                 iumiFile.write("UMISeq" + "," +"transcriptSeq," + "UMICounts" +"\n")
                 for s, c in completeDict.items():
                     pureSeq, cutumiSeq = UMIParser(s, int(umi_cut[0]), int(umi_cut[1]))
+                    try:
+                        visual_treat['hist'][str(inFileBaseArray[index])].append(c)
+                    except KeyError:
+                        visual_treat['hist'][str(inFileBaseArray[index])] = [c]
                     if len(pureSeq) >= int(min_len):
                         iumiFile.write(str(cutumiSeq) + "," + str(pureSeq) + "," + str(c) +"\n")
                         if pureSeq in umicompleteDict:
@@ -180,6 +201,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
                 digestReadCounts = {inFileBaseArray[index]:trimmed}
                 iumiFile.close()
         else:
+            visual_treat['hist'][str(inFileBaseArray[index])] = []
             digestReadCounts = {inFileBaseArray[index]:trimmed}
             # umi_seq = umi_seq[:umi_cut[1]]
             # max_ad = 19 + int(umi_cut[1])
@@ -218,6 +240,7 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
             complete_set = complete_set.join(collapsed_df, how='outer')
             collapsed_df = pd.DataFrame() 
         complete_set = complete_set.fillna(0).astype(int)
+
         finish3 = time.perf_counter()
         if not args.quiet:
             print(f'Collapsing finished for file {inFileBaseArray[index]} in {round(finish3-finish2, 4)} second(s)\n')
@@ -237,6 +260,30 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     if not args.quiet:
         print(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
     outlog.write(f'Matrix creation finished in {round(finish4-finish3, 4)} second(s)\n')
+    #for x, y in visual_treat.items():
+    #    print(str(x)+"\n") 
+    #    print("Arun\n")
+        #print(y)
+    for sample_files in inFileBaseArray:
+        val = visual_treat['rlen'][sample_files]
+        #print(sample_files)
+        maxVal = sorted(val)[-1]
+        minVal = sorted(val)[0]
+        hist, bins = np.histogram(val, bins=(maxVal-minVal))
+        hist = hist.tolist()
+        #print(hist, bins)
+        if umi:
+            val = visual_treat['hist'][sample_files]
+            #val = visual_treat['rlen'][sample_files]
+            #print(sample_files)
+            maxVal = sorted(val)[-1]
+            #maxVal = val.sort()[-1]
+            minVal = sorted(val)[0]
+            hist, bins = np.histogram(val, bins=(maxVal-minVal))
+            hist = hist.tolist()
+            bins = bins.tolist()
+            #print(hist, bins)
+    #print(visual_treat['hist'])
     EndTime = time.perf_counter()
     if not args.quiet:
         print(f'Data pre-processing completed in {round(EndTime-begningTime, 4)} second(s)\n')

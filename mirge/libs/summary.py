@@ -1042,7 +1042,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
             trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tRNA_Reads_values, primary_tRNA_Reads_values, trnaAAanticodonDic, base_names, trnaStruDic, duptRNA2UniqueDic, trfMergedList, tRNAtrfDic, trfMergedNameDic)
 
             #pretrnaNameSeqDic
-    summary = pd.DataFrame.from_dict(pre_summary).astype(int)
+    #print(pre_summary)            
+    summary = pd.DataFrame.from_dict(pre_summary).fillna(0).astype(int)
     summary['Remaining Reads'] = summary['Trimmed Reads (all)'] - (summary[col_tosum].sum(axis=1))
     summary = summary.reindex(columns=colRearrange)
     summary.index.name = "Sample name(s)"
