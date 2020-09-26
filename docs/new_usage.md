@@ -8,20 +8,22 @@ optional arguments:
   --version   show program's version number and exit
 
 Options:
-  -s,    --samples            list of one or more samples separated by comma or a file with list of samples separated by new line (accepts *.fastq, *.fastq.gz) 
-  -db,   --mir-DB             the reference database of miRNA. Options: miRBase and miRGeneDB (Default: miRBase) 
-  -lib,  --libraries-path     the path to miRge libraries 
+  -s,    --samples            list of one or more samples separated by comma or a file with list of samples separated by new line (accepts *.fastq, *.fastq.gz)
+  -db,   --mir-DB             the reference database of miRNA. Options: miRBase and miRGeneDB (Default: miRBase)
+  -lib,  --libraries-path     the path to miRge libraries
   -on,   --organism-name      the organism name can be human, mouse, fruitfly, nematode, rat or zebrafish
   -ex,   --crThreshold        the threshold of the proportion of canonical reads for the miRNAs to retain. Range for ex (0 - 0.5), (Default: 0.1)
-  -phr,  --phred64           phred64 format (Default: 33)
+  -phr,  --phred64            phred64 format (Default: 33)
   -spk,  --spikeIn            switch to annotate spike-ins if spike-in bowtie index files are located at the path of bowtie's index files (Default: off)
   -ie,   --isoform-entropy    switch to calculate isomir entropy (default: off)
   -cpu,  --threads            the number of processors to use for trimming, qc, and alignment (Default: 1)
   -ai,   --AtoI               switch to calculate A to I editing (Default: off)
   -tcf   --tcf-out            switch to write trimmed and collapsed fasta file (Default: off)
-  -gff   --gff-out            switch to output isomiR results in gff format (Default: off) 
-  -trf   --tRNA-frag          switch to analyze tRNA fragments and halves (Default: off)
-  -o     --outDir             the directory of the outputs (Default: current directory) 
+  -gff   --gff-out            switch to output isomiR results in gff format (Default: off)
+  -bam   --bam-out            switch to output isomiR results in gff format (Default: off)
+  -trf   --tRNA-frag          switch to analyze tRNA fragment and halves (Default: off)
+  -o     --outDir             the directory of the outputs (Default: current directory)
+  -shh   --quiet              enable quiet/silent mode, only show warnings and errors (Default: off)
 
 Data pre-processing:
   -a,    --adapter            Sequence of a 3' adapter. The adapter and subsequent bases are trimmed
@@ -34,15 +36,21 @@ Data pre-processing:
                               modifications are applied after adapter trimming
   -NX,   --trim-n             Trim N's on ends of reads
   -m,    --minimum-length     Discard reads shorter than LEN. (Default: 16)
-  
+  -umi,  --uniq-mol-ids       Removes PCR duplicates and trim UMI of length by specifying two comma-separated cutoffs as 5’ cutoff,3’ bp from both ends of the read. eg: 4,4 or 0,4
+  -udd,  --umiDedup           Specifies argument to removes PCR duplicates (Default: False); if TRUE it will remove UMI and remove PCR duplicates otherwise it only remove UMI and keep the raw counts
+  -umiq, --umiqiagen          Removes PCR duplicates of reads obtained from Qiagen platform (Default: Illumina; "-umi x,y " Required)
+
+
 
 Predicting novel miRNAs:
   novel miRNA detection is confined to human and mouse only (with "-on" argument):
-  -nmir, --novel_miRNA        include prediction of novel miRNAs
+  -nmir, --novel-miRNA        include prediction of novel miRNAs
+  -minl, --minLength          the minimum length of the reatined reads for novel miRNA detection (default: 16)
+  -maxl, --maxLength          the maximum length of the reatined reads for novel miRNA detection (default: 25)
   -c,    --minReadCounts      the minimum read counts supporting novel miRNA detection (default: 2)
   -mloc, --maxMappingLoci     the maximum number of mapping loci for the retained reads for novel miRNA detection (default: 3)
   -sl,   --seedLength         the seed length when invoking Bowtie for novel miRNA detection (default: 25)
-  -olc,  --overlapLength      the length of overlapped seqence when joining reads into longer sequences based on the coordinate 
+  -olc,  --overlapLenCutoff   the length of overlapped seqence when joining reads into longer sequences based on the coordinate
                               on the genome for novel miRNA detection (default: 14)
   -clc,  --clusterLength      the maximum length of the clustered sequences for novel miRNA detection (default: 30)
 
