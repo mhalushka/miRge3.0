@@ -8,6 +8,7 @@ from math import sqrt, asin, cos, sin
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
 import re
+from mirge.classes.exportHTML import FormatJS
 
 def Shifting(xcDic, ycDic):
     minx = min([xcDic[key] for key in xcDic.keys()])
@@ -684,10 +685,14 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
     #print precursorSeqclusterNameDic[('CUGACUGCCGAGGGGGCCCUGGCCUGGAUCCAUGCUGGGCAGAAGCAGCUGGACACUGACCAGGACCCCCCAGGGCCGGAGGAACC', 'chr9', '+')]
     finalFile = str(Path(dir_tmp)/(files+'_novel_miRNAs_report.csv'))
     #finalFile = str(Path(outputdir2)/(files+'_novel_miRNAs_report.csv'))
+    html_data = FormatJS(str(Path(outputdir2).resolve().parents[0]))
+    #print(str(Path(outputdir2).resolve().parents[0])) files+'_novel_miRNAs'
+    #"14","<a href=\"SRR8557389_novel_miRNAs/SRR8557389_novel_miRNA_14.pdf\" target=\"_blank\">SRR8557389_novel_miRNA_14</a>","0.829119033","chr1","26554575","26554595","CUCCUGCCCUCCUUGCUGUAG","29"
     outf1 = open(finalFile, 'w')
     outf1.write('Novel miRNA name,Probability,Chr,Start Pos,End Pos,Strand,Mature miRNA sequence,Arm type,Passenger miRNA sequence,Mature miRNA read Count,Passenger miRNA read Count,Precursor miRNA sequence,Precursor miRNA structure\n')
     i = 1
     while len(novelmiRNALOriginalList) >= 1:
+        js_nmirVar= ""
         novelmiRNA = novelmiRNALOriginalList[0]
         sampleName = str(files)
         #sampleName = '_'.join(novelmiRNA.split(':')[0].split('_')[2:])
@@ -764,8 +769,12 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
                 novelmiRNANameNew = str(files)+'_novel_miRNA_'+str(i)
                 try:
                     outf1.write(','.join([novelmiRNANameNew, clusterNameProbabilityDic[matureMiRNAName], chr, str(startPos), str(endPos), strand, matureMiRNASeq, armType, passengerMiRNASeq, str(readCountSumMatureMiRNA), str(readCountSumPassengerMiRNA), matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr]))
+                    js_nmirVar = '"<a href=\\"'+str(files)+'_novel_miRNAs/'+str(files)+'_novel_miRNA_'+str(i)+'.pdf\\" target=\\"_blank\\">'+novelmiRNANameNew+'</a>","'+str(clusterNameProbabilityDic[matureMiRNAName])+'","'+chr+'","'+str(startPos)+'","'+str(endPos)+'","'+matureMiRNASeq+'","'+str(readCountSumMatureMiRNA)+'"'
+                    html_data.addSerialNum(js_nmirVar)
                 except KeyError:
                     outf1.write(','.join([novelmiRNANameNew, "1", chr, str(startPos), str(endPos), strand, matureMiRNASeq, armType, passengerMiRNASeq, str(readCountSumMatureMiRNA), str(readCountSumPassengerMiRNA), matureMiRNAPrecusorSeq, matureMiRNAPrecusorStr]))
+                    js_nmirVar = '"<a href=\\"'+str(files)+'_novel_miRNAs/'+str(files)+'_novel_miRNA_'+str(i)+'.pdf\\" target=\\"_blank\\">'+novelmiRNANameNew+'</a>","1","'+chr+'","'+str(startPos)+'","'+str(endPos)+'","'+matureMiRNASeq+'","'+str(readCountSumMatureMiRNA)+'"'
+                    html_data.addSerialNum(js_nmirVar)
                 outf1.write('\n')
                 # Prepare to plot the precurosr sturcuture, cluster seuqences into a pdf file.
                 with open(str(Path(outputdir2)/(files+'_precusorTmp.fa')), 'w') as outf:

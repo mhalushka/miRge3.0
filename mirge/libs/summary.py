@@ -11,6 +11,7 @@ from mirge.libs.miRgeEssential import UID
 from mirge.libs.bamFmt import sam_header, bow2bam, createBAM
 from mirge.libs.mirge2_tRF_a2i import trna_deliverables, a2i_editing
 import os, sys
+from mirge.classes.exportHTML import FormatJS
 """
 THIS SCRIPT CONTAINS LOTS OF PANDAS FUNCTION TO DERIVE THE SUMMARY (EXCEPT FOR GFF-FUNCTION)
 IF YOU ARE A DEVELOPER, AND WANT TO UNDERSTAND THIS SCRIPT!! I WOULD RECOMMEND YOU TO BE THOROUGH WITH pandas FUNCTIONS 
@@ -44,7 +45,7 @@ def mirge_can(can, iso, df, ca_thr, file_name):
     return df
 
 
-def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib, workDir):
+def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib, workDir, mirRPM_completeSet):
     cols1 = ["Sequence","exact miRNA"] + base_names 
     cols2 = ["Sequence","isomiR miRNA"] + base_names
     canonical_gff = pd.DataFrame(cannonical, columns= cols1).values.tolist() # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
@@ -60,6 +61,14 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
     version_db = "miRBase22" if ref_db == "miRBase" else "MirGeneDB2.0"
     gffwrite.write("## source-ontology: " + version_db + "\n")
     gffwrite.write("## COLDATA: "+ ",".join(str(nm) for nm in base_names) + "\n")
+    #forJSgffData = open(str(Path(workDir)/"gff_data.csv"), "w+")
+    JS_hmap_iso_miRcounts = dict()
+    JS_hmap_iso_miRVar = dict()
+    JS_hmap_list_ref = dict()
+
+    JS_filenames = ",".join(str(nm) for nm in base_names)
+    #JS_headername = 'Seq,miR,var,'+JS_filenames+',Total\n'
+    #forJSgffData.write(JS_headername)
     # GFF3 adapted for miRNA sequencing data")
     start=0
     end=0
@@ -126,6 +135,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
     #print(pre_cur_name)
     bam_can_dict={}
     bam_expression_dict={}
+    JS_variantType_dataDict = dict()
     for cans in canonical_gff:
         gen_start=0
         gen_end=0
@@ -136,6 +146,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
         else:
             seq_master = cans[1] # miRNA name 
         canonical_expression = ','.join(str(x) for x in cans[2:]) # Expression/collapsed counts for each sample - joining by ','
+        JS_exprn_total = str(sum(cans[2:]))
         bam_expression_dict[seq_m] = [int(x) for x in cans[2:]]
         new_string=""
         #print(seq_master)
@@ -189,6 +200,13 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant=NA; Cigar="+cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
                 #print(mi_var)
                 gffwrite.write(mi_var)
+                #JS_hmap_list_ref.append([seq_master, "ref", canonical_expression])
+                #JS_hmap_list_ref.append([seq_master, "ref"] + canonical_expression.split(","))
+                try:
+                    JS_hmap_list_ref[seq_master].append(canonical_expression.split(","))
+                except KeyError:
+                    JS_hmap_list_ref[seq_master] = canonical_expression.split(",")
+                #forJSgffData.write(str(seq_m)+","+seq_master+",ref,"+str(canonical_expression)+","+JS_exprn_total+"\n")
                 bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ cigar + "\t"+ gen_strand 
                     #bow2bam
                 """
@@ -326,7 +344,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                         if non_template5p != 0:
                             variant+= "iso_add5p:+"+str(non_template5p)+","
                     except IndexError:
-                        variant+= "iso_5p:+"+str(len5padd)+","
+                        variant+= "iso_5p:-"+str(len5padd)+","
                     start = start - len5padd
                     if gen_strand != "-":
                         #gen_start = gen_start + len5pdel
@@ -339,7 +357,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 if iso_5p_del != "":
                     d5p = iso_5p_del
                     len5pdel = len(d5p)
-                    variant+= "iso_5p:-"+str(len5pdel)+","
+                    variant+= "iso_5p:+"+str(len5pdel)+","
                     start = start + len5pdel
                     if gen_strand != "-":
                         gen_start = gen_start + len5pdel
@@ -455,18 +473,147 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 else:
                     pass
                     #print(seq_m, iso_cigar)
+                if variant == "":
+                    variant = "iso_snv"
                 iso_mi_var = seq_master+"\t"+version_db+"\t"+type_rna+"\t"+str(start)+"\t"+str(end)+"\t.\t+\t.\tRead="+seq_m+"; UID="+uid_val+"; Name="+ seq_master +"; Parent="+req_precursor_name+"; Variant="+variant+"; Cigar="+iso_cigar+"; Expression="+canonical_expression +"; Filter=Pass; Hits="+ canonical_expression + "\n"
                 gffwrite.write(iso_mi_var)
+                iovariant = re.sub(',',';',variant)
+                iovarlist = iovariant.split(";")
+                for iv in iovarlist:
+                    if iv != "":
+                        if ":" in iv:
+                            iv = iv.split(":")[0]
+                        try:
+                            JS_variantType_dataDict[str(iv)] += int(JS_exprn_total)
+                        except KeyError:
+                            JS_variantType_dataDict[str(iv)] = int(JS_exprn_total)
+
+                #forJSgffData.write(str(seq_m)+","+seq_master+","+iovariant+","+str(canonical_expression)+","+JS_exprn_total+"\n")
+                valStr = ','.join([str(elem) for elem in iovarlist]) +"#"+str(canonical_expression)
+                try:
+                    JS_hmap_iso_miRVar[seq_master].append(valStr)
+                except KeyError:
+                    JS_hmap_iso_miRVar[seq_master] = [valStr]
+
+                try:
+                    JS_hmap_iso_miRcounts[seq_master].append(canonical_expression.split(","))
+                except KeyError:
+                    JS_hmap_iso_miRcounts[seq_master] = [canonical_expression.split(",")]
                 """
                 FOR SAM/BAM FILE FORMAT: gen_chr, gen_start, gen_end
                 """
                 bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ iso_cigar + "\t"+ gen_strand
                 #print(seq_m+"\t"+ str(gen_chr) +"\t"+ str(gen_start) +"\t"+ iso_cigar+"\n")
+
                 #print("--**END**--")
         except KeyError:
             pass
             #print(seq_m+"\t"+seq_master)
             #ACTGGCCTTGGAGTCAGAAGGC  hsa-miR-378g
+    html_data.openDoChartJSD()
+    for xy, xz in JS_variantType_dataDict.items():
+        html_data.donutChartJSD(xy, xz)
+    html_data.closeDoChartJSD()
+    #print(JS_hmap_list_ref)
+    sum_JS_hmap_iso_miRcounts=dict()
+    #print(JS_hmap_iso_miRcounts)
+    for ji, jj in JS_hmap_iso_miRcounts.items():
+        new_list = [list(map(int, lst)) for lst in jj]
+        sum_JS_hmap_iso_miRcounts[ji] = [sum(i) for i in zip(*new_list)]
+
+    #print(sum_JS_hmap_iso_miRcounts)
+    #print(JS_hmap_iso_miRVar)
+    df_rpm = mirRPM_completeSet.reset_index()
+    for indx, name in enumerate(base_names):
+        # FIRST PICK TOP 40 isomiRs FROM EACH SAMPLE
+        tempDict = dict()
+        for td1, td2 in sum_JS_hmap_iso_miRcounts.items():
+            tempDict[td1] = td2[indx]
+
+        req_mir_names = sorted(df_rpm[['miRNA', name]].values.tolist(), key=lambda x: x[1], reverse=True)
+        #req_mir_names = sorted(df_rpm[['miRNA', name]].values.tolist(), key=lambda x: x[1], reverse=True)[:20]
+        only_AbundantmiRs = [ re.sub('/.*', '', item[0]) for item in req_mir_names] 
+        abundant_miRsJS = []
+        for chkExts in only_AbundantmiRs:
+            if len(abundant_miRsJS) == 20:
+                break
+            try:
+                if JS_hmap_iso_miRVar[chkExts]:
+                    abundant_miRsJS.append(chkExts)
+            except KeyError:
+                pass
+        
+        req_mir_names = sorted(abundant_miRsJS)
+        #req_mir_names = sorted(only_AbundantmiRs)
+        #req_mir_names = sorted(tempDict, key=tempDict.get, reverse=True)[:20] # returns keys for top 40 miRNA expression (Only keys)
+        html_data.openisoHmapTop(name, req_mir_names)
+        for kindx, km in enumerate(req_mir_names):
+            #print(km, JS_hmap_iso_miRVar[km])
+            vary = dict()
+            var_list_items = ['iso_3p:-1', 'iso_3p:-2', 'iso_5p:+2','iso_5p:+1','iso_3p:+1','iso_add3p:+1','iso_3p:+2','iso_add3p:+2','iso_3p:+3', 'iso_add3p:+3', 'iso_3p:+4', 'iso_add3p:+4', 'iso_5p:-1', 'iso_add5p:+1', 'iso_5p:-2', 'iso_add5p:+2', 'iso_5p:-3', 'iso_add5p:+3', 'iso_5p:-4', 'iso_add5p:+4', 'iso_snv_seed', 'iso_snv_central_offset', 'iso_snv_central', 'iso_snv_central_supp','iso_snv'] 
+            for k_var in var_list_items: # Initializing dictionaries to zero to avoid try catch except block in the later
+                vary[k_var] = 0
+
+            for valsy in JS_hmap_iso_miRVar[km]:
+                lhs = valsy.split("#")
+                #print(valsy, lhs)
+                reqExprval = int(lhs[1].split(",")[indx])
+                reqVaritems = lhs[0].split(",")
+                for varkeys in reqVaritems:
+                    #print(km, varkeys, reqExprval, valsy)
+                    try:
+                        vary[varkeys]+= int(reqExprval)
+                    except KeyError:
+                        vary[varkeys] = int(reqExprval)
+
+            iso_3pm1 = "%.1f" %math.log2(vary['iso_3p:-1']) if vary['iso_3p:-1'] > 0 else 0
+            iso_3pm2 = "%.1f" %math.log2(vary['iso_3p:-2']) if vary['iso_3p:-2'] > 0 else 0
+            iso_5pm1 = "%.1f" %math.log2(vary['iso_5p:+1']) if vary['iso_5p:+1'] > 0 else 0
+            iso_5pm2 = "%.1f" %math.log2(vary['iso_5p:+2']) if vary['iso_5p:+2'] > 0 else 0
+
+            iso_3pp1 = "%.1f" %math.log2(vary['iso_3p:+1'] + vary['iso_add3p:+1']) if (vary['iso_3p:+1'] + vary['iso_add3p:+1']) > 0 else 0
+            iso_3pp2 = "%.1f" %math.log2(vary['iso_3p:+2'] + vary['iso_add3p:+2']) if (vary['iso_3p:+2'] + vary['iso_add3p:+2']) > 0 else 0
+            iso_3pp3 = "%.1f" %math.log2(vary['iso_3p:+3'] + vary['iso_add3p:+3']) if (vary['iso_3p:+3'] + vary['iso_add3p:+3']) > 0 else 0
+            iso_3pp4 = "%.1f" %math.log2(vary['iso_3p:+4'] + vary['iso_add3p:+4']) if (vary['iso_3p:+4'] + vary['iso_add3p:+4']) > 0 else 0
+            iso_5pp1 = "%.1f" %math.log2(vary['iso_5p:-1'] + vary['iso_add5p:+1']) if (vary['iso_5p:-1'] + vary['iso_add5p:+1']) > 0 else 0
+            iso_5pp2 = "%.1f" %math.log2(vary['iso_5p:-2'] + vary['iso_add5p:+2']) if (vary['iso_5p:-2'] + vary['iso_add5p:+2']) > 0 else 0
+            iso_5pp3 = "%.1f" %math.log2(vary['iso_5p:-3'] + vary['iso_add5p:+3']) if (vary['iso_5p:-3'] + vary['iso_add5p:+3']) > 0 else 0
+            iso_5pp4 = "%.1f" %math.log2(vary['iso_5p:-4'] + vary['iso_add5p:+4']) if (vary['iso_5p:-4'] + vary['iso_add5p:+4']) > 0 else 0
+            
+            iso_3pp5 = 0
+            iso_5pp5 = 0
+            for item_3p in [x for x in vary.keys() if "iso_3p:+" in x]:
+                if 'iso_3p:+1' not in item_3p and 'iso_3p:+2' not in item_3p and 'iso_3p:+3' not in item_3p and 'iso_3p:+4' not in item_3p:
+                    iso_3pp5 += int(vary[item_3p])
+            for item_add3p in [ xa for xa in vary.keys() if "iso_add3p:+" in xa]:
+                if 'iso_add3p:+1' not in item_add3p and 'iso_add3p:+2' not in item_add3p and 'iso_add3p:+3' not in item_add3p and 'iso_add3p:+4' not in item_add3p:
+                    iso_3pp5 += int(vary[item_add3p])
+            for item_5p in [x for x in vary.keys() if "iso_5p:-" in x]:
+                if 'iso_5p:-1' not in item_5p and 'iso_5p:-2' not in item_5p and 'iso_5p:-3' not in item_5p and 'iso_5p:-4' not in item_5p:
+                    iso_5pp5 += int(vary[item_5p])
+            for item_add5p in [ xa for xa in vary.keys() if "iso_add5p:+" in xa]:
+                if 'iso_add5p:+1' not in item_add5p and 'iso_add5p:+2' not in item_add5p and 'iso_add5p:+3' not in item_add5p and 'iso_add5p:+4' not in item_add5p:
+                    iso_5pp5 += int(vary[item_add5p])
+
+            iso_3pp5 = "%.1f" %math.log2(iso_3pp5) if iso_3pp5 > 0 else 0
+            iso_5pp5 = "%.1f" %math.log2(iso_5pp5) if iso_5pp5 > 0 else 0
+            try:
+                ref_val = "%.1f" %math.log2(int(list(JS_hmap_list_ref[km])[indx])) if int(list(JS_hmap_list_ref[km])[indx]) > 0 else 0
+            except KeyError:
+                ref_val = 0 
+            snv_1 = "%.1f" %math.log2(vary['iso_snv_seed']) if vary['iso_snv_seed'] > 0 else 0
+            snv_2 = "%.1f" %math.log2(vary['iso_snv_central_offset']) if vary['iso_snv_central_offset'] > 0 else 0
+            snv_3 = "%.1f" %math.log2(vary['iso_snv_central']) if vary['iso_snv_central'] > 0 else 0
+            snv_4 = "%.1f" %math.log2(vary['iso_snv_central_supp']) if vary['iso_snv_central_supp'] > 0 else 0
+            snv_5 = "%.1f" %math.log2(vary['iso_snv']) if vary['iso_snv'] > 0 else 0
+
+            iso_data_js = "["+ str(kindx) + ",0," + str(iso_3pp5) + "],[" + str(kindx) + ",1," + str(iso_3pp4) + "],[" + str(kindx) + ",2," + str(iso_3pp3) + "],[" + str(kindx) + ",3," + str(iso_3pp2) + "],[" + str(kindx) + ",4," + str(iso_3pp1) + "],[" + str(kindx) + ",5," + str(ref_val) + "],[" + str(kindx) + ",6," + str(iso_3pm1) + "],[" + str(kindx) + ",7," + str(iso_3pm2) + "],[" + str(kindx) + ",8," + str(snv_1) + "],[" + str(kindx) + ",9," + str(snv_2) + "],[" + str(kindx) + ",10," + str(snv_3) + "],[" + str(kindx) + ",11," + str(snv_4) + "],[" + str(kindx) + ",12," + str(snv_5) + "],[" + str(kindx) + ",13," + str(iso_5pm2) + "],[" + str(kindx) + ",14," + str(iso_5pm1) + "],[" + str(kindx) + ",15," + str(iso_5pp1) + "],[" + str(kindx) + ",16," + str(iso_5pp2) + "],[" + str(kindx) + ",17," + str(iso_5pp3) + "],[" + str(kindx) + ",18," + str(iso_5pp4) + "],[" + str(kindx) + ",19," + str(iso_5pp5) + "]"
+            html_data.isoHmapData(iso_data_js)
+            #print(km, vary, iso_3pp1)
+            #print(iso_data_js)
+        html_data.closeisoHmapBottom()
+
+
     if args.bam_out:
         mirna_samFile = Path(workDir)/"miRge3_miRNA.sam"
         genC=0
@@ -495,7 +642,6 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                                 if strand == "+":
                                     xbamout = readname+"\t"+mi_sam_list[1]+"\t"+genC+"\t"+str(genS)+"\t"+mi_sam_list[4]+"\t"+cigar+"\t"+mi_sam_list[6]+"\t"+mi_sam_list[7]+"\t"+mi_sam_list[8]+"\t"+mi_sam_list[0]+"\t"+phredQual+"\n"
                                 else:
-
                                     xbamout = readname+"\t"+mi_sam_list[1]+"\t"+genC+"\t"+str(genS)+"\t"+mi_sam_list[4]+"\t"+cigar+"\t"+mi_sam_list[6]+"\t"+mi_sam_list[7]+"\t"+mi_sam_list[8]+"\t"+mi_sam_list[0][::-1]+"\t"+phredQual+"\n"
 
                                 xbam.write(xbamout)
@@ -539,6 +685,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     """
     THIS FUNCTION IS CALLED FIRST FROM THE miRge3.0 to summarize the output.  
     """
+    global html_data
+    html_data = FormatJS(workDir) 
     ca_thr = float(args.crThreshold)
     mfname = args.organism_name + "_merges_" + ref_db + ".csv"
     mergeFile = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/mfname
@@ -562,12 +710,15 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     """
     mirMergedNameDic={}
     mirMergedDataframeDic={}
-    with open(mergeFile, "r") as merge_file:
-        for line in merge_file:
-            line_content = line.strip().split(',')
-            for item in line_content[1:]:
-                mirMergedNameDic.update({item:line_content[0]})
-                mirMergedDataframeDic.update({line_content[0]:"1"})
+    try:
+        with open(mergeFile, "r") as merge_file:
+            for line in merge_file:
+                line_content = line.strip().split(',')
+                for item in line_content[1:]:
+                    mirMergedNameDic.update({item:line_content[0]})
+                    mirMergedDataframeDic.update({line_content[0]:"1"})
+    except FileNotFoundError:
+        pass
     
     #allSequences = pdMapped.index.shape[0]
     #print(allSequences)
@@ -578,60 +729,9 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     isomirs = pdMapped[pdMapped['isomiR miRNA'].astype(bool)]
     cannonical_4ie = cannonical
     isomirs_4ie = isomirs
-    if args.gff_out or args.bam_out:
-        pre_mirDict = dict()
-        mirDict = dict()
-        filenamegff = workDir/"sample_miRge3.gff"
-        maturefname = args.organism_name + "_mature_" + ref_db + ".fa"
-        pre_fname = args.organism_name + "_hairpin_" + ref_db
-        fasta_file = Path(args.libraries_path)/args.organism_name/"fasta.Libs"/maturefname
-        precursor_file = Path(args.libraries_path)/args.organism_name/"index.Libs"/pre_fname
-        annotation_pre_fname = args.organism_name+"_"+ref_db+".gff3"
-        annotation_lib = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/annotation_pre_fname
-
-        bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
-        bwtExec = str(bwtCommand) + " -a 20000 -e "+ str(precursor_file)
-        bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
-        #READING PRECURSOR miRNA SEQUENCES INFORMATION IN A DICTIONARY (pre_mirDict)
-        if bowtie.returncode==0:
-            bwtOut = bowtie.stdout
-            bwtErr = bowtie.stderr
-        for srow in bwtOut.split('\n'):
-            if '>' in srow:
-                srow = srow.replace(">","")
-                headmil = srow.split(" ")[0]
-                #if "MirGeneDB" in ref_db:
-                #    headmil = headmil.split("_")[0]
-            else:
-                #headmil = '-'.join(headmil.split('-')[:-1])
-                pre_mirDict[headmil] = srow
-        #READING MATURE miRNA SEQUENCES INFORMATION IN A DICTIONARY (mirDict)
-        with open(fasta_file) as mir:
-            for mil in mir:
-                mil = mil.strip()
-                if '>' in mil:
-                    headmil_mi = mil.replace(">","")
-                    #if "MirGeneDB" in ref_db:
-                    #    headmil_mi = headmil_mi.split("_")[0]
-                else:
-                    mirDict[headmil_mi] = mil
-        d = Differ()
-        create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, base_names, ref_db, annotation_lib, workDir)
-
-    if args.bam_out:
-        pd_frame = ['snoRNA','rRNA','ncrna others','mRNA']
-        bwt_idx_prefname = ['snorna','rrna','ncrna_others','mrna']
-        for igv_idx, igv_name in enumerate(pd_frame):
-            dfRNA2sam = pdMapped[pdMapped[igv_name].astype(bool)]
-            pre_cols_birth = ["Sequence", igv_name]
-            cols1 = pre_cols_birth + base_names
-            df_sam_out = pd.DataFrame(dfRNA2sam, columns= cols1) # Gives list of list containg Sequence, RNA type, expression values for the samples 
-            df_expr_list = df_sam_out.values.tolist()
-            rna_type = args.organism_name + "_" + bwt_idx_prefname[igv_idx]
-            index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
-            bow2bam(args, workDir, ref_db, df_expr_list, base_names, index_file_name, rna_type, bwt_idx_prefname[igv_idx])
-            createBAM(args, workDir, base_names)
-        #https://stackoverflow.com/questions/35125062/how-do-i-join-2-columns-of-a-pandas-data-frame-by-a-comma
+    cannonical_4gff = cannonical
+    isomirs_4gff = isomirs
+    #### MOVED TWO IF CONDITIONS args.gff_out or args.bam_out: and args.bam_out: from next line 
     
     if args.spikeIn:
         cannonical = cannonical.drop(columns=['Sequence','hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','annotFlag','isomiR miRNA','spike-in'])
@@ -697,10 +797,63 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     mirRPM_completeSet = mirMerged_df.join(miR_RPM, how='outer').fillna(0)
     #df.to_csv(miRgefileToCSV)
     #miR_RPM.to_csv(miRgeRPMToCSV)
-
     mirCounts_completeSet.to_csv(miRgefileToCSV)
     mirRPM_completeSet.to_csv(miRgeRPMToCSV)
 
+    if args.gff_out or args.bam_out:
+        pre_mirDict = dict()
+        mirDict = dict()
+        filenamegff = workDir/"sample_miRge3.gff"
+        maturefname = args.organism_name + "_mature_" + ref_db + ".fa"
+        pre_fname = args.organism_name + "_hairpin_" + ref_db
+        fasta_file = Path(args.libraries_path)/args.organism_name/"fasta.Libs"/maturefname
+        precursor_file = Path(args.libraries_path)/args.organism_name/"index.Libs"/pre_fname
+        annotation_pre_fname = args.organism_name+"_"+ref_db+".gff3"
+        annotation_lib = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/annotation_pre_fname
+
+        bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
+        bwtExec = str(bwtCommand) + " -a 20000 -e "+ str(precursor_file)
+        bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
+        #READING PRECURSOR miRNA SEQUENCES INFORMATION IN A DICTIONARY (pre_mirDict)
+        if bowtie.returncode==0:
+            bwtOut = bowtie.stdout
+            bwtErr = bowtie.stderr
+        for srow in bwtOut.split('\n'):
+            if '>' in srow:
+                srow = srow.replace(">","")
+                headmil = srow.split(" ")[0]
+                #if "MirGeneDB" in ref_db:
+                #    headmil = headmil.split("_")[0]
+            else:
+                #headmil = '-'.join(headmil.split('-')[:-1])
+                pre_mirDict[headmil] = srow
+        #READING MATURE miRNA SEQUENCES INFORMATION IN A DICTIONARY (mirDict)
+        with open(fasta_file) as mir:
+            for mil in mir:
+                mil = mil.strip()
+                if '>' in mil:
+                    headmil_mi = mil.replace(">","")
+                    #if "MirGeneDB" in ref_db:
+                    #    headmil_mi = headmil_mi.split("_")[0]
+                else:
+                    mirDict[headmil_mi] = mil
+        d = Differ()
+        create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical_4gff, isomirs_4gff, base_names, ref_db, annotation_lib, workDir, mirRPM_completeSet)
+
+    if args.bam_out:
+        pd_frame = ['snoRNA','rRNA','ncrna others','mRNA']
+        bwt_idx_prefname = ['snorna','rrna','ncrna_others','mrna']
+        for igv_idx, igv_name in enumerate(pd_frame):
+            dfRNA2sam = pdMapped[pdMapped[igv_name].astype(bool)]
+            pre_cols_birth = ["Sequence", igv_name]
+            cols1 = pre_cols_birth + base_names
+            df_sam_out = pd.DataFrame(dfRNA2sam, columns= cols1) # Gives list of list containg Sequence, RNA type, expression values for the samples 
+            df_expr_list = df_sam_out.values.tolist()
+            rna_type = args.organism_name + "_" + bwt_idx_prefname[igv_idx]
+            index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
+            bow2bam(args, workDir, ref_db, df_expr_list, base_names, index_file_name, rna_type, bwt_idx_prefname[igv_idx])
+            createBAM(args, workDir, base_names)
+        #https://stackoverflow.com/questions/35125062/how-do-i-join-2-columns-of-a-pandas-data-frame-by-a-comma
     miRNA_counts={}
     trimmed_counts={}
     for file_name in base_names:
@@ -1042,9 +1195,58 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
             trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tRNA_Reads_values, primary_tRNA_Reads_values, trnaAAanticodonDic, base_names, trnaStruDic, duptRNA2UniqueDic, trfMergedList, tRNAtrfDic, trfMergedNameDic)
 
             #pretrnaNameSeqDic
-    #print(pre_summary)            
     summary = pd.DataFrame.from_dict(pre_summary).fillna(0).astype(int)
     summary['Remaining Reads'] = summary['Trimmed Reads (all)'] - (summary[col_tosum].sum(axis=1))
+    readDistSample = str(list(pre_summary['Total Input Reads'].keys()))
+    readDistGraph = """
+        [ { name: 'mature miRNA', data: """+  str(list(pre_summary['Filtered miRNA Reads'].values())) + """},
+          { name: 'Hairpin miRNA', data: """+  str(list(pre_summary['Hairpin miRNAs'].values())) + """},  
+          { name: 'primary tRNA', data: """+  str(list(pre_summary['primary tRNA Reads'].values())) + """}, 
+          { name: 'mature tRNA', data: """+  str(list(pre_summary['mature tRNA Reads'].values())) + """}, 
+          { name: 'snoRNA', data: """+  str(list(pre_summary['snoRNA Reads'].values())) + """}, 
+          { name: 'rRNA', data: """+  str(list(pre_summary['rRNA Reads'].values())) + """}, 
+          { name: 'ncRNA', data: """+  str(list(pre_summary['ncRNA others'].values())) + """}, 
+          { name: 'mRNA', data: """+  str(list(pre_summary['mRNA Reads'].values())) + """},  
+          { name: 'remaining reads', data: """+  str(summary["Remaining Reads"].tolist()) + """}
+        ]
+    """
+    html_data.readDist(readDistSample, readDistGraph)
+    df_rpm = mirRPM_completeSet.reset_index()
+
+    def fmtExprn(name, x, y, val):
+        honeyName = ":".join(name.split("-")[1:])
+        honeyName = honeyName.split(".")[0]
+        honeyName = honeyName.split("/")[0]
+        var_item = """
+        {
+            'hc-a2': '""" + honeyName + """',
+            name: '"""+ name + """',
+            x: """ + str(x) + """,
+            y: """ + str(y) + """,
+            value: """+ str(val) + """
+        }"""
+        return var_item 
+    idname =1
+    for nme in base_names:
+        exprnDivID = "exprnDivID_" + str(idname)
+        honey_dataTmp = sorted(df_rpm[['miRNA', nme]].values.tolist(), key=lambda x: x[1], reverse=True)[:40]
+        honey_data = sorted(honey_dataTmp)
+        tilemapArray = []
+        idn = 0
+        for ix in range(5):
+            for iy in range(8):
+                name = honey_data[idn][0]
+                val = honey_data[idn][1]
+                dataVal = fmtExprn(name, ix, iy, val)
+                tilemapArray.append(dataVal)
+                idn += 1
+        dataSeries = ",".join(tilemapArray)
+        html_data.topExprnChart(exprnDivID, nme, dataSeries)
+        idname += 1
+        #print(dataSeries)
+        #print(sorted(honey_data))
+        #dict(sorted(mirRPM_completeSet.values.tolist(), key=int, reverse=True)[:40])
+    #print(list(summary['Remaining Reads'].values()))
     summary = summary.reindex(columns=colRearrange)
     summary.index.name = "Sample name(s)"
     report = Path(workDir)/"annotation.report.csv"
@@ -1052,7 +1254,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     summary.to_csv(report)
     summary = summary.reset_index(level=['Sample name(s)'])
     summary.index += 1
-    
+
     data_in_html = summary.to_html(index=False)
     table = '<table style="color="black";font-size:15px; text-align:center; border:0.2px solid black; border-collapse:collapse; table-layout:fixed; height="550"; text-align:center">'
     th = '<th style ="background-color: #3f51b5; color:#ffffff; text-align:center">'

@@ -19,7 +19,7 @@ from mirge.libs.digest import baking
 from mirge.libs.summary import summarize
 from mirge.libs.manifoldAlign import bwtAlign
 from mirge.libs.novel_mir import predict_nmir
-
+from mirge.classes.exportHTML import FormatHTML
 
 def main():
     globalstart = time.perf_counter()     
@@ -110,18 +110,39 @@ def main():
     pdMapped.to_csv(mappedfileToCSV)
     pdUnmapped.to_csv(unmappedfileToCSV)
     summary_End_time = time.perf_counter()
+    """
+    Enabling Visualization HTML format
+    """
+    html = FormatHTML(workDir)
+    html.beginHTML()
+    html.histReadLen(len(base_names))
+    if args.gff_out:
+        html.isomirsTab(len(base_names), True)
+    else:
+        html.isomirsTab(len(base_names), False)
+    
+    html.exprTab(len(base_names))
+    
+    if args.uniq_mol_ids:
+        html.umiTab(len(base_names), True)
+    else:
+        html.umiTab(len(base_names), False)
+
     outlog = open(str(runlogFile),"a+")
     if not args.quiet:
         print(f'Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n')     
     outlog.write(f"Summary completed in {round(summary_End_time-summary_Start_time, 4)} second(s)\n")
     if args.novel_miRNA:
+        html.novelTab(1)
         if not args.quiet:
             print("Predicting novel miRNAs\n")
         outlog.write("Predicting novel miRNAs\n")
         outlog.close()
         predict_nmir(args, workDir, ref_db, base_names, pdUnmapped)
         outlog = open(str(runlogFile),"a+")
-
+    else:
+        html.novelTab(0)
+    #    novelTab
     for fname in os.listdir(str(Path(workDir))):
         if fname.endswith('.sam'):
             try:
@@ -130,7 +151,7 @@ def main():
                 break
             except OSError:    
                 pass
-
+    html.closeHTML()
     globalend_time = time.perf_counter()
     if not args.quiet:
         print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     

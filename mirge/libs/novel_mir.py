@@ -32,6 +32,7 @@ from mirge.libs.generate_featureFiles import generate_featureFiles, get_precurso
 from mirge.libs.screen_precusor_candidates import screen_precusor_candidates
 from mirge.libs.preprocess_featureFiles import preprocess_featureFiles, model_predict
 from mirge.libs.write_novel_report import write_novel_report
+from mirge.classes.exportHTML import FormatJS
 # from sklearn.externals import joblib 
 # /home/arun/.local/lib/python3.8/site-packages/sklearn/externals/joblib/__init__.py:15: FutureWarning: sklearn.externals.joblib is deprecated in 0.21 and will be removed in 0.23. Please import this functionality directly from joblib, which can be installed with: pip install joblib. If this warning is raised when loading pickled models, you may need to re-serialize those models with scikit-learn 0.21+.
 # warnings.warn(msg, category=FutureWarning)
@@ -210,6 +211,8 @@ def preTrimClusteredSeq(CoordinateDic, cluster_file, files, clusterSeqLenCutoff,
 
 
 def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
+    htmlJS = FormatJS(workDir)
+    htmlJS.openNovelmiRJSData()
     predict_start_time = time.perf_counter()
     runlogFile = Path(workDir)/"run.log"
     outlog = open(str(runlogFile),"a+")
@@ -452,6 +455,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
         print(f'No cluster sequences are generated and prediction is aborted.')
     predict_end_time = time.perf_counter()
     os.system('rm -r %s'%(outputdir2))
+    htmlJS.closeNovelmiRJSData()
     if not args.quiet:
         print('Prediction of novel miRNAs Completed (%.2f sec)'%(predict_end_time - predict_start_time))
     outlog.write('Prediction of novel miRNAs Completed (%.2f sec)'%(predict_end_time - predict_start_time))

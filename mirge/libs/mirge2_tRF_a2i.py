@@ -1035,10 +1035,13 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
     repeatElementName = args.organism_name+'_miRNAs_in_repetitive_element_'+ref_db+".csv"
     miRNAs_in_repetitive_element = Path(args.libraries_path)/args.organism_name/'annotation.Libs'/repeatElementName
     removedMiRNAList = []
-    with open(miRNAs_in_repetitive_element, 'r') as inf:
-        for line in inf:
-            if line.strip().split(',')[0] not in removedMiRNAList:
-                removedMiRNAList.append(line.strip().split(',')[0])
+    try:
+        with open(miRNAs_in_repetitive_element, 'r') as inf:
+            for line in inf:
+                if line.strip().split(',')[0] not in removedMiRNAList:
+                    removedMiRNAList.append(line.strip().split(',')[0])
+    except FileNotFoundError:
+        pass
     
 
     with open(mirNameSeqDic_fasta,'r') as inf:

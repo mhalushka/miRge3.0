@@ -12,7 +12,7 @@ from cutadapt.parser import AdapterParser
 from cutadapt.modifiers import (LengthTagModifier, SuffixRemover, PrefixSuffixAdder,
         ZeroCapper, QualityTrimmer, UnconditionalCutter, NEndTrimmer, AdapterCutter,
         PairedAdapterCutterError, PairedAdapterCutter, NextseqQualityTrimmer, Shortener)
-
+from mirge.classes.exportHTML import FormatJS
 
 
 def parse_cutoffs(s):
@@ -264,7 +264,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     #    print(str(x)+"\n") 
     #    print("Arun\n")
         #print(y)
+    histData = FormatJS(workDir)
+    div_idnum = 1
     for sample_files in inFileBaseArray:
+        rlenDistID = "readLengthID_" + str(div_idnum)
         val = visual_treat['rlen'][sample_files]
         #print(sample_files)
         maxVal = sorted(val)[-1]
@@ -272,7 +275,9 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
         hist, bins = np.histogram(val, bins=(maxVal-minVal))
         hist = hist.tolist()
         #print(hist, bins)
+        histData.readLenDist(rlenDistID, sample_files, str(hist), str(list(bins)))
         if umi:
+            umiDistID = "umiDivID_" + str(div_idnum)
             val = visual_treat['hist'][sample_files]
             #val = visual_treat['rlen'][sample_files]
             #print(sample_files)
@@ -283,6 +288,8 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
             hist = hist.tolist()
             bins = bins.tolist()
             #print(hist, bins)
+            histData.sampleUMIDist(umiDistID, sample_files, str(hist), str(list(bins)))
+        div_idnum += 1
     #print(visual_treat['hist'])
     EndTime = time.perf_counter()
     if not args.quiet:
