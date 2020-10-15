@@ -12,7 +12,6 @@ colorama==0.3.7
 command-not-found==0.3
 configobj==5.0.6
 constantly==15.1.0
-cryptography==2.1.4
 cutadapt==2.7
 cycler==0.10.0
 distro-info==0.18ubuntu0.18.04.1
@@ -24,7 +23,6 @@ hypothesis==5.15.1
 idna==2.6
 incremental==16.10.1
 jeepney==0.4.3
-Jinja2==2.10
 joblib==0.15.1
 jsonpatch==1.16
 jsonpointer==1.10
@@ -50,7 +48,6 @@ pluggy==0.13.1
 py==1.8.1
 pyasn1==0.4.2
 pyasn1-modules==0.2.1
-pycrypto==2.6.1
 Pygments==2.6.1
 pygobject==3.26.1
 PyJWT==1.5.3
@@ -63,8 +60,6 @@ python-apt==1.6.5+ubuntu0.2
 python-dateutil==2.8.1
 python-debian==0.1.32
 pytz==2020.1
-pyxdg==0.25
-PyYAML==3.12
 readme-renderer==26.0
 regex==2020.5.14
 reportlab==3.5.42
@@ -83,11 +78,9 @@ systemd-python==234
 threadpoolctl==2.0.0
 tqdm==4.46.0
 twine==3.1.1
-Twisted==17.9.0
 ufw==0.36
 umi-tools==1.0.1
 unattended-upgrades==0.1
-urllib3==1.22
 wcwidth==0.1.9
 webencodings==0.5.1
 wheel==0.34.2
