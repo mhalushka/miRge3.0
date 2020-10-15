@@ -65,7 +65,7 @@ python-dateutil==2.8.1
 python-debian==0.1.32
 pytz==2020.1
 pyxdg==0.25
-PyYAML==3.12
+PyYAML==5.1
 readme-renderer==26.0
 regex==2020.5.14
 reportlab==3.5.42
