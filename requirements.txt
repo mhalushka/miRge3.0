@@ -64,7 +64,7 @@ python-apt==1.6.5+ubuntu0.2
 python-dateutil==2.8.1
 python-debian==0.1.32
 pytz==2020.1
-pyxdg==0.25
+pyxdg==0.26
 PyYAML==3.12
 readme-renderer==26.0
 regex==2020.5.14
