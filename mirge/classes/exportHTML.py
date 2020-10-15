@@ -225,7 +225,8 @@ class FormatHTML:
     def histReadLen(self, sampleSize):
         divHistTop = """
                             <div id="tab_lengthHist" style="display:none">
-                                <figure class="highcharts-figure" style="width:800px">"""
+                                <figure class="highcharts-figure" style="width:800px">
+                                    <p><i class="fas fa-search-plus" style="font-weight: bold; color: #337ab7;"></i>&nbsp;&nbsp;drag across x or y axis to zoom</p>"""
         divHistBottom = """
                                 </figure>
                             </div>            """
@@ -287,7 +288,8 @@ class FormatHTML:
         if is_umi:
             divumiTop = """
                             <div id="tab_qiagenUMI" style="display:none">
-                                <figure class="highcharts-figure" style="width:800px">        """
+                                <figure class="highcharts-figure" style="width:800px">        
+                                    <p><i class="fas fa-search-plus" style="font-weight: bold; color: #337ab7;"></i>&nbsp;&nbsp;drag across x or y axis to zoom</p>"""
             self.appendHTML(divumiTop)
             for i in range(sampleSize):
                 num = i+1

@@ -231,8 +231,12 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
     genome_fa = Path(args.libraries_path)/args.organism_name/"fasta.Libs"/genomFasta
     mature_miRNA_fa = Path(args.libraries_path)/args.organism_name/"fasta.Libs"/genom_miRDB
     nameAbbrNameDic ={'human':'hsa', 'zebrafish':'dre', 'mouse':'mmu', 'rat':'rno', 'fruitfly':'dme', 'nematode':'cel', 'hamster':'mau'}
-    abbrName = nameAbbrNameDic[species]
-    speciesNameDic = {species:abbrName}
+    if species in nameAbbrNameDic.keys():
+        abbrName = nameAbbrNameDic[species]
+        speciesNameDic = {species:abbrName}
+    else:
+        speciesNameDic = {species:"CUS"}
+
     if args.organism_name  not in ['human', 'mouse']:
         speciesType = 'others'
     else:
