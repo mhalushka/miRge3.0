@@ -1,10 +1,10 @@
 # miRge-Py3
 
 ## Main goals
-- [ ] Easy to implement and use
-- [ ] Robust (accurate) data output
-- [ ] Fast and able to run multiple datasets at once
-- [ ] Attractive and meaningful output
+- [x] Easy to implement and use
+- [x] Robust (accurate) data output
+- [x] Fast and able to run multiple datasets at once
+- [x] Attractive and meaningful output
 
 ## GitHub Issues 
 - [x] To integrate miRge --build-idx (OK - Should be implemented)
@@ -12,13 +12,13 @@
 [Ref1](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5100345/)
 [Ref2](https://www.ncbi.nlm.nih.gov/pubmed/25870415?dopt=Abstract)
 [Ref3](https://www.nature.com/articles/s41598-017-06174-3)
-- [ ] Find data with spike-ins and visualize/interpret the output (Pending)
-- [ ] miRge --build-lib (Issue: #1) (Pending)
-- [ ] miRge --allele-freq (Issue: #3) (Pending)
+- [x] Find data with spike-ins and visualize/interpret the output (NOT REQUIRED)
+- [x] miRge --build-lib (Issue: #1) 
+- [x] miRge --allele-freq (Issue: #3) (Lets see it in the future)
 - [x] A zero count and an absent record in miR.Counts.csv (Issue: #20) (Complete)
 - [x] Option: -ad ion (Issue: #25) - I think its mostly due to the use of different cutadapt version. (Complete).  The 11 is defined in the code below. (Ans: Ion torrent adapters should be provided by user unless modified in miRge3 in near future)
 - [x] Any other type of adapters possible? (Ans: Any adapter seq can be provided on 5' `-g` and 3' `-a` end, or mention Illumina for adapters at 5' or 3')
-- [ ] Ok. If this `hsa-miR-378g` is no longer an accepted miRNA we can remove it totally in Mirge3. Slack by Marc, Date:03/03/2020. 
+- [x] Ok. If this `hsa-miR-378g` is no longer an accepted miRNA we can remove it totally in Mirge3. Slack by Marc, Date:03/03/2020. 
 ```
 adapter = args.adapter
 	if adapter == 'illumina':
@@ -49,7 +49,7 @@ Datasets: SRR* for different lib kit and adapters etc: https://trace.ncbi.nlm.ni
 ```
 
 ## Basic functions - command line options
-- [ ] User friendly parameters 
+- [x] User friendly parameters 
 - [ ] Implement [`Read the docs`](https://readthedocs.org/)
   - [ ] Mention file type to use for loading sample information 
   - [ ] `Additional details to add to docs here`
@@ -57,36 +57,36 @@ Datasets: SRR* for different lib kit and adapters etc: https://trace.ncbi.nlm.ni
 
 ## Primary functions - Annotation:
 - [x] Incorporate latest version of cutadapt and its features. 
-- [ ] Keep track to update features of miRge automatically with newer versions of cutadapt.
-- [ ] No installation required for [Bowtie 1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/). Use: `\bin\bowtie`
+- [x] Keep track to update features of miRge automatically with newer versions of cutadapt. (This will take time)
+- [x] No installation required for [Bowtie 1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/). Use: `\bin\bowtie` (Refer docs)
 - [x] ~~**miRge --paste**~~. Option to comibne colummns of several \*.csv files into one matrix using panda dataframe (The output miR_Counts.csv and miR_RPM.csv can handle that automatically)
 - [ ] `Additional features here`
 
 ## Secondary functions - Predict:
-- [ ] RNA-fold for novel miRNAs
+- [x] RNA-fold for novel miRNAs
 - [x] Correct miRge GFF output
 - [x] tRNA halve and fragment prediction
-- [ ] SVM re-implementation 
-- [ ] PDF and HTML output
-- [ ] Incorporate SQLite db for quick query and visualization
-- [ ] A function to handle Batch effect? 
+- [x] SVM re-implementation 
+- [x] PDF and HTML output
+- [x] Incorporate SQLite db for quick query and visualization (Not required)
+- [x] A function to handle Batch effect? (NA)
 - [ ] `Add features here`
 
 ## Additional features - Customization of software:
 - [ ] Bowtie to avoid mismatches in the seed region - Interact with **Mihaela Pertea**. 
-- [ ] Software to use .SRA, .fastq.gz and .fastq
+- [x] Software to use .SRA, .fastq.gz and .fastq (NA)
 - [ ] `Additional features here`
 
 ## Advanced features - Packaging and testing
-- [ ] Integrate Cython (better performance) 
-- [ ] CPU and GPU switch usage options 
-- [ ] Interactive or visually appealing outputs 
-- [ ] Docker implementation 
+- [x] Integrate Cython (better performance) 
+- [x] CPU and GPU switch usage options (GPU will be integrates in future)
+- [x] Interactive or visually appealing outputs 
+- [x] Docker implementation (NA)
 - [ ] Integrates with other high througput Genomics tools, especially having output work in a Bioconductor environment.
-- [ ] GUI - [Beeware](https://beeware.org/project/using/desktop-app/) or [Electron](https://electronjs.org/) implementaion which ever works best for cross platform
-- [ ] GUI requires an installation of `Windows Subsystem for Linux`
-  - [ ] [Cygwin](https://www.cygwin.com/) for Windows < 10
-  - [ ] [Ubuntu](https://docs.microsoft.com/en-us/windows/wsl/install-win10) for Windows10
+- [x] GUI - [Beeware](https://beeware.org/project/using/desktop-app/) or [Electron](https://electronjs.org/) implementaion which ever works best for cross platform
+- [x] GUI requires an installation of `Windows Subsystem for Linux`
+  - [-] [Cygwin](https://www.cygwin.com/) for Windows < 10
+  - [x] [Ubuntu](https://docs.microsoft.com/en-us/windows/wsl/install-win10) for Windows10
 - [ ] `Additional features here`
 
 #### References: 
