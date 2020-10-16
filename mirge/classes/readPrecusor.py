@@ -229,17 +229,20 @@ class ReadPrecusor(object):
 			f1 = os.path.join(self.tmpdir, 'prunedPrecusor.fa')
 			f2 = os.path.join(self.tmpdir, 'prunedPrecusor.str')
 			os.system('%s < %s --noPS --noLP > %s'%(self.rnafoldCmdTmp, f1, f2))
-			with open(f2, 'r') as inf:
-				try:
-					tmp = inf.readlines()
-					prunedPrecusorStrNew = tmp[2].strip().split()[0]
-					if len(tmp[2].strip().split()[1]) >= 3:
-						mFE = float(tmp[2].strip().split()[1][1:-1].strip())
-					else:
-						mFE = float(tmp[2].strip().split()[2][:-1].strip())
-				except:
-					mFE = 0
-					prunedPrecusorStrNew = prunedPrecusorStr
+			try:	
+				with open(f2, 'r') as inf:
+					try:
+						tmp = inf.readlines()
+						prunedPrecusorStrNew = tmp[2].strip().split()[0]
+						if len(tmp[2].strip().split()[1]) >= 3:
+							mFE = float(tmp[2].strip().split()[1][1:-1].strip())
+						else:
+							mFE = float(tmp[2].strip().split()[2][:-1].strip())
+					except:
+						mFE = 0
+						prunedPrecusorStrNew = prunedPrecusorStr
+			except FileNotFoundError:
+				prunedPrecusorStrNew = None
 			os.remove(f1)
 			os.remove(f2)
 		else:
