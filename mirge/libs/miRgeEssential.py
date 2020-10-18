@@ -13,11 +13,11 @@ def check_dependencies(args, runlogFile):
     outlog = open(str(runlogFile),"a+")
     # Checking bowtie version #
     bowtie = subprocess.run(str(bwtCommand), shell=True, capture_output=True, text=True)
-    bwtver = ["1.2.1", "1.2.2", "1.2.3"]
+    bwtver = ["1.2.1", "1.2.2", "1.2.3", "1.3.0"]
     if bowtie.returncode==0:
         if not (bowtie.stdout.split('\n')[0].split(' ')[2]) in bwtver:
-            print("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2 or 1.2.3) \nUse argument -pbwt <name of the directory>")
-            outlog.write("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2 or 1.2.3) \nUse argument -pbwt <name of the directory>\n")
+            print("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3 or 1.3.0) \nUse argument -pbwt <name of the directory>")
+            outlog.write("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3 or 1.3.0) \nUse argument -pbwt <name of the directory>\n")
             exit()
         else:
             outlog.write("bowtie version: "+ str(bowtie.stdout.split('\n')[0].split(' ')[2])+"\n")
@@ -46,7 +46,7 @@ def check_dependencies(args, runlogFile):
     # Checking samtools version #
     samtools = subprocess.run(str(samtoolsCommand), shell=True, capture_output=True, text=True)
     if samtools.returncode==0:
-        if not float(samtools.stdout.split('\n')[0].split(' ')[1]) >= 1.5:
+        if not float(samtools.stdout.split('\n')[0].split(' ')[1]) >= 1:
     #if not samtools.returncode==0 and float(samtools.stdout.split('\n')[0].split(' ')[1]) >= 1.5:
             print("Samtools error!: incorrect version. Require - samtools >1.5\nUse argument -psam <name of the directory>\n")
             outlog.write("Samtools error!: incorrect version. Require - samtools >1.5\nUse argument -psam <name of the directory>\n")
