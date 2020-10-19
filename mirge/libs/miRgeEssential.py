@@ -67,7 +67,7 @@ def check_dependencies(args, runlogFile):
     if args.novel_miRNA: 
         rnafold = subprocess.run(str(rnaFoldCommand), shell=True, capture_output=True, text=True)
         if rnafold.returncode==0:
-            if not str(rnafold.stdout.split('\n')[0].split(' ')[1]) == "2.4.14":
+            if not int((rnafold.stdout.split('\n')[0].split(' ')[1]).split(".")[0]) >= 2:
                 print("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>")
                 outlog.write("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>\n")
                 exit()
