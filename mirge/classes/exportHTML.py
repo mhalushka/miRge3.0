@@ -311,7 +311,7 @@ class FormatHTML:
     def novelTab(self, isnmiR):
         if isnmiR == 1: #TRUE
             nmirVar = """
-                            <div id="tab_novelmiR" style="display:none; margin-right: 100px; margin-left: -350px;">
+                            <div id="tab_novelmiR" style="display:none; margin-right: 100px; margin-left: -150px;">
                                 <figure class="highcharts-figure" style="width:800px">
                                     <table border="0" id="novelmiRData" class="display" width="80%"></table>
                                 </figure>
