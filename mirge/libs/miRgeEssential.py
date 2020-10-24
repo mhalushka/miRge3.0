@@ -1,5 +1,6 @@
 import subprocess
 from pathlib import Path
+import cutadapt as ca
 
 
 def check_dependencies(args, runlogFile):
@@ -40,8 +41,10 @@ def check_dependencies(args, runlogFile):
                 print("cutadapt version: "+ str(cutadapt.stdout.strip()))
             outlog.write("cutadapt version: "+ str(cutadapt.stdout.strip())+"\n")
     except ValueError:
-        print("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
-        outlog.write("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
+        print("cutadapt version: " + str(ca.__version__) + "\n")
+        outlog.write("cutadapt version: " + str(ca.__version__) + "\n")
+        #print("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
+        #outlog.write("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
 
     # Checking samtools version #
     samtools = subprocess.run(str(samtoolsCommand), shell=True, capture_output=True, text=True)
