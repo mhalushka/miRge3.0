@@ -355,3 +355,11 @@ One last thing to avoid an error `The directory name is invalid`:
     [1. Stellarinfo](https://www.stellarinfo.com/blog/directory-name-invalid-windows-10/)<br/>
     [2. Microsoft](https://support.microsoft.com/en-us/help/832434/the-directory-name-is-invalid-error-message-when-you-start-cmd-exe-or)<br/>
 
+### Obtaining and installing GUI application
+
+- Download GUI from [SourceForge]()
+- Double click miRge3.0.exe to install miRge3.0 windows GUI application.
+![miRge3.0.exe](/images/Win_installer_starter.png)<br/><br/>
+- Click Next to complete miRge3.0 installation
+![Licence](/images/Win_installer.png)<br/>
+
