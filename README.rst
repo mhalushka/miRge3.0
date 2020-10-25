@@ -9,7 +9,7 @@ miRge3.0 is developed in python v3.8 and is a recent update of our previous vers
 Links
 -----
 
-* `Documentation <https://blank.readthedocs.io/>`_
+* `Documentation <https://mirge3.readthedocs.io/>`_
 * `Source code <https://github.com/mhalushka/mirge3.0/>`_
 * `Report an issue <https://github.com/mhalushka/mirge3.0/issues>`_
 * `Project page on PyPI <https://pypi.python.org/pypi/mirge3/>`_
