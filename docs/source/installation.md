@@ -372,11 +372,11 @@ sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/loc
 One last thing to avoid an error `The directory name is invalid`:
 
 -  Type cmd in Windows search box, right-click on Command Prompt and select Open file location.
-![CMD](/images/cmd_prompt.png)<br/><br/>
+![](/images/cmd_prompt.png)<br/><br/>
 - Right-click on Command Prompt and click on Properties. 
-![CMD-prop](/images/cmd_prop.png)<br/><br/>
+![](/images/cmd_prop.png)<br/><br/>
 - Under the Shortcut tab, replace `Start in` option by changing the value `%HOMEDRIVE%%HOMEPATH%` to `%WINDIR%`. Click OK.<br/><br/>
-![CMD-windir](/images/cmd_windir.png)<br/><br/>
+![](/images/cmd_windir.png)<br/><br/>
   + Reference<br/>
     [1. Stellarinfo](https://www.stellarinfo.com/blog/directory-name-invalid-windows-10/)<br/>
     [2. Microsoft](https://support.microsoft.com/en-us/help/832434/the-directory-name-is-invalid-error-message-when-you-start-cmd-exe-or)<br/>
@@ -385,12 +385,12 @@ One last thing to avoid an error `The directory name is invalid`:
 
 - Download GUI from [SourceForge]()
 - Double click miRge3.0.exe to install miRge3.0 windows GUI application.
-![miRge3.0.exe](/images/Win_installer_starter.png)<br/><br/>
+![](/images/Win_installer_starter.png)<br/><br/>
 - Click Next to complete miRge3.0 installation
-![Licence](/images/Win_installer.png)<br/>
+![](/images/Win_installer.png)<br/>
 
 
-#### Uninstalling miRge3.0
+### Uninstalling miRge3.0
 - Step 1:
 To uninstall open the terminal and type:
 ```
@@ -398,8 +398,8 @@ python3.8 -m uninstall mirge3
 ```
 - Step 2:
   + Search miRge3.0, right click and select uninstall
-![uninstall](/images/uninstall1.png)<br/><br/>
+![](/images/uninstall1.png)<br/><br/>
   + Under `Programs and Features`, select miRge3.0 and click `Uninstall`
-![uninstall2](/images/uninstall2.png)<br/><br/>
+![](/images/uninstall2.png)<br/><br/>
   + Then select `Uninstall` by clicking `Ok`. Done.
-![uninstall3](/images/uninstall3.png)<br/><br/>
+![](/images/uninstall3.png)<br/><br/>
