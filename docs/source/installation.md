@@ -120,7 +120,7 @@ Save and exit. After that type `bash` on the command line -Or- simply, close the
 
 ### Obtaining and installing GUI application
 
-- Download GUI from [Linux](https://sourceforge.net/projects/mirge3/files/)
+- Download GUI for [Linux](https://sourceforge.net/projects/mirge3/files/)
 
 ### Uninstalling miRge3.0
 
@@ -255,7 +255,7 @@ sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-inspect /
 
 ### Obtaining and installing GUI application
 
-- Download GUI from [OSX](https://sourceforge.net/projects/mirge3/files/)
+- Download GUI for [OSX](https://sourceforge.net/projects/mirge3/files/)
 
 ### Uninstalling miRge3.0
 
@@ -395,7 +395,7 @@ One last thing to avoid an error `The directory name is invalid`:
 
 ### Obtaining and installing GUI application
 
-- Download GUI from [Windows 10](https://sourceforge.net/projects/mirge3/files/)
+- Download GUI for [Windows 10](https://sourceforge.net/projects/mirge3/files/)
 - Double click miRge3.0.exe to install miRge3.0 windows GUI application.
 ![](/images/Win_installer_starter.png)<br/><br/>
 - Click Next to complete miRge3.0 installation
