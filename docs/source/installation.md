@@ -47,7 +47,12 @@ Remeber to add your path `/PATH_TO_USERS/bin`.
 
 ##### Install miRge3.0 by this simple command
 ```
-python3.8 -m pip install --user  -i  https://test.pypi.org/simple/  mirge==0.1.56
+python3.8 -m pip install --user mirge3
+```
+
+##### To upgrade miRge3.0
+```
+python3.8 -m pip install --user --upgrade  mirge3
 ```
 
 #### Install additional C-libraries based tools 
@@ -112,6 +117,11 @@ sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/loc
 
 Save and exit. After that type `bash` on the command line -Or- simply, close the terminal. 
 
+#### Uninstalling miRge3.0
+To uninstall open the terminal and type:
+```
+python3.8 -m uninstall mirge3
+```
 <hr style="border:2px solid black"> <hr/>
 
 ## macOS
@@ -166,7 +176,12 @@ Remeber to add your path `/PATH_TO_USERS/Python/3.7/bin`.
 
 ##### Install miRge3.0 by this simple command
 ```
-python3.7 -m pip install --user  -i  https://test.pypi.org/simple/  mirge==0.1.54
+python3.7 -m pip install --user  mirge3
+```
+
+##### To upgrade miRge3.0
+```
+python3.7 -m pip install --user --upgrade  mirge3
 ```
 
 #### Install additional C-libraries based tools 
@@ -230,6 +245,12 @@ sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie /usr/loca
 sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-build /usr/local/bin/bowtie-build
 sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
 ```
+
+#### Uninstalling miRge3.0
+To uninstall open the terminal and type:
+```
+python3.8 -m uninstall mirge3
+```
 <hr style="border:2px solid black"><hr/>
 
 ## Windows OS
@@ -291,7 +312,12 @@ Remeber to add your path `/PATH_TO_USERS/bin`.
 
 ##### Install miRge3.0 by this simple command
 ```
-python3.8 -m pip install --user  -i  https://test.pypi.org/simple/  mirge==0.1.56
+python3.8 -m pip install --user mirge3
+```
+
+##### To upgrade miRge3.0
+```
+python3.8 -m pip install --user --upgrade  mirge3
 ```
 
 #### Install additional C-libraries based tools 
@@ -363,3 +389,17 @@ One last thing to avoid an error `The directory name is invalid`:
 - Click Next to complete miRge3.0 installation
 ![Licence](/images/Win_installer.png)<br/>
 
+
+#### Uninstalling miRge3.0
+- Step 1:
+To uninstall open the terminal and type:
+```
+python3.8 -m uninstall mirge3
+```
+- Step 2:
+  + Search miRge3.0, right click and select uninstall
+![uninstall](/images/uninstall1.png)<br/><br/>
+  + Under `Programs and Features`, select miRge3.0 and click `Uninstall`
+![uninstall2](/images/uninstall2.png)<br/><br/>
+  + Then select `Uninstall` by clicking `Ok`. Done.
+![uninstall3](/images/uninstall3.png)<br/><br/>
