@@ -117,7 +117,13 @@ sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/loc
 
 Save and exit. After that type `bash` on the command line -Or- simply, close the terminal. 
 
+
+### Obtaining and installing GUI application
+
+- Download GUI from [Linux](https://sourceforge.net/projects/mirge3/files/)
+
 ### Uninstalling miRge3.0
+
 To uninstall open the terminal and type:
 ```
 python3.8 -m uninstall mirge3
@@ -246,7 +252,13 @@ sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-build /us
 sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
 ```
 
+
+### Obtaining and installing GUI application
+
+- Download GUI from [OSX](https://sourceforge.net/projects/mirge3/files/)
+
 ### Uninstalling miRge3.0
+
 To uninstall open the terminal and type:
 ```
 python3.8 -m uninstall mirge3
@@ -367,7 +379,7 @@ sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie /usr/local/bin/b
 sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-build /usr/local/bin/bowtie-build
 sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
 ```
-##### Change Command Prompt Properties 
+#### Change Command Prompt Properties 
 
 One last thing to avoid an error `The directory name is invalid`:
 
@@ -383,7 +395,7 @@ One last thing to avoid an error `The directory name is invalid`:
 
 ### Obtaining and installing GUI application
 
-- Download GUI from [SourceForge]()
+- Download GUI from [Windows 10](https://sourceforge.net/projects/mirge3/files/)
 - Double click miRge3.0.exe to install miRge3.0 windows GUI application.
 ![](/images/Win_installer_starter.png)<br/><br/>
 - Click Next to complete miRge3.0 installation
