@@ -117,7 +117,7 @@ sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/loc
 
 Save and exit. After that type `bash` on the command line -Or- simply, close the terminal. 
 
-#### Uninstalling miRge3.0
+### Uninstalling miRge3.0
 To uninstall open the terminal and type:
 ```
 python3.8 -m uninstall mirge3
@@ -246,7 +246,7 @@ sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-build /us
 sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
 ```
 
-#### Uninstalling miRge3.0
+### Uninstalling miRge3.0
 To uninstall open the terminal and type:
 ```
 python3.8 -m uninstall mirge3
