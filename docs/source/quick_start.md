@@ -64,120 +64,85 @@ Optional PATH arguments:
     
 ```
 
-## File format options
-Having the right file format is important before making miRge libraries. When dealing with new species which are not available in the set of miRge3.0 libraries, it is important to prioritize what is essential.  Novel miRNAs runs scipy cKDTree during library preparation and it consumes a lot of computational resources and time depending on the genome size (up to 10 hours). Making a general build without novel miRNA detection is more straight forward and faster to build libraries.
+## miRge3.0 libraries
+miRge3.0 pipeline aligns the raw reads against a set of small-RNA annotation libraries. The libraries specific to the organism of interest can be obtained from [SourceForge](https://sourceforge.net/projects/mirge3/files/miRge3_Lib/). Downloading the libraries on terminal:
 
-#### General format options ####
+### Command-line Interface (CLI)
+We recommend to create a directory `miRge3_Lib` and download using wget as shown below,
+```
+mkdir miRge3_Lib
+cd miRge3_Lib
+wget -O human.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/human.tar.gz/download"
+wget -O mouse.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/mouse.tar.gz/download"
+wget -O rat.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/rat.tar.gz/download"
+wget -O nematode.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/nematode.tar.gz/download"
+wget -O fruitfly.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/fruitfly.tar.gz/download"
+wget -O zebrafish.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/zebrafish.tar.gz/download"
+wget -O hamster.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/hamster.tar.gz/download"
+```
+Users can only download what is necessary. Unzip the files once downloaded by the following command:
+```
+tar -xzf human.tar.gz
+```
+Replace `human` with the organism of interest. If you want to extract all the files at once, you could use `tar -xzf *.tar.gz` instead. 
 
-##### Example usage #####
+### Graphical User Interface (GUI)
+We recommend to create a folder `miRge3_Lib` and download the libraries directly from [SourceForge](https://sourceforge.net/projects/mirge3/files/miRge3_Lib/). Once downloaded, extract/unzip the compressed files. 
+
+### Building new libraries 
+If you are interested in creating specific library for an organism that is not part of this set then please refer to [miRge3_build](https://github.com/mhalushka/miRge3_build).
+
+
+## CLI - Example usage 
+
 Example command usage:
 ```
-miRge-build -g genome.fasta -mmf nematode_mature_miRBase.fa -hmf hairpin_miR.fa -mtf mature_trna.fasta -ptf pre_trna.fasta -snorf snorna.fasta -rrf rrna.fasta -ncof ncrna_other.fasta -mrf mrna.fasta -agff nematode_miRBase.gff3 -db miRBase -on roundworm -cpu 10  -ngrs WBcel235_genome_repeats.GTF
+miRge3.0 -s SRR772403.fastq,SRR772404.fastq,SRR772405.fastq,SRR772406.fastq -lib miRge3_Lib -on human -db mirgenedb -o output_dir -gff -nmir -trf -ai -cpu 12 -a illumina 
 ```
 Output command line:
 ```
 bowtie version: 1.2.3
+Samtools version: 1.7
+RNAfold version: 2.4.14
+Collecting and validating input files...
 
-Library indexing in progress...
+miRge3.0 will process 4 out of 4 input file(s).
 
-Building the kdTree of roundworm_genome_repeats.GTF....
+Cutadapt finished for file SRR772403 in 2.5358 second(s)
+Collapsing finished for file SRR772403 in 0.0126 second(s)
 
-Building the kdTree of roundworm_genome_repeats.GTFtakes: 1.4s
-Transforming roundworm_genome.fa takes: 0.9s
+Cutadapt finished for file SRR772404 in 7.3542 second(s)
+Collapsing finished for file SRR772404 in 0.2786 second(s)
 
-miRge-build is complete in 108.2122 second(s)
-```
-Output directory structure: 
-```
-DB = '--mir-DB'; name of the database used (miRBase or miRGeneDB)
+Cutadapt finished for file SRR772405 in 11.0667 second(s)
+Collapsing finished for file SRR772405 in 0.8585 second(s)
 
-Organism
-├── annotation.Libs
-│   ├── organism_DB.gff3
-│   ├── organism_genome_repeats.pckl (if `-ngrs` is opted)
-│   ├── organism_miRNAs_in_repetitive_element_DB.csv (if `-ngrs` is opted)
-│   └── organism_merges_DB.csv
-├── fasta.Libs
-│   ├── organism_genome.pckl (if `-ngrs` is opted) 
-│   └── organism_merges_DB.fa
-└── index.Libs
-    ├── organism_genome*.ebwt
-    ├── organism_hairpin_DB*.ebwt
-    ├── organism_mirna_DB*.ebwt
-    ├── organism_mature_trna*.ebwt
-    ├── organism_pre_trna*.ebwt
-    ├── organism_rrna*.ebwt
-    ├── organism_snorna*.ebwt
-    ├── organism_mrna*.ebwt
-    ├── organism_ncrna_others*.ebwt
-    ├── organism_mature_trna*.ebwt
-    └── organism_spike-in*.ebwt (Optional)
-```
+Cutadapt finished for file SRR772406 in 3.5771 second(s)
+Collapsing finished for file SRR772406 in 0.8677 second(s)
 
-##### Name of the database #####
-miRge uses miRBase or miRGeneDB as the reference database.
- So, it is mandatory to use `-db` option to either `-db miRBase` or `-db miRGeneDB`. Reference miRNA database `-db` and annotation GFF `-agff` files can be found at [miRGeneDB](https://mirgenedb.org/) and [miRBase](http://www.mirbase.org/). 
+Matrix creation finished in 0.3838 second(s)
 
-##### Name of the organism #####
-miRge-build creates and stores all the libraries under the folder which is named after the organism. It is recommended to use a simple name and avoid any special character (use "_" if the name needs to be seperated by a space). Example: ` -on human `; ` -on horse `; `-on golden_lemur`; ` -on my_database ` etc.
-    
+Data pre-processing completed in 27.2443 second(s)
 
-##### Fasta format #####
-Parameters with `-g`, `-mmf`, `-hmf`, `-mtf`, `-ptf`, `-snorf`, `-mrf`, `-spnf` should be in FASTA format as shown below. `-spnf ` or --spike-in is optional if the user is interested in adding an additional database with spike-in reads. 
+Alignment in progress ...
+Alignment completed in 15.8305 second(s)
 
-*FASTA Format:*
+Summarizing and tabulating results...
+The number of A-to-I editing sites for is less than 10 so that no heatmap is drawn.
+Summary completed in 71.4691 second(s)
 
-```
->Header or Identifier
-NUCLEOTIDE SEQUENCE 
-Ex:
-  >hsa-let-7a-5p
-  TGAGGTAGTAGGTTGTATAGTT
+Predicting novel miRNAs
+
+
+Performing prediction of novel miRNAs...
+Start to predict
+Prediction of novel miRNAs Completed (104.83 sec)
+
+The analysis completed in 222.2487 second(s)
 ```
 
-**NOTE:**
-```
-The Header ID of hairpin miRNA FASTA should match the mature miRNA FASTA file. This is required for accurate isomiR annotation. 
-miRge-build fetches 2bp upstream to 5p and 6bp downstream to 3p mature miRNA from the hairpin miRNA based on the matching ID. 
-Exception: If the mature miRNA name contains XXXX-5p, XXXX-3p, XXXX-[5|3]p*,  XXXX_5p or XXXX_3p where XXXX matches the hairpin miRNA ID. 
-Also, if this is not possible, miRge will not throw any errors, however, and it will proceed with the user provided files.  
-```
 
-#### Novel miRNA options ####
-Novel miRNA prediction requires the genome file (which is provided in the general format) and genome repeats file in GTF format, `-ngrs`. As mentioned previously, novel miRNA analysis consumes a lot of computational resources and time.
-
-
-#### Custom annotation options ####
-This is **optional**, that two files under the `annotation.Libs` subdirectory requires users input manually. 
-
-##### \_merges\_ #####
-This file structured as `organism_merges_database.csv` allows users to define a miRNA family for miRNAs with similar sequences. This method is described in detail in the original miRge manuscript (Baras et al Plos One, 2015).
-Below is the guide to format the file, where `hsa-miR-376b-5p/376c-5p` is the name of the miRNA family seperated by `/` followed by the family members such as `hsa-miR-376b-5p` and `hsa-miR-376c-5p` all separated by `,`. The next such miRNA family should begin in a new line. Here, four such examples are shown below. 
-
-```
-hsa-miR-376b-5p/376c-5p,hsa-miR-376b-5p,hsa-miR-376c-5p
-hsa-miR-518c-3p/518f-3p,hsa-miR-518c-3p,hsa-miR-518f-3p
-hsa-miR-642a-3p/642b-3p,hsa-miR-642a-3p,hsa-miR-642b-3p
-hsa-miR-3155a-3p/3155b,hsa-miR-3155a-3p,hsa-miR-3155b
-hsa-miR-3689b-3p/3689c,hsa-miR-3689b-3p,hsa-miR-3689c
-```
-
-##### \_miRNAs\_in\_repetitive\_element\_ #####
-
-This file structured as `organism_miRNAs_in_repetitive_element_database.csv` allows users to define miRNAs that overlap with repeat elements in the genome. This eliminates miRNA reads to be identified as novel miRNAs or identifying one as A-to-I editing, both of which might be misleading. 
-
-Below is the guide to format the file, where miRNA names which overlaps with repeat elements are separated by `,`. The `gene_id` and `transcript_id` of a repeat element should follow the miRNA name. See the example below: 
-
-```
-hsa-miR-28-5p,gene_id "L2c"; transcript_id "L2c_dup8856";
-hsa-miR-28-3p,gene_id "L2c"; transcript_id "L2c_dup8856";
-hsa-miR-95-5p,gene_id "L2c"; transcript_id "L2c_dup382";
-hsa-miR-95-3p,gene_id "L2b"; transcript_id "L2b_dup437";
-hsa-miR-181c-5p,gene_id "MamRTE1"; transcript_id "MamRTE1_dup11";
-```
-
-#### Resources ####
-* The genome repeats can be obtained from [UCSC](https://genome-euro.ucsc.edu/cgi-bin/hgTables)
-* The database sequences for other small RNA can be obtained from [UCSC](https://genome-euro.ucsc.edu/cgi-bin/hgTables) or [Ensembl](http://uswest.ensembl.org/Homo_sapiens/Info/Index)
-* [Bowtie-v1.2.3](https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3) - please pick one based on your OS.
+## Resources 
+* Lu, Y., et al., **miRge 2.0 for comprehensive analysis of microRNA sequencing data**. 2018. *BMC Bioinformatics*. [PMID](https://pubmed.ncbi.nlm.nih.gov/30153801/). 
+* Baras, S. A., et al., **miRge - A Multiplexed Method of Processing Small RNA-Seq Data to Determine MicroRNA Entropy**. 2015. *PLoS One*. [PMID](https://pubmed.ncbi.nlm.nih.gov/26571139/).
 
