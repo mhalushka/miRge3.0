@@ -1,6 +1,6 @@
 .. image:: https://upload.wikimedia.org/wikipedia/commons/f/fa/Sourceforge_logo.svg
-    :height: 30px
-    :width: 150 px
+    :height: 20px
+    :width: 100 px
     :scale: 100 %
     :target: https://sourceforge.net/projects/mirge3/files/
     :alt:
