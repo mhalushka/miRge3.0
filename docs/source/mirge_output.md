@@ -71,7 +71,34 @@ miRge.2020-10-9_1-35-53
 ```
 
 ## miRge - interactive visualization
+- miRge3.0 produces several interactive visualization graphics as follows:
 
+- Screenshot of the miRge visualization HTML tab
+![](/images/overall.png)<br/><br/>
+
+- Chart view and download options 
+![](/images/download_options.png)<br/><br/>
+
+- Screenshot of the smallRNA read distribution for each sample
+![](/images/read-distribution.png)<br/><br/>
+
+- Screenshot of the read length distribution for each sample
+![](/images/read-length.png)<br/><br/>
+
+- Screenshot of the tile map representing top 40 high abundant miRNAs for each study
+![](/images/sample_abundance2.png)<br/><br/>
+
+- Screenshot of the variant distribution for all samples combined (isomiRs)
+![](/images/isomiR_variants.png)<br/><br/>
+
+- Screenshot of the heatmap representing variants for each sample for the top 20 high abundant miRNAs (isomiRs)
+![](/images/sample_isomir.png)<br/><br/>
+
+- Screenshot of the histogram representing UMI counts across each sample
+![](/images/umi-distribut.png)<br/><br/>
+
+- Screenshot of list of novel miRNAs identified across samples
+![](/images/nmiR.PNG)<br/><br/>
 
 ## Resources: 
 The graphics for miRge3.0 visualization is enabled with javascripts and CSS obtained from the following:
