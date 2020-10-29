@@ -9,6 +9,7 @@ Table of contents
    
    installation.md
    quick_start.md
+   mirge_output.md
    license
 
 

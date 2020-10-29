@@ -141,6 +141,25 @@ Prediction of novel miRNAs Completed (104.83 sec)
 The analysis completed in 222.2487 second(s)
 ```
 
+## miRge3.0 GUI 
+
+- The application is cross platform, the image below is a screenshot of the software from MacOS
+![](/images/mac_exe.png)<br/><br/>
+
+- The software is easy to use with default parameters. The parameters are tabulated into four groups such as basic, trimming parameters, novel miRNA prediction and other optional parameters. 
+
+- Screenshot with basic parameters
+![](/images/basic_para.png)<br/><br/>
+
+- Screenshot with trimming parameters
+![](/images/trimming_para.png)<br/><br/>
+
+- Screenshot with novel miRNA predictions
+![](/images/novel_para.png)<br/><br/>
+ 
+- Screenshot with other optional parameters
+![](/images/other_para.png)<br/><br/>
+
 
 ## Resources 
 * Lu, Y., et al., **miRge 2.0 for comprehensive analysis of microRNA sequencing data**. 2018. *BMC Bioinformatics*. [PMID](https://pubmed.ncbi.nlm.nih.gov/30153801/). 
