@@ -71,12 +71,13 @@ miRge.2020-10-9_1-35-53
 ```
 
 ## miRge - interactive visualization
-- miRge3.0 produces several interactive visualization graphics as follows:
 
-- Screenshot of the miRge visualization HTML tab
+miRge3.0 produces several interactive visualization graphics as follows
+
+- Screenshot of the miRge visualization HTML tab <br>
 ![](/images/overall.png)<br/><br/>
 
-- Chart view and download options 
+- Chart view and download options <br>
 ![](/images/download_options.png)<br/><br/>
 
 - Screenshot of the smallRNA read distribution for each sample
