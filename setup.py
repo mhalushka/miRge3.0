@@ -1,17 +1,17 @@
 from setuptools import setup, find_packages, find_namespace_packages
 
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setup(
-        name='mirge',
-        version='0.1.53',
+        name='mirge3',
+        version='0.0.1',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
-        url='https://test.pypi.org/legacy/',
+        url='https://github.com/mhalushka/miRge3.0/',
         description='Comprehensive analysis of small RNA sequencing Data', 
         long_description=long_description,
-        keywords=['miRge', 'small RNA analysis', 'NGS', 'bioinformatics tools'],  # arbitrary keywords
+        keywords=['miRge', 'small RNA analysis', 'NGS', 'bioinformatics tools', 'GUI'],  # arbitrary keywords
         license='MIT',
         package_dir={'mirge': 'mirge'},
         packages=find_packages(),
@@ -28,5 +28,5 @@ setup(
             "Topic :: Scientific/Engineering :: Bio-Informatics"
             ],
         include_package_data=True,
-        python_requires='>=3.8',
+        python_requires='>=3.7',
 )
