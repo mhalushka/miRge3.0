@@ -38,7 +38,7 @@ The analysis completed in 310.7281 second(s)
 ```
 
 ## Output tree structure
-An output directory is cretated for each run such as `miRge.2020-10-9_1-35-53`, where the name is followed by date time format `miRge.yy-dd-mm-hr-mm-ss`. 
+An output directory is created for each run such as `miRge.2020-10-9_1-35-53`, where the name is followed by date time format `miRge.yy-dd-mm-hr-mm-ss`. 
 ```
 The following output is in general, however, the resultant output files are based on the options selected during miRge3.0 execution.
 
@@ -98,7 +98,7 @@ miRge3.0 produces several interactive visualization graphics as follows
 - Screenshot of the histogram representing UMI counts across each sample
 ![](/images/umi-distribut.png)<br/><br/>
 
-- Screenshot of list of novel miRNAs identified across samples
+- Screenshot of a list of novel miRNAs identified across samples
 ![](/images/nmiR.PNG)<br/><br/>
 
 ## Resources: 
