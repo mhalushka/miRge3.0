@@ -5,9 +5,9 @@
 ### Welcome to installation protocol for Linux OS
 
 #### Install python3.8 and R
-This installation protocol is based on Ubuntu, please use the commands that suits your Linux distribution. For example, `apt` should be replaced with `yum` in Fedora/CentOS. 
+This installation protocol is based on Ubuntu, please use the commands that suit your Linux distribution. For example, `apt` should be replaced with `yum` in Fedora/CentOS. 
 - Search and start the terminal
-- Follow the commands to update ubuntu and install python 3.8<br/>
+- Follow the commands to update Ubuntu and install python 3.8<br/>
 A password will be prompted when you type `sudo`, use the one you have set during Ubuntu (or your distro) installation.<br/>
 ```
 sudo apt update
@@ -19,7 +19,7 @@ sudo apt install python3-pip
 sudo apt install r-base
 ```
 
-Linux (Ubuntu 18.04) comes with python2.7 installed by default. To use python3.8, creating an alias in .bashrc would do the trick<br/>
+Linux (Ubuntu 18.04) comes with python2.7 installed by default. To use python3.8, creating an alias in .bashrc would do the trick.<br/>
 
 Use vim editor if you are familiar using this editor `vi .bashrc` or open the .bashrc using text editor by `gedit .bashrc` and add the following line at the bottom of the text.<br/><br/>
 `alias python=python3.8`
@@ -68,7 +68,7 @@ wget -O bowtie-1.2.3-macos-x86_64.zip  https://sourceforge.net/projects/bowtie-b
 - `cd bowtie-1.2.3-macos-x86_64 `
 - ` pwd` 
   + `/home/arun/software/bowtie-1.2.3-linux-x86_64`
-- Add this bowtie binaries to .bashrc as shown below:
+- Add these bowtie binaries to .bashrc as shown below:
 ```
 export PATH=$PATH:"/home/arun/software/bowtie-1.2.3-linux-x86_64"
 ```
@@ -203,7 +203,7 @@ wget -O bowtie-1.2.3-macos-x86_64.zip  https://sourceforge.net/projects/bowtie-b
 - `cd bowtie-1.2.3-macos-x86_64 `
 - ` pwd` 
   + `/Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64`
-- Add this bowtie binaries to .bash_profile as shown below:
+- Add these bowtie binaries to .bash_profile as shown below:
 ```
 export PATH=$PATH:"/Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/"
 ```
@@ -345,7 +345,7 @@ wget -O bowtie-1.2.3-macos-x86_64.zip  https://sourceforge.net/projects/bowtie-b
 - `cd bowtie-1.2.3-macos-x86_64 `
 - ` pwd` 
   + `/home/arun/software/bowtie-1.2.3-linux-x86_64`
-- Add this bowtie binaries to .bashrc as shown below:
+- Add these bowtie binaries to .bashrc as shown below:
 ```
 export PATH=$PATH:"/home/arun/software/bowtie-1.2.3-linux-x86_64"
 ```
