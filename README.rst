@@ -21,3 +21,4 @@ Links
 * `Source code <https://github.com/mhalushka/mirge3.0/>`_
 * `Report an issue <https://github.com/mhalushka/mirge3.0/issues>`_
 * `Project page on PyPI <https://pypi.python.org/pypi/mirge3/>`_
+
