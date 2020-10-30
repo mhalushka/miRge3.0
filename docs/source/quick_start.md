@@ -80,7 +80,7 @@ wget -O fruitfly.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Li
 wget -O zebrafish.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/zebrafish.tar.gz/download"
 wget -O hamster.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/hamster.tar.gz/download"
 ```
-Users can only download what is necessary. Unzip the files once downloaded by the following command:
+Users can download only what is necessary. Unzip the files once downloaded by the following command:
 ```
 tar -xzf human.tar.gz
 ```
