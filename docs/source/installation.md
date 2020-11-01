@@ -117,6 +117,9 @@ sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/loc
 
 Save and exit. After that type `bash` on the command line -Or- simply, close the terminal. 
 
+**vdb-config** <br/>
+Please follow these instructions for `vdb-config` [here](https://ncbi.github.io/sra-tools/install_config.html)
+
 
 ### Obtaining and installing GUI application
 
@@ -239,6 +242,8 @@ sudo make install
 
 Save and exit. After that type `source ~/.bash_profile` on the command line -Or- simply, close the terminal. 
 
+**vdb-config** <br/>
+Please follow these instructions for `vdb-config` [here](https://ncbi.github.io/sra-tools/install_config.html)
 
 ### GUI requirements
 
