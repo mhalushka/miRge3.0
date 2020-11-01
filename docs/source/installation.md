@@ -216,7 +216,8 @@ export PATH=$PATH:"/Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/"
 
 > ##### **Install RNA Fold**
 
-- wget "https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.16.tar.gz"
+- wget https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.16.tar.gz
+- tar -xvzf ViennaRNA-2.4.16.tar.gz
 - cd ViennaRNA-2.4.16
 ```
 sudo ./configure 
