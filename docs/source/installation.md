@@ -120,6 +120,9 @@ Save and exit. After that type `bash` on the command line -Or- simply, close the
 **vdb-config** <br/>
 Please follow these instructions for `vdb-config` [here](https://ncbi.github.io/sra-tools/install_config.html)
 
+Downloading FASTQ files, please type the following:<br/>
+`fastq-dump [options] < accession >`<br/>
+Example: fastq-dump SRR772403 SRR772404<br/>
 
 ### Obtaining and installing GUI application
 
@@ -244,6 +247,10 @@ Save and exit. After that type `source ~/.bash_profile` on the command line -Or-
 
 **vdb-config** <br/>
 Please follow these instructions for `vdb-config` [here](https://ncbi.github.io/sra-tools/install_config.html)
+
+Downloading FASTQ files, please type the following:<br/>
+`fastq-dump [options] < accession >`<br/>
+Example: fastq-dump SRR772403 SRR772404<br/>
 
 ### GUI requirements
 
