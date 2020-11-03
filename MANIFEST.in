@@ -1,0 +1,3 @@
+include mirge/models/*.pkl
+include mirge/models/*.txt
+include mirge/rScripts/*.R
