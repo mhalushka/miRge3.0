@@ -6,7 +6,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from math import sqrt, asin, cos, sin
 from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
+# from Bio.Alphabet import generic_dna
 import re
 from mirge.classes.exportHTML import FormatJS
 
@@ -608,7 +608,7 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
             clusterName = content[clusterNameIndex]
             seqCount = content[seqCountIndex]
             readCountSum = content[readCountSumIndex]
-            stableClusterSeq = str(Seq(content[stableClusterSeqIndex], generic_dna).transcribe())
+            stableClusterSeq = str(Seq(content[stableClusterSeqIndex]).transcribe())
             alignedClusterSeq = content[alignedClusterSeqLabel]
             headUnstableLength = int(content[headUnstableLengthLabel])
             tailUnstableLength = int(content[tailUnstableLengthLabel])
@@ -674,7 +674,7 @@ def write_novel_report(novelmiRNALListFile, featureFile, clusterFile, rnafoldCmd
                     ReadSeqEnd = dashedClusterSeqEnd - headDashCount2(subitem.split('\t')[0])
                 readCount = int(subitem.strip().split('\t')[1])
                 #readSeq = removeDash(subitem.split('\t')[0])
-                readSeq = str(Seq(removeDash(subitem.split('\t')[0]), generic_dna).transcribe())
+                readSeq = str(Seq(removeDash(subitem.split('\t')[0])).transcribe())
                 readContentlist.append((readSeq, ReadSeqStart, ReadSeqEnd, readCount))
             clusterNameClusterSeqDic.update({clusterNameTmp:readContentlist})
     

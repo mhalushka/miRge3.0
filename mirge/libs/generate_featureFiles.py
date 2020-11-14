@@ -7,7 +7,7 @@ import pickle
 from Bio.Seq import Seq
 from Bio import SeqIO
 import Bio
-from Bio.Alphabet import generic_dna
+# from Bio.Alphabet import generic_dna
 
 from mirge.classes.readCluster import ReadCluster
 
@@ -320,67 +320,67 @@ def get_precursors(outputdir2, infFile, chrSeqDic):
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_1\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                             else:
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_1\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                             if startPos-1-downstream >= 0:
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_2\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                             else:
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_2\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                         elif side == 'downstream':
                             if startPos-1-downstream >= 0:
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_2\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-downstream:endPos+unpstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                             else:
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_2\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+unpstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                         else:
                             if startPos-1-unpstream >= 0:
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_1\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][startPos-1-unpstream:endPos+downstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                             else:
                                 precursor_counts+=1
                                 outf.write('>'+temp+':precusor_1\n')
                                 if strand == '+':
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream]).transcribe())
                                 else:
-                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream], generic_dna).reverse_complement().transcribe())
+                                    rnaSeq = str(Seq(chrSeqDic[chr][:endPos+downstream]).reverse_complement().transcribe())
                                 outf.write(rnaSeq+'\n')
                     precusorList.append(temp)
                 else:

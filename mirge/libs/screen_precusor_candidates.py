@@ -2,7 +2,7 @@ import os
 import sys
 from pathlib import Path
 from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
+# from Bio.Alphabet import generic_dna
 from mirge.classes.readPrecusor import ReadPrecusor
 
 def chunks(arr, n):
@@ -116,7 +116,7 @@ def screen_precusor_candidates(outputdir2, files, featureFile, precusorStrFile, 
             while line1 != '':
                 content1 = line1.strip().split('\t')
                 clusterName = content1[clusterNameLabel]
-                miRNASeq = str(Seq(content1[miRNALabel], generic_dna).transcribe())
+                miRNASeq = str(Seq(content1[miRNALabel]).transcribe())
                 neighborState = content1[neighborStateLabel]
                 if content1[upstreamDistanceLabel] == 'None':
                     upstreamDistance = 10000

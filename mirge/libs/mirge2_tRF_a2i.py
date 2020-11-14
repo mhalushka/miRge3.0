@@ -11,7 +11,7 @@ import os, sys
 from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio import pairwise2
-from Bio.Alphabet import IUPAC, Gapped
+# from Bio.Alphabet import IUPAC, Gapped
 from scipy import stats
 
 def addDashNew(seq, totalLength, start, end):

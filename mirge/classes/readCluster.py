@@ -1,8 +1,6 @@
 from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio import pairwise2
-from Bio.Alphabet import IUPAC, Gapped
-from Bio.Alphabet import generic_dna
 import sys
 
 def calculate_identity(sequenceA, sequenceB):
@@ -203,7 +201,7 @@ class ReadCluster(object):
 				genomeSeqStart = self.startPos - tailDashCount
 				genomeSeqEnd = self.endPos + headDashCount
 				tmp_new = self.chrSeqDic[self.chr][genomeSeqStart-1:genomeSeqEnd]
-				templateSeq = str(Seq(tmp_new.upper(), generic_dna).reverse_complement())
+				templateSeq = str(Seq(tmp_new.upper()).reverse_complement())
 			alignSeqList2.insert(0, templateSeq)
 			clusterSecondSeq = alignSeqList2[2]
 

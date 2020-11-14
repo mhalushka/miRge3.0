@@ -152,6 +152,26 @@ def main():
             except OSError:    
                 pass
     html.closeHTML()
+    if args.diffex:
+        if args.metadata:
+            miRCountsFile = str(Path(workDir)/"miR.Counts.csv")
+            diffOutFile = str(Path(workDir)/"miR.DiffExpn.txt")
+            diffRData = str(Path(workDir)/"miR.DESeq2.RData")
+            metaDataFile = str(Path(args.metadata).resolve())
+            if not args.quiet:
+                print("Performing differential expression...\n")
+            outlog.write("Performing differential expression...\n")
+            outlog.close()
+            outlog = open(str(runlogFile),"a+")
+            RscriptDirTmp = Path(__file__).resolve().parents[0]
+            RscriptDir = Path(RscriptDirTmp)/('rScripts')/('difxp_DESeq.R')
+            outvpdf = Path(workDir)/('mirge_diffex.volcano.pdf')
+            outpcapdf = Path(workDir)/('mirge_diffex.pca.pdf')
+            os.system('Rscript %s %s %s %s %s %s %s'%(RscriptDir, miRCountsFile, metaDataFile, outvpdf, outpcapdf, diffOutFile, diffRData))
+        else: 
+            print("Metadata file is required\n")
+            # Rscript  /home/arun/repositories/Project_120919/mirge/rScripts/difxp_DESeq.R miR.Counts.csv DESmetadata.csv 
+
     globalend_time = time.perf_counter()
     if not args.quiet:
         print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     

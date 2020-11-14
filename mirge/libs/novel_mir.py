@@ -25,7 +25,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 from scipy.spatial import cKDTree
 import re
 from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
+# from Bio.Alphabet import generic_dna
 import numpy as np
 from mirge.libs.processSam import split_fasta_from_sam, combineSam, decorateSam, parse_refine_sam
 from mirge.libs.generate_featureFiles import generate_featureFiles, get_precursors, renameStrFile
@@ -164,7 +164,7 @@ def preTrimClusteredSeq(CoordinateDic, cluster_file, files, clusterSeqLenCutoff,
         content = line.strip().split('\t')
         # remove representative seqs with ength larger than 30
         if content[2] == '-':
-            seq = Seq(content[5], generic_dna)
+            seq = Seq(content[5])
             orginalSeq = str(seq.reverse_complement())
         else:
             orginalSeq = content[5]
