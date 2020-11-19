@@ -11,7 +11,7 @@ from cutadapt.adapters import warn_duplicate_adapters
 from cutadapt.parser import AdapterParser
 from cutadapt.modifiers import (LengthTagModifier, SuffixRemover, PrefixSuffixAdder,
         ZeroCapper, QualityTrimmer, UnconditionalCutter, NEndTrimmer, AdapterCutter,
-        PairedAdapterCutterError, PairedAdapterCutter, NextseqQualityTrimmer, Shortener)
+        PairedAdapterCutterError, PairedAdapterCutter, NextseqQualityTrimmer, Shortener, ModificationInfo)
 from mirge.classes.exportHTML import FormatJS
 
 
@@ -62,7 +62,7 @@ def stipulate(args):
     modifiers=[]
     pipeline_add = modifiers.append
     adapter_parser = AdapterParser(
-            max_error_rate=args.error_rate,
+            #max_error_rate=args.error_rate,
             min_overlap=args.overlap,
             read_wildcards=args.match_read_wildcards,
             adapter_wildcards=args.match_adapter_wildcards,
@@ -317,12 +317,13 @@ def UMIParser(s, f, b):
 def cutadapt(fq):
     readDict={}
     for fqreads in fq:
-        matches=[]
+        info = ModificationInfo(None)
+        info.matches=[]
         if qiagenumi:
             currentSeq = fqreads.sequence
             umi_seq = ""
             for modifier in ingredients:
-                fqreads = modifier(fqreads, matches)
+                fqreads = modifier(fqreads, info)
             try:
                 umi_seq = currentSeq.split(str(fqreads.sequence))[1]
                 umi_cut = umi.split(",")
@@ -345,7 +346,7 @@ def cutadapt(fq):
                     readDict[str(final_seq)]=1
         else:
             for modifier in ingredients:
-                fqreads = modifier(fqreads, matches)
+                fqreads = modifier(fqreads, info)
             if int(len(fqreads.sequence)) >= int(min_len):
                 if str(fqreads.sequence) in readDict:
                     readDict[str(fqreads.sequence)]+=1

@@ -82,7 +82,6 @@ def parseArg():
     group1.add_argument("-op", "--output", metavar="FILE", help=argparse.SUPPRESS) #"Default: write to standard output"
     group1.add_argument("--compression-level", type=int, default=6, help=argparse.SUPPRESS)
     group1.add_argument("--overlap", type=int, metavar="MINLENGTH", default=3, help=argparse.SUPPRESS)
-    group1.add_argument("--error-rate", type=float, default=0.12, metavar="RATE",help=argparse.SUPPRESS)
     group1.add_argument("--gc-content", type=float, default=50,  help=argparse.SUPPRESS)
     group1.add_argument("--action", choices=('trim', 'mask', 'lowercase', 'none'), default='trim', help=argparse.SUPPRESS)
     group1.add_argument("-n", "--times", type=int, metavar="COUNT", default=1, help=argparse.SUPPRESS)

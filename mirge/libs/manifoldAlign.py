@@ -94,7 +94,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
 
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-            bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
+            bwtExec = str(bwtCommand) + " -x " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
         
         elif bwt_iter == 1:
@@ -105,7 +105,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
 
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-            bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
+            bwtExec = str(bwtCommand) + " -x " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
 
         else:
@@ -129,7 +129,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
                         wseq.write(str(sequences)+"\n")
 
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-            bwtExec = str(bwtCommand) + " " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
+            bwtExec = str(bwtCommand) + " -x " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
     finish = time.perf_counter()
     if not args.spikeIn:
