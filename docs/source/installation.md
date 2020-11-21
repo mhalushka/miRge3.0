@@ -26,13 +26,21 @@ Use vim editor if you are familiar using this editor `vi .bashrc` or open the .b
 
 Save and exit. After that type `bash` on the command line -Or- simply, close the terminal. 
 
-#### Installing miRge3.0
+#### Installing miRge3.0 with conda 
+
+```
+conda install -c bioconda mirge3
+```
+
+If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
+
+#### Installing miRge3.0 with PyPi
 
 ##### First install miRge dependenceis 
 
 - Search and start the terminal, execute the command below: <br/>
 ```
-python3.8 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.77  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+python3.8 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
 
 If you encounter a `WARNING`, like below:
@@ -62,15 +70,15 @@ python3.8 -m pip install --user --upgrade  mirge3
 - Search and start the terminal<br/>
 - Download bowtie
 ```
-wget -O bowtie-1.2.3-macos-x86_64.zip  https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/bowtie-1.2.3-macos-x86_64.zip/download 
+wget -O bowtie-1.3.0-linux-x86_64.zip https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.3.0/bowtie-1.3.0-linux-x86_64.zip/download
 ```
-- `unzip bowtie-1.2.3-macos-x86_64.zip`
-- `cd bowtie-1.2.3-macos-x86_64 `
+- `unzip bowtie-1.3.0-linux-x86_64.zip`
+- `cd bowtie-1.3.0-linux-x86_64`
 - ` pwd` 
-  + `/home/arun/software/bowtie-1.2.3-linux-x86_64`
+  + `/home/arun/software/bowtie-1.3.0-linux-x86_64`
 - Add these bowtie binaries to .bashrc as shown below:
 ```
-export PATH=$PATH:"/home/arun/software/bowtie-1.2.3-linux-x86_64"
+export PATH=$PATH:"/home/arun/software/bowtie-1.3.0-linux-x86_64"
 ```
 - After that type `bash` on the command line -Or- simply, close the terminal. 
 
@@ -99,9 +107,9 @@ Providing system wide access to miRge3.0, cutadapt, bowtie and bowtie-build, ple
 ```
 sudo ln -s /home/arun/.local/bin/miRge3.0 /usr/local/bin/miRge3.0
 sudo ln -s /home/arun/.local/bin/cutadapt /usr/local/bin/cutadapt
-sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie /usr/local/bin/bowtie
-sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-build /usr/local/bin/bowtie-build
-sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
+sudo ln -s /home/arun/software/bowtie-1.3.0-linux-x86_64/bowtie /usr/local/bin/bowtie
+sudo ln -s /home/arun/software/bowtie-1.3.0-linux-x86_64/bowtie-build /usr/local/bin/bowtie-build
+sudo ln -s /home/arun/software/bowtie-1.3.0-linux-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
 ```
 #### Downloading FASTQ files from NCBI:
 - Search and start the terminal, follow the commands below: <br/>
@@ -132,8 +140,13 @@ Example: fastq-dump SRR772403 SRR772404<br/>
 
 To uninstall open the terminal and type:
 ```
-python3.8 -m uninstall mirge3
+python3.8 -m pip uninstall mirge3
 ```
+Conda uninstall:
+```
+conda remove mirge3
+```
+For more details on conda uninstallation process, click [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages)<br>
 <hr style="border:2px solid black"> <hr/>
 
 ## macOS
@@ -166,14 +179,21 @@ Save and exit. After that type `source ~/.bash_profile` on the command line -Or-
 ```
 brew install r
 ```
+#### Installing miRge3.0 with conda 
 
-#### Installing miRge3.0
+```
+conda install -c bioconda mirge3
+```
+
+If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
+
+#### Installing miRge3.0 with PyPi
 
 ##### First install miRge dependenceis 
 
 - Search and start the terminal, execute the following command <br/>
 ```
-python3.7 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.77  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+python3.7 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
 
 If you encounter a `WARNING`, like below:
@@ -185,6 +205,7 @@ WARNING: The script cutadapt is installed in '/Users/loaneruser/Library/Python/3
 Then, open a new terminal window or type `cd` to get to home directory. Add `bin` folder PATH to the .bash_profile, as shown below:
 Example: ` export PATH=$PATH:"/Users/loaneruser/Library/Python/3.7/bin/" `
 Remeber to add your path `/PATH_TO_USERS/Python/3.7/bin`. 
+
 
 ##### Install miRge3.0 by this simple command
 ```
@@ -203,15 +224,15 @@ python3.7 -m pip install --user --upgrade  mirge3
 - Search and start the terminal, execute the following command <br/>
 - Download bowtie
 ```
-wget -O bowtie-1.2.3-macos-x86_64.zip  https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/bowtie-1.2.3-macos-x86_64.zip/download 
+wget -O bowtie-1.3.0-macos-x86_64.zip  https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.3.0/bowtie-1.3.0-macos-x86_64.zip/download
 ```
-- `unzip bowtie-1.2.3-macos-x86_64.zip`
-- `cd bowtie-1.2.3-macos-x86_64 `
+- `unzip bowtie-1.3.0-macos-x86_64.zip`
+- `cd bowtie-1.3.0-macos-x86_64 `
 - ` pwd` 
-  + `/Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64`
+  + `/Users/loaneruser/Software/bowtie-1.3.0-macos-x86_64`
 - Add these bowtie binaries to .bash_profile as shown below:
 ```
-export PATH=$PATH:"/Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/"
+export PATH=$PATH:"/Users/loaneruser/Software/bowtie-1.3.0-macos-x86_64/"
 ```
 - After that type `source ~/.bash_profile` on the command line -Or- simply, close the terminal. 
 
@@ -260,9 +281,9 @@ Providing system wide access to miRge3.0, cutadapt, bowtie and bowtie-build, ple
 ```
 sudo ln -s /Users/loaneruser/Library/Python/3.7/bin/miRge3.0 /usr/local/bin/miRge3.0
 sudo ln -s /Users/loaneruser/Library/Python/3.7/bin/cutadapt /usr/local/bin/cutadapt
-sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie /usr/local/bin/bowtie
-sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-build /usr/local/bin/bowtie-build
-sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
+sudo ln -s /Users/loaneruser/Software/bowtie-1.3.0-macos-x86_64/bowtie /usr/local/bin/bowtie
+sudo ln -s /Users/loaneruser/Software/bowtie-1.3.0-macos-x86_64/bowtie-build /usr/local/bin/bowtie-build
+sudo ln -s /Users/loaneruser/Software/bowtie-1.3.0-macos-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
 ```
 
 
@@ -274,8 +295,13 @@ sudo ln -s /Users/loaneruser/Software/bowtie-1.2.3-macos-x86_64/bowtie-inspect /
 
 To uninstall open the terminal and type:
 ```
-python3.8 -m uninstall mirge3
+python3.8 -m pip uninstall mirge3
 ```
+Conda uninstall:
+```
+conda remove mirge3
+```
+For more details on conda uninstallation process, click [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages)<br>
 <hr style="border:2px solid black"><hr/>
 
 ## Windows OS
@@ -316,13 +342,21 @@ Use vim editor if you are familiar using this editor `vi .bashrc` or open the .b
 
 Save and exit. After that type `bash` on the command line -Or- simply, close the terminal. 
 
-#### Installing miRge3.0
+#### Installing miRge3.0 with conda 
+
+```
+conda install -c bioconda mirge3
+```
+
+If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
+
+#### Installing miRge3.0 with PyPi
 
 ##### First install miRge dependenceis 
  
 - Search and start Ubuntu, execute the following command <br/>
 ```
-python3.8 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.77  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+python3.8 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
 
 If you encounter a `WARNING`, like below:
@@ -352,15 +386,15 @@ python3.8 -m pip install --user --upgrade  mirge3
 - Search and start Ubuntu, execute the following command <br/>
 - Download bowtie
 ```
-wget -O bowtie-1.2.3-macos-x86_64.zip  https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.3/bowtie-1.2.3-macos-x86_64.zip/download 
+wget -O bowtie-1.3.0-linux-x86_64.zip https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.3.0/bowtie-1.3.0-linux-x86_64.zip/download
 ```
-- `unzip bowtie-1.2.3-macos-x86_64.zip`
-- `cd bowtie-1.2.3-macos-x86_64 `
+- `unzip bowtie-1.3.0-linux-x86_64.zip`
+- `cd bowtie-1.3.0-linux-x86_64.zip`
 - ` pwd` 
-  + `/home/arun/software/bowtie-1.2.3-linux-x86_64`
+  + `/home/arun/software/bowtie-1.3.0-linux-x86_64`
 - Add these bowtie binaries to .bashrc as shown below:
 ```
-export PATH=$PATH:"/home/arun/software/bowtie-1.2.3-linux-x86_64"
+export PATH=$PATH:"/home/arun/software/bowtie-1.3.0-linux-x86_64"
 ```
 - After that type `bash` on the command line -Or- simply, close the terminal. 
 
@@ -388,9 +422,9 @@ Providing system wide access to miRge3.0, cutadapt, bowtie and bowtie-build, ple
 ```
 sudo ln -s /home/arun/.local/bin/miRge3.0 /usr/local/bin/miRge3.0
 sudo ln -s /home/arun/.local/bin/cutadapt /usr/local/bin/cutadapt
-sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie /usr/local/bin/bowtie
-sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-build /usr/local/bin/bowtie-build
-sudo ln -s /home/arun/software/bowtie-1.2.3-linux-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
+sudo ln -s /home/arun/software/bowtie-1.3.0-linux-x86_64/bowtie /usr/local/bin/bowtie
+sudo ln -s /home/arun/software/bowtie-1.3.0-linux-x86_64/bowtie-build /usr/local/bin/bowtie-build
+sudo ln -s /home/arun/software/bowtie-1.3.0-linux-x86_64/bowtie-inspect /usr/local/bin/bowtie-inspect
 ```
 #### Change Command Prompt Properties 
 
@@ -419,8 +453,14 @@ One last thing to avoid an error `The directory name is invalid`:
 - Step 1:
 To uninstall open the terminal and type:
 ```
-python3.8 -m uninstall mirge3
+python3.8 -m pip uninstall mirge3
 ```
+Conda uninstall:
+```
+conda remove mirge3
+```
+For more details on conda uninstallation process, click [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages)<br>
+
 - Step 2:
   + Search miRge3.0, right click and select uninstall
 ![](/images/uninstall1.png)<br/><br/>
