@@ -147,7 +147,7 @@ Conda uninstall:
 conda remove mirge3
 ```
 For more details on conda uninstallation process, click [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages)
-<hr style="border:2px solid black"> <hr/>
+<hr style="border:2px solid black">
 
 ## macOS
 
@@ -302,7 +302,7 @@ Conda uninstall:
 conda remove mirge3
 ```
 For more details on conda uninstallation process, click [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages)<br>
-<hr style="border:2px solid black"><hr/>
+<hr style="border:2px solid black">
 
 ## Windows OS
 
