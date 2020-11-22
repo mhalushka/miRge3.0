@@ -31,6 +31,11 @@ Save and exit. After that type `bash` on the command line -Or- simply, close the
 ```
 conda install -c bioconda mirge3
 ```
+Note: **For python<=3.7**, use the following commands instead: 
+```
+conda install -c bioconda mirge3==0.0.4
+conda install -c bioconda samtools==1.11
+```
 
 If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
 
@@ -182,7 +187,8 @@ brew install r
 #### Installing miRge3.0 with conda 
 
 ```
-conda install -c bioconda mirge3
+conda install -c bioconda mirge3==0.0.4
+conda install -c bioconda samtools==1.11
 ```
 
 If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
@@ -193,7 +199,7 @@ If you want to use your own environment, please follow the instruction [here](ht
 
 - Search and start the terminal, execute the following command <br/>
 ```
-python3.7 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+python3.7 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
 
 If you encounter a `WARNING`, like below:
@@ -346,6 +352,12 @@ Save and exit. After that type `bash` on the command line -Or- simply, close the
 
 ```
 conda install -c bioconda mirge3
+```
+
+Note: **For python<=3.7**, use the following commands instead: 
+```
+conda install -c bioconda mirge3==0.0.4
+conda install -c bioconda samtools==1.11
 ```
 
 If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
