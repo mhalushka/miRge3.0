@@ -48,6 +48,11 @@ If you want to use your own environment, please follow the instruction [here](ht
 python3.8 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
 
+Note: **For python<=3.7**, use the following commands instead: 
+```
+python3.7 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+```
+
 If you encounter a `WARNING`, like below:
 ```
 WARNING: The script cutadapt is installed in '/home/arun/.local/bin' which is not on PATH.
@@ -61,6 +66,10 @@ Remeber to add your path `/PATH_TO_USERS/bin`.
 ##### Install miRge3.0 by this simple command
 ```
 python3.8 -m pip install --user mirge3
+```
+Note: **For python<=3.7**, use the following commands instead: 
+```
+python3.7 -m pip install --user mirge3==0.0.4
 ```
 
 ##### To upgrade miRge3.0
@@ -118,9 +127,9 @@ sudo ln -s /home/arun/software/bowtie-1.3.0-linux-x86_64/bowtie-inspect /usr/loc
 ```
 #### Downloading FASTQ files from NCBI:
 - Search and start the terminal, follow the commands below: <br/>
-- wget -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.8/sratoolkit.2.10.8-mac64.tar.gz
-- tar -xvzf sratoolkit.2.10.8-mac64.tar.gz 
-- cd sratoolkit.2.10.8-mac64/bin
+- wget -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.8/sratoolkit.2.10.8-ubuntu64.tar.gz
+- tar -xvzf sratoolkit.2.10.8-ubuntu64.tar.gz  
+- cd sratoolkit.2.10.8-ubuntu64/bin
 - `pwd`
   + `/home/arun/software/sratoolkit.2.10.8-ubuntu64/bin`
 - Add to .bashrc 
@@ -215,7 +224,7 @@ Remeber to add your path `/PATH_TO_USERS/Python/3.7/bin`.
 
 ##### Install miRge3.0 by this simple command
 ```
-python3.7 -m pip install --user  mirge3
+python3.7 -m pip install --user  mirge3==0.0.4
 ```
 
 ##### To upgrade miRge3.0
@@ -370,6 +379,11 @@ If you want to use your own environment, please follow the instruction [here](ht
 ```
 python3.8 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
+Note: **For python<=3.7**, use the following commands instead: 
+```
+python3.7 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+```
+
 
 If you encounter a `WARNING`, like below:
 ```
@@ -384,6 +398,10 @@ Remeber to add your path `/PATH_TO_USERS/bin`.
 ##### Install miRge3.0 by this simple command
 ```
 python3.8 -m pip install --user mirge3
+```
+Note: **For python<=3.7**, use the following commands instead: 
+```
+python3.7 -m pip install --user mirge3==0.0.4
 ```
 
 ##### To upgrade miRge3.0
