@@ -1,3 +1,7 @@
+.. image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat
+    :target: http://bioconda.github.io/recipes/mirge3/README.html
+    :alt: install with bioconda
+    
 .. image:: https://upload.wikimedia.org/wikipedia/commons/f/fa/Sourceforge_logo.svg
     :height: 20px
     :width: 100 px
