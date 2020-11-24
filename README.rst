@@ -1,3 +1,8 @@
+
+.. image:: https://img.shields.io/pypi/v/mirge3.svg?branch=master
+    :target: https://pypi.python.org/pypi/mirge3
+    :alt:
+    
 .. image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat
     :target: http://bioconda.github.io/recipes/mirge3/README.html
     :alt: install with bioconda
