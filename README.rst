@@ -14,13 +14,6 @@
     :target: https://sourceforge.net/projects/mirge3/files/
     :alt:
 
-.. image:: https://a.fsdn.com/con/app/sf-download-button
-    :height: 10px
-    :width: 10 px
-    :scale: 50 %
-    :target: https://sourceforge.net/projects/mirge3/files/
-    :alt:
-
 ========
 miRge3.0
 ========
