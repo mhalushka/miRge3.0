@@ -25,7 +25,7 @@ Options:
   -ai,   --AtoI               switch to calculate A to I editing (Default: off)
   -tcf   --tcf-out            switch to write trimmed and collapsed fasta file (Default: off)
   -gff   --gff-out            switch to output isomiR results in gff format (Default: off)
-  -bam   --bam-out            switch to output isomiR results in gff format (Default: off)
+  -bam   --bam-out            switch to output results in bam format (Default: off)
   -trf   --tRNA-frag          switch to analyze tRNA fragment and halves (Default: off)
   -o     --outDir             the directory of the outputs (Default: current directory)
   -shh   --quiet              enable quiet/silent mode, only show warnings and errors (Default: off)
@@ -43,13 +43,13 @@ Data pre-processing:
   -m,    --minimum-length     Discard reads shorter than LEN. (Default: 16)
   -umi,  --uniq-mol-ids       Removes PCR duplicates and trim UMI of length by specifying two comma-separated cutoffs as 5’ cutoff,3’ bp from both ends of the read. eg: 4,4 or 0,4
   -udd,  --umiDedup           Specifies argument to removes PCR duplicates (Default: False); if TRUE it will remove UMI and remove PCR duplicates otherwise it only remove UMI and keep the raw counts
-  -umiq, --umiqiagen          Removes PCR duplicates of reads obtained from Qiagen platform (Default: Illumina; "-umi x,y " Required)
+  -qumiq, --qiagenumi          Removes PCR duplicates of reads obtained from Qiagen platform (Default: Illumina; "-umi x,y " Required)
 
 Predicting novel miRNAs:
   The predictive model for novel miRNA detection is trained on human and mouse!
   -nmir, --novel-miRNA        include prediction of novel miRNAs
-  -minl, --minLength          the minimum length of the reatined reads for novel miRNA detection (default: 16)
-  -maxl, --maxLength          the maximum length of the reatined reads for novel miRNA detection (default: 25)
+  -minl, --minLength          the minimum length of the retained reads for novel miRNA detection (default: 16)
+  -maxl, --maxLength          the maximum length of the retained reads for novel miRNA detection (default: 25)
   -c,    --minReadCounts      the minimum read counts supporting novel miRNA detection (default: 2)
   -mloc, --maxMappingLoci     the maximum number of mapping loci for the retained reads for novel miRNA detection (default: 3)
   -sl,   --seedLength         the seed length when invoking Bowtie for novel miRNA detection (default: 25)
