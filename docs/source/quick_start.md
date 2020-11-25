@@ -43,7 +43,7 @@ Data pre-processing:
   -m,    --minimum-length     Discard reads shorter than LEN. (Default: 16)
   -umi,  --uniq-mol-ids       Removes PCR duplicates and trim UMI of length by specifying two comma-separated cutoffs as 5’ cutoff,3’ bp from both ends of the read. eg: 4,4 or 0,4
   -udd,  --umiDedup           Specifies argument to removes PCR duplicates (Default: False); if TRUE it will remove UMI and remove PCR duplicates otherwise it only remove UMI and keep the raw counts
-  -qumiq, --qiagenumi          Removes PCR duplicates of reads obtained from Qiagen platform (Default: Illumina; "-umi x,y " Required)
+  -qumi, --qiagenumi          Removes PCR duplicates of reads obtained from Qiagen platform (Default: Illumina; "-umi x,y " Required)
 
 Predicting novel miRNAs:
   The predictive model for novel miRNA detection is trained on human and mouse!
