@@ -532,9 +532,9 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
                 RPMList.append(0.0)
         trfContentDic[trf]['RPM'] = RPMList
     
-    trfFile = Path(workDir)/"tRFs.potential.report.tsv"
+    trfFile = Path(workDir)/"tRFs.aligned.report.tsv"
     with open(trfFile, 'w') as outf:
-        outf.write('read sequence\tuid\tread count(%s)\tRP100K (%s)\tamino acid all hits\tamino acid-anticodon all hits\ttRF information all hits\tamino acid all deduplicated hits\tamino acid-anticodon all deduplicated hits\ttRF information all deduplicated hits\tamino acid one hit\tamino acid-anticodon one hit\ttRF information one hit\n'%(','.join(sampleList), ','.join(sampleList)))
+        outf.write('read sequence\tuid\tread count(%s)\tRP100K (%s)\tamino acid all hits\tamino acid-anticodon all hits\ttRF information all hits\tamino acid all deduplicated hits\tamino acid-anticodon all deduplicated hits\ttRF information all deduplicated hits\tamino acid one hit\tamino acid-anticodon one hit\ttRF information one hit\n'%(';'.join(sampleList), ';'.join(sampleList)))
         for seqKey in trfContentDic.keys():
             tRFInforList = []
             aaAnticodonList = []
@@ -565,7 +565,7 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
             # remove the redundant tRNA names and keep the selected one.
             if len(candidatetRNAUniquelist) > 0:
                 slectedtRNA = random.choice(candidatetRNAUniquelist)
-                outf.write('\t'.join([seqKey, trfContentDic[seqKey]['uid'], ','.join([str(s) for s in trfContentDic[seqKey]['count']]), ','.join(['%.3f'%(round(s, 3)) for s in trfContentDic[seqKey]['RPM']])]))
+                outf.write('\t'.join([seqKey, trfContentDic[seqKey]['uid'], ';'.join([str(s) for s in trfContentDic[seqKey]['count']]), ';'.join(['%.3f'%(round(s, 3)) for s in trfContentDic[seqKey]['RPM']])]))
                 outf.write('\t')
                 outf.write('\t'.join([','.join(aaTypeList), ','.join(aaAnticodonList), ','.join(tRFInforList)]))
                 outf.write('\t')
@@ -626,8 +626,8 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
             else:
                 tRNALength = len(pretrnaNameSeqDic[tRNAName])
             dashedSeq = addDashNew(seq, tRNALength, start, end)
-            readcountListTmp = [int(tmp) for tmp in content[2].split(',')]
-            RP100KListTmp = [float(tmp) for tmp in content[3].split(',')]
+            readcountListTmp = [int(tmp) for tmp in content[2].split(';')]
+            RP100KListTmp = [float(tmp) for tmp in content[3].split(';')]
             assignedName, nearestDist, nearestCluster = assign_cluster(dashedSeq, tRNAName, tRNAtrfDic)
             for i, sample in enumerate(sampleList):
                 sampletRFEntitySummaryDic[sample][1] += readcountListTmp[i]
@@ -677,11 +677,11 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
                         except KeyError:
                             sampletRFDic[sampleList[i]][subkey] = [(trfContentDic[seqKey]['count'][i], trfContentDic[seqKey][subkey]['start'], seqKey, filledSeq, trfContentDic[seqKey][subkey]['tRFType'], trfContentDic[seqKey]['RPM'][i])]
     for sample in sampleList:
-        outf_tmp = open((Path(tRF_dir)/(sample+'.potential_tRFs.summary.report')), 'w')
+        outf_tmp = open((Path(tRF_dir)/(sample+'.aligned_tRFs.summary.report')), 'w')
         outf_tmp.write('amino acid\tCounts\tRP100K\tUnique reads\n')
         aaTypeList = []
         aaTypeDict = {}
-        with open((Path(tRF_dir)/(sample+'.potential_tRFs.report')), 'w') as outf:
+        with open((Path(tRF_dir)/(sample+'.aligned_tRFs.report')), 'w') as outf:
             sumtRNAList = []
             for tRNAName in sampletRFDic[sample].keys():
                 readSum = sum([trfSet[0] for trfSet in sampletRFDic[sample][tRNAName]])
@@ -743,7 +743,7 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
             outf_tmp.write('\n')
         outf_tmp.close()
         # cluter the reads that are alligned to the specific tRNA.
-        readInforList = load_data_new((Path(tRF_dir)/(sample+'.potential_tRFs.report')))
+        readInforList = load_data_new((Path(tRF_dir)/(sample+'.aligned_tRFs.report')))
         dcValue, rhomin, deltamin, RP100KCutoff = 3.0, 5.0, 8.0, 10.0
         tRNANameList = []
         tRNANameDic = {}
@@ -751,7 +751,7 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
         Unified_tRNANameList = []
         tRNANameList_selected = []
         Unified_tRNANameList_selected = []
-        potential_tRFs_rep1 = sample+'.potential_tRFs.report'
+        potential_tRFs_rep1 = sample+'.aligned_tRFs.report'
         with open(Path(tRF_dir)/potential_tRFs_rep1, 'r') as inf:
             for line in inf:
                 if 'RP100K sum:' in line:
@@ -762,7 +762,7 @@ def trna_deliverables(args, workDir, pretrnaNameSeqDic, trfContentDic, mature_tR
                         tRNAName = '_'.join(tRNAName.split('_')[1:-1])
                     if tRNAName not in Unified_tRNANameList:
                         Unified_tRNANameList.append(tRNAName)
-        potential_tRFs_file = sample+'.potential_tRFs.clusters.detail'
+        potential_tRFs_file = sample+'.aligned_tRFs.clusters.detail'
         tRFs_report_file = sample+'.tRFs.report.tsv'
         outf_1 = open(Path(tRF_dir)/potential_tRFs_file, 'w')
         outf_2 = open(Path(tRF_dir)/tRFs_report_file, 'w')

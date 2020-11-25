@@ -80,6 +80,7 @@ def main():
     file_list = samples[0].split(',')
     if Path(file_list[0]).is_dir():
         file_list = [str(x) for x in Path(file_list[0]).iterdir() if x.is_file()]
+        file_list = sorted(file_list)
         fastq_fullPath,base_names = validate_files(args, file_list, str(runlogFile))
     elif Path(file_list[0]).exists() and Path(file_list[0]).suffix in file_exts: # READ TXT OR CSV FILE HERE
         with open(file_list[0]) as file:
