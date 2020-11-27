@@ -26,6 +26,7 @@ Links
 -----
 
 * `Documentation <https://mirge3.readthedocs.io/>`_
+* `miRge3.0 Libraries <https://mirge3.readthedocs.io/en/latest/quick_start.html#mirge3-0-libraries>`_ 
 * `Source code <https://github.com/mhalushka/mirge3.0/>`_
 * `Report an issue <https://github.com/mhalushka/mirge3.0/issues>`_
 * `Project page on PyPI <https://pypi.python.org/pypi/mirge3/>`_
