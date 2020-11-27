@@ -32,36 +32,41 @@ def check_dependencies(args, runlogFile):
     # Checking cutadapt version #
     cutadapt = subprocess.run(str(cutadaptCommand), shell=True, capture_output=True, text=True)
     try:
-        if not cutadapt.returncode==0 and float(cutadapt.stdout.strip()) >= 2.7:
-            outlog.write("cutadapt error!. Required: cutadapt =2.7\n")
-            print("cutadapt error!. Required: cutadapt =2.7\n")
+        if not cutadapt.returncode==0:
+            outlog.write("cutadapt not found!. Required: cutadapt >=2.6\n")
+            print("cutadapt not found!. Required: cutadapt >=2.6\n")
             exit()
         else:
             if not args.quiet:
+                cvnum  = cutadapt.stdout.strip()
+                args.cutadaptVersion = tuple([ int(num) for num in cvnum.split('.')])
                 print("cutadapt version: "+ str(cutadapt.stdout.strip()))
             outlog.write("cutadapt version: "+ str(cutadapt.stdout.strip())+"\n")
     except ValueError:
+        cvnum  = str(ca.__version__).strip()
+        args.cutadaptVersion = tuple([ int(num) for num in cvnum.split('.')])
         print("cutadapt version: " + str(ca.__version__) + "\n")
         outlog.write("cutadapt version: " + str(ca.__version__) + "\n")
-        #print("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
-        #outlog.write("cutadapt error!: cutadapt not found\nPlease install cutadapt version = 2.7.\n")
 
     # Checking samtools version #
     samtools = subprocess.run(str(samtoolsCommand), shell=True, capture_output=True, text=True)
     if samtools.returncode==0:
-        if not float(samtools.stdout.split('\n')[0].split(' ')[1]) >= 1:
-    #if not samtools.returncode==0 and float(samtools.stdout.split('\n')[0].split(' ')[1]) >= 1.5:
-            print("Samtools error!: incorrect version. Require - samtools >1.5\nUse argument -psam <name of the directory>\n")
-            outlog.write("Samtools error!: incorrect version. Require - samtools >1.5\nUse argument -psam <name of the directory>\n")
-            exit()
+        vnum = samtools.stdout.split('\n')[0].split(' ')[1]
+        vn = tuple([ int(num) for num in vnum.split('.')])
+        if not int(vn[0]) >= 1:
+            print("Samtools error!: incorrect version. Require - samtools >=1.5\nTry running samtools --version or Use argument -psam <name of the directory>\n")
+            outlog.write("Samtools error!: incorrect version. Require - samtools >=1.5\nTry running samtools --version or Use argument -psam <name of the directory>\n")
+            print("NOTE: Will not exit unless you encounter this error otherwise")
+            #exit()
         else:
             if not args.quiet:
                 print("Samtools version: "+ str(samtools.stdout.split('\n')[0].split(' ')[1]))
             outlog.write("Samtools version: "+ str(samtools.stdout.split('\n')[0].split(' ')[1])+"\n")
     else:
-        print("Samtools error!: samtools, command not found\n Use argument -psam <name of the directory>")
-        outlog.write("Samtools error!: samtools, command not found\n Use argument -psam <name of the directory>\n")
-        exit()
+        print("Samtools error!: samtools, command not found. Type \"samtools --version\" and check the version\n Use argument -psam <name of the directory>")
+        outlog.write("Samtools error!: samtools, command not found. Type \"samtools --version\" and check the version\n Use argument -psam <name of the directory>\n")
+        print("NOTE: Will not exit unless you encounter this error otherwise")
+        #exit()
     
     """
     THE CONDITION LOOKS FOR rnaFold PACKAGAE ONLY IF USER WANTS TO PREDICT NOVEL miRNAs
