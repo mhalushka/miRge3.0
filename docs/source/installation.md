@@ -31,13 +31,13 @@ Save and exit. After that type `bash` on the command line -Or- simply, close the
 ```
 conda install -c bioconda mirge3
 ```
-Note: **For python<=3.7**, use the following commands instead: 
-```
-conda install -c bioconda mirge3==0.0.4
-conda install -c bioconda samtools==1.11
-```
 
 If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
+
+##### Updating miRge3.0 with conda
+```
+conda update mirge3
+```
 
 #### Installing miRge3.0 with PyPi
 
@@ -45,12 +45,7 @@ If you want to use your own environment, please follow the instruction [here](ht
 
 - Search and start the terminal, execute the command below: <br/>
 ```
-python3.8 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
-```
-
-Note: **For python<=3.7**, use the following commands instead: 
-```
-python3.7 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+python3.8 -m pip install --user cutadapt reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
 
 If you encounter a `WARNING`, like below:
@@ -66,10 +61,6 @@ Remeber to add your path `/PATH_TO_USERS/bin`.
 ##### Install miRge3.0 by this simple command
 ```
 python3.8 -m pip install --user mirge3
-```
-Note: **For python<=3.7**, use the following commands instead: 
-```
-python3.7 -m pip install --user mirge3==0.0.4
 ```
 
 ##### To upgrade miRge3.0
@@ -196,11 +187,19 @@ brew install r
 #### Installing miRge3.0 with conda 
 
 ```
-conda install -c bioconda mirge3==0.0.4
-conda install -c bioconda samtools==1.11
+conda install -c bioconda mirge3
+
 ```
 
 If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
+
+Error: Type `samtools --version` and make sure you don't encounter any `libcrypto.so` errors. If you do encounter, simply reinstall samtools with conda as shown below:
+`conda install samtools`. If the error still persists, please let us know.
+
+##### Updating miRge3.0 with conda
+```
+conda update mirge3
+```
 
 #### Installing miRge3.0 with PyPi
 
@@ -208,7 +207,7 @@ If you want to use your own environment, please follow the instruction [here](ht
 
 - Search and start the terminal, execute the following command <br/>
 ```
-python3.7 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+python3.7 -m pip install --user cutadapt reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
 
 If you encounter a `WARNING`, like below:
@@ -224,7 +223,7 @@ Remeber to add your path `/PATH_TO_USERS/Python/3.7/bin`.
 
 ##### Install miRge3.0 by this simple command
 ```
-python3.7 -m pip install --user  mirge3==0.0.4
+python3.7 -m pip install --user  mirge3
 ```
 
 ##### To upgrade miRge3.0
@@ -363,13 +362,12 @@ Save and exit. After that type `bash` on the command line -Or- simply, close the
 conda install -c bioconda mirge3
 ```
 
-Note: **For python<=3.7**, use the following commands instead: 
-```
-conda install -c bioconda mirge3==0.0.4
-conda install -c bioconda samtools==1.11
-```
-
 If you want to use your own environment, please follow the instruction [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands).
+
+##### Updating miRge3.0 with conda
+```
+conda update mirge3
+```
 
 #### Installing miRge3.0 with PyPi
 
@@ -377,13 +375,8 @@ If you want to use your own environment, please follow the instruction [here](ht
  
 - Search and start Ubuntu, execute the following command <br/>
 ```
-python3.8 -m pip install --user cutadapt==3.0 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
+python3.8 -m pip install --user cutadapt reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
 ```
-Note: **For python<=3.7**, use the following commands instead: 
-```
-python3.7 -m pip install --user cutadapt==2.7 reportlab==3.5.42 biopython==1.78  scikit-learn==0.23.1  hypothesis==5.15.1 pytest==5.4.2  scipy==1.4.1  matplotlib==3.2.1  joblib==0.15.1  pandas==1.0.3 future==0.18.2
-```
-
 
 If you encounter a `WARNING`, like below:
 ```
@@ -398,10 +391,6 @@ Remeber to add your path `/PATH_TO_USERS/bin`.
 ##### Install miRge3.0 by this simple command
 ```
 python3.8 -m pip install --user mirge3
-```
-Note: **For python<=3.7**, use the following commands instead: 
-```
-python3.7 -m pip install --user mirge3==0.0.4
 ```
 
 ##### To upgrade miRge3.0
