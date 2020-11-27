@@ -22,7 +22,7 @@ copyright = '2020, Arun H. Patil and Marc K. Halushka'
 author = 'Arun H. Patil and Marc K. Halushka'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.6'
+release = '0.0.1'
 master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
