@@ -11,7 +11,7 @@ from cutadapt.adapters import warn_duplicate_adapters
 from cutadapt.parser import AdapterParser
 from cutadapt.modifiers import (LengthTagModifier, SuffixRemover, PrefixSuffixAdder,
         ZeroCapper, QualityTrimmer, UnconditionalCutter, NEndTrimmer, AdapterCutter,
-        PairedAdapterCutterError, PairedAdapterCutter, NextseqQualityTrimmer, Shortener, ModificationInfo)
+        PairedAdapterCutterError, PairedAdapterCutter, NextseqQualityTrimmer, Shortener)
 from mirge.classes.exportHTML import FormatJS
 
 
@@ -61,8 +61,16 @@ def stipulate(args):
     """
     modifiers=[]
     pipeline_add = modifiers.append
-    adapter_parser = AdapterParser(
-            #max_error_rate=args.error_rate,
+    if int(args.cutadaptVersion[0]) < 3:
+        adapter_parser = AdapterParser(
+            max_error_rate=args.error_rate,
+            min_overlap=args.overlap,
+            read_wildcards=args.match_read_wildcards,
+            adapter_wildcards=args.match_adapter_wildcards,
+            indels=args.indels,
+         )
+    else:
+        adapter_parser = AdapterParser(
             min_overlap=args.overlap,
             read_wildcards=args.match_read_wildcards,
             adapter_wildcards=args.match_adapter_wildcards,
@@ -94,7 +102,10 @@ def baking(args, inFileArray, inFileBaseArray, workDir):
     THIS FUNCTION IS CALLED FIRST FROM THE miRge3.0. 
     THIS FUNCTION PREPARES FUNCTIONS REQUIRED TO RUN IN CUTADAPT 2.7 AND PARSE ONE FILE AT A TIME. 
     """
-    global ingredients, threads, buffer_size, trimmed_reads, fasta, fileTowriteFasta, min_len, umi, qiagenumi, qiaAdapter
+    global ingredients, threads, buffer_size, trimmed_reads, fasta, fileTowriteFasta, min_len, umi, qiagenumi, qiaAdapter, ModificationInfo, cu_ver
+    cu_ver = int(args.cutadaptVersion[0]) # Cutadapt version (cu_ver)
+    if int(args.cutadaptVersion[0]) >= 3:
+        from cutadapt.modifiers import ModificationInfo
     numlines=10000
     umi = args.uniq_mol_ids
     qiagenumi = args.qiagenumi
@@ -317,13 +328,19 @@ def UMIParser(s, f, b):
 def cutadapt(fq):
     readDict={}
     for fqreads in fq:
-        info = ModificationInfo(None)
-        info.matches=[]
+        if int(cu_ver) >= 3:
+            info = ModificationInfo(None)
+            info.matches=[]
+        else:
+            matches=[]
         if qiagenumi:
             currentSeq = fqreads.sequence
             umi_seq = ""
             for modifier in ingredients:
-                fqreads = modifier(fqreads, info)
+                if int(cu_ver) >= 3:
+                    fqreads = modifier(fqreads, info)
+                else:
+                    fqreads = modifier(fqreads, matches)
             try:
                 umi_seq = currentSeq.split(str(fqreads.sequence))[1]
                 umi_cut = umi.split(",")
@@ -331,13 +348,6 @@ def cutadapt(fq):
                 umi_seq = umi_seq[:max_ad][-int(umi_cut[1]):]
             except ValueError:
                 umi_seq = ""
-                #if qiaAdapter in currentSeq:
-                    #umi_seq = currentSeq.split(str(qiaAdapter))[1]
-                    #umi_cut = umi.split(",")
-                    #max_ad = len(qiaAdapter) + int(umi_cut[1])
-                    #umi_seq = umi_seq[:max_ad][-int(umi_cut[1]):]
-                #else:
-                #umi_seq = ""
             final_seq = fqreads.sequence + umi_seq
             if int(len(final_seq)) >= int(min_len):
                 if str(final_seq) in readDict:
@@ -346,7 +356,10 @@ def cutadapt(fq):
                     readDict[str(final_seq)]=1
         else:
             for modifier in ingredients:
-                fqreads = modifier(fqreads, info)
+                if int(cu_ver) >= 3:
+                    fqreads = modifier(fqreads, info)
+                else:
+                    fqreads = modifier(fqreads, matches)
             if int(len(fqreads.sequence)) >= int(min_len):
                 if str(fqreads.sequence) in readDict:
                     readDict[str(fqreads.sequence)]+=1
