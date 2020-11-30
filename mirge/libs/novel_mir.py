@@ -315,7 +315,9 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
     outputdir2 = Path(workDir)/"unmapped_tmp"
     os.mkdir(outputdir2)
 
-    bwtCmdTmp = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
+    bwtCmdTmp = str(Path(args.bowtie_path)/"bowtie ") if args.bowtie_path else "bowtie "
+    if args.bowtieVersion == "False": # That is if version is v1.3.0
+        bwtCmdTmp += " -x "
     bwtBuildCmdTmp = Path(args.bowtie_path)/"bowtie-build " if args.bowtie_path else "bowtie-build " 
     samtoolsCmdTmp = Path(args.samtools_path)/"samtools " if args.samtools_path else "samtools "
     rnafoldCmdTmp = Path(args.RNAfold_path)/"RNAfold " if args.RNAfold_path else "RNAfold "
@@ -344,7 +346,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             current_fname_filtered = "unmapped_mirna_"+ files +".fa"
             fileNameTemp = Path(outputdir2)/current_fname_filtered
             outfile1 = Path(outputdir2)/("unmapped_mirna_"+ files +"_vs_genome.sam")
-            bwtExec = str(bwtCmdTmp) +" -x "+ str(genome_index) + " " + str(fileNameTemp) + " -f -n 0 --best -a --threads " + str(args.threads) + " -m " + str(mapping_loc) + " -l "+ str(seedLength) + " -S " + str(outfile1)
+            bwtExec = str(bwtCmdTmp) + str(genome_index) + " " + str(fileNameTemp) + " -f -n 0 --best -a --threads " + str(args.threads) + " -m " + str(mapping_loc) + " -l "+ str(seedLength) + " -S " + str(outfile1)
             bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
             # SORT SAM FILE
             outfile2 = Path(outputdir2)/("unmapped_mirna_"+ files +"_vs_genome_sorted.sam") 
@@ -378,7 +380,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
                 pass
             # Align the total reads to the cluster sequences with exact match. '--norc' only considers matching to the forwad reference strand.
             outfile4 = Path(outputdir2)/(files+"_tmp1.sam")
-            bwt2Exec = str(bwtCmdTmp) +" -x "+ str(outfile3) + " " + str(fileNameTemp) + " -f -n 0 --best -a --norc --threads " + str(args.threads) + " -m " + str(mapping_loc) + " -l "+ str(seedLength) + " -S " + str(outfile4)
+            bwt2Exec = str(bwtCmdTmp) + str(outfile3) + " " + str(fileNameTemp) + " -f -n 0 --best -a --norc --threads " + str(args.threads) + " -m " + str(mapping_loc) + " -l "+ str(seedLength) + " -S " + str(outfile4)
             try:
                 bowtie = subprocess.run(str(bwt2Exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
             except subprocess.CalledProcessError:
@@ -398,7 +400,7 @@ def predict_nmir(args, workDir, ref_db, base_names, pdUnmapped):
             # '--norc' only considers matching to the forwad reference strand.
             if errorTrue != 1:
                 outfile4_tmp2 = Path(outputdir2)/(files+"_tmp2.sam")
-                bwt3Exec = str(bwtCmdTmp) +" -x "+ str(outfile3) + " " + str(imperfect_FASTA) + " -f -n 1 -l 15 -5 1 -3 3 --best --strata -a --norc --threads " + str(args.threads) + " -S " + str(outfile4_tmp2)
+                bwt3Exec = str(bwtCmdTmp) + str(outfile3) + " " + str(imperfect_FASTA) + " -f -n 1 -l 15 -5 1 -3 3 --best --strata -a --norc --threads " + str(args.threads) + " -S " + str(outfile4_tmp2)
                 bowtie = subprocess.run(str(bwt3Exec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
                 # Combine the aligned result of the two type of reads: perfect matched reads and imperfect matched reads.
                 combined_Sam = Path(outputdir2)/(files+".sam")  

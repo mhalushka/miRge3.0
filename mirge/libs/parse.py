@@ -85,6 +85,7 @@ def parseArg():
     group1.add_argument("--error-rate", type=float, default=0.12, metavar="RATE",help=argparse.SUPPRESS)
     group1.add_argument("--gc-content", type=float, default=50,  help=argparse.SUPPRESS)
     group1.add_argument("-cuv","--cutadaptVersion", help=argparse.SUPPRESS)
+    group1.add_argument("-buv","--bowtieVersion", help=argparse.SUPPRESS)
     group1.add_argument("--action", choices=('trim', 'mask', 'lowercase', 'none'), default='trim', help=argparse.SUPPRESS)
     group1.add_argument("-n", "--times", type=int, metavar="COUNT", default=1, help=argparse.SUPPRESS)
     group1.add_argument("--match-read-wildcards", action="store_true", default=False,help=argparse.SUPPRESS)

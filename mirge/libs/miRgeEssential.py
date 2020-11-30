@@ -21,6 +21,10 @@ def check_dependencies(args, runlogFile):
             outlog.write("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3 or 1.3.0) \nUse argument -pbwt <name of the directory>\n")
             exit()
         else:
+            if str(bowtie.stdout.split('\n')[0].split(' ')[2]) in ["1.2.1", "1.2.2", "1.2.3"]:
+                args.bowtieVersion = "True"
+            else:
+                args.bowtieVersion = "False"
             outlog.write("bowtie version: "+ str(bowtie.stdout.split('\n')[0].split(' ')[2])+"\n")
             if not args.quiet:
                 print("bowtie version: "+ str(bowtie.stdout.split('\n')[0].split(' ')[2]))

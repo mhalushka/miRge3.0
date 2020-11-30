@@ -1053,14 +1053,18 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
             mirNameSeqDic.update({mirName:sequence})
             line = inf.readline()
     
-    bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
-    bwtCommand = str(bwtCommand) + " --threads " + str(args.threads) + " "
+    bwtCommand = str(Path(args.bowtie_path)/"bowtie ") if args.bowtie_path else "bowtie "
+    if args.bowtieVersion == "False": # That is if version is v1.3.0
+        bwtCommand = str(bwtCommand) + " --threads " + str(args.threads) + " -x "
+    else:
+        bwtCommand = str(bwtCommand) + " --threads " + str(args.threads) + " "
+
     if args.phred64:
         bwtCommand = str(bwtCommand) + ' --phred64-quals '
     
     indexName  = str(args.organism_name) + str("_genome") 
     genome_index = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-    bwtCommand = str(bwtCommand) + " -x "+ str(genome_index) + ' -n 1 -f -a -3 2 ' + str(samToMapFasta)
+    bwtCommand = str(bwtCommand) + str(genome_index) + ' -n 1 -f -a -3 2 ' + str(samToMapFasta)
     retainedSeqDic = {}
     retainedSeqContentDicTmp = {}
     bowtie = subprocess.run(str(bwtCommand), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
@@ -1284,13 +1288,17 @@ def a2i_editing(args, cannonical, isomirs, base_names, workDir, Filtered_miRNA_R
                 miRNAPositionDic.update({miRNAPositionName:dicTmp})
                 outf.write('>'+mismathedSeq+'\n'+mismathedSeq+'\n')
                 line = inf.readline()
-    bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
-    bwtCommand = str(bwtCommand) + " --threads " + str(args.threads) + " "
+    bwtCommand = str(Path(args.bowtie_path)/"bowtie ") if args.bowtie_path else "bowtie "
+    if args.bowtieVersion == "False": # That is if version is v1.3.0
+        bwtCommand = str(bwtCommand) + " --threads " + str(args.threads) + " -x "
+    else:
+        bwtCommand = str(bwtCommand) + " --threads " + str(args.threads) + " "
+
     if args.phred64:
         bwtCommand = bwtCommand + ' --phred64-quals '
     indexName  = str(args.organism_name) + str("_genome") 
     genome_index = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-    bwtCommand = str(bwtCommand) + " -x " + str(genome_index) + ' -n 0 -f -a -3 2 ' + str(seqtojudge)
+    bwtCommand = str(bwtCommand) + str(genome_index) + ' -n 0 -f -a -3 2 ' + str(seqtojudge)
     bowtie = subprocess.run(str(bwtCommand), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
     if bowtie.returncode==0:
         bwtOut = bowtie.stdout

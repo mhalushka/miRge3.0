@@ -72,7 +72,9 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     global threads
     threads = args.threads
     begningTime = time.perf_counter()
-    bwtCommand = Path(args.bowtie_path)/"bowtie " if args.bowtie_path else "bowtie "
+    bwtCommand = str(Path(args.bowtie_path)/"bowtie ") if args.bowtie_path else "bowtie "
+    if args.bowtieVersion == "False": # That is if version is v1.3.0 
+        bwtCommand += " -x "
     bwtInput = Path(workDir)/"bwtInput.fasta"
     runlogFile = Path(workDir)/"run.log"
     outlog = open(str(runlogFile),"a+")
@@ -94,7 +96,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
 
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-            bwtExec = str(bwtCommand) + " -x " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
+            bwtExec = str(bwtCommand) + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
         
         elif bwt_iter == 1:
@@ -105,7 +107,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
 
             indexName  = str(args.organism_name) + str(indexNames[bwt_iter]) + str(ref_db)
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-            bwtExec = str(bwtCommand) + " -x " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
+            bwtExec = str(bwtCommand) + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
 
         else:
@@ -129,7 +131,7 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
                         wseq.write(str(sequences)+"\n")
 
             indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"/indexName
-            bwtExec = str(bwtCommand) + " -x " + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
+            bwtExec = str(bwtCommand) + str(indexFiles) + str(parameters[bwt_iter]) + str(args.threads) + " " + str(bwtInput) 
             alignPlusParse(bwtExec, bwt_iter, pdDataFrame, args, workDir)
     finish = time.perf_counter()
     if not args.spikeIn:
