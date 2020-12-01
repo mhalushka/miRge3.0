@@ -10,13 +10,6 @@
 .. image:: https://anaconda.org/bioconda/mirge3/badges/latest_release_date.svg   
     :target: https://anaconda.org/bioconda/mirge3   
     
-.. image:: https://upload.wikimedia.org/wikipedia/commons/f/fa/Sourceforge_logo.svg
-    :height: 20px
-    :width: 100 px
-    :scale: 100 %
-    :target: https://sourceforge.net/projects/mirge3/files/
-    :alt:
-
 .. image:: https://anaconda.org/bioconda/mirge3/badges/downloads.svg   
     :target: https://anaconda.org/bioconda/mirge3
 
