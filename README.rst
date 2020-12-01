@@ -7,6 +7,9 @@
     :target: http://bioconda.github.io/recipes/mirge3/README.html
     :alt: install with bioconda
     
+.. image:: https://anaconda.org/bioconda/mirge3/badges/latest_release_date.svg   
+    :target: https://anaconda.org/bioconda/mirge3   
+    
 .. image:: https://upload.wikimedia.org/wikipedia/commons/f/fa/Sourceforge_logo.svg
     :height: 20px
     :width: 100 px
