@@ -17,6 +17,9 @@
     :target: https://sourceforge.net/projects/mirge3/files/
     :alt:
 
+.. image:: https://anaconda.org/bioconda/mirge3/badges/downloads.svg   
+    :target: https://anaconda.org/bioconda/mirge3
+
 ========
 miRge3.0
 ========
