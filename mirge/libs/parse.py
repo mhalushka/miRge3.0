@@ -27,6 +27,7 @@ def parseArg():
 -o     --outDir             the directory of the outputs (Default: current directory) 
 -dex   --diffex             perform differential expression with DESeq2 (Default: off)
 -mdt   --metadata           the path to metadata file (Default: off, require '.csv' file format if -dex is opted)
+-cms   --chunkmbs           chunk memory in megabytes per thread to use during bowtie alignment (Default: 256)
 -shh   --quiet              enable quiet/silent mode, only show warnings and errors (Default: off)
 ''')
     group.add_argument('-s','--samples', nargs='*', required=True, help=argparse.SUPPRESS)
@@ -47,6 +48,7 @@ def parseArg():
     group.add_argument('-dex', '--diffex', action='store_true', default=False, help=argparse.SUPPRESS)
     group.add_argument('-mdt', '--metadata', help=argparse.SUPPRESS)
     group.add_argument('-onam', '--outDirName', help=argparse.SUPPRESS)
+    group.add_argument('-cms', '--chunkmbs', type=int, default=256, help=argparse.SUPPRESS)
     group.add_argument('-shh',"--quiet", default=False, action='store_true', help=argparse.SUPPRESS)
 
     group1 = parser.add_argument_group("Data pre-processing", description='''-a,    --adapter            Sequence of a 3' adapter. The adapter and subsequent bases are trimmed

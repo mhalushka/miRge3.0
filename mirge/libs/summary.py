@@ -80,14 +80,6 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
     """
     READING ANNOTATION DATA TO GET GENOMIC COORDINATES AND PRECURSOR miRNA 
     """
-    if args.bam_out:
-        header = sam_header(args)
-        for names in base_names:
-            file_sam_nameH = str(names) +".sam"
-            sam_nameH = Path(workDir)/file_sam_nameH
-            with open(sam_nameH,"w+") as samH:
-                #samH.write("@HD\tVN:3.0\tSO:coordinate\n")
-                samH.write(header)
 
     pre_cur_name={}
     pre_strand={}
@@ -133,8 +125,8 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
             except IndexError:
                 pass
     #print(pre_cur_name)
-    bam_can_dict={}
-    bam_expression_dict={}
+    # bam_can_dict={}
+    # bam_expression_dict={}
     JS_variantType_dataDict = dict()
     for cans in canonical_gff:
         gen_start=0
@@ -147,7 +139,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
             seq_master = cans[1] # miRNA name 
         canonical_expression = ','.join(str(x) for x in cans[2:]) # Expression/collapsed counts for each sample - joining by ','
         JS_exprn_total = str(sum(cans[2:]))
-        bam_expression_dict[seq_m] = [int(x) for x in cans[2:]]
+        # bam_expression_dict[seq_m] = [int(x) for x in cans[2:]]
         new_string=""
         #print(seq_master)
         try:
@@ -207,7 +199,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 except KeyError:
                     JS_hmap_list_ref[seq_master] = canonical_expression.split(",")
                 #forJSgffData.write(str(seq_m)+","+seq_master+",ref,"+str(canonical_expression)+","+JS_exprn_total+"\n")
-                bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ cigar + "\t"+ gen_strand 
+                # bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ cigar + "\t"+ gen_strand 
                     #bow2bam
                 """
                 FOR SAM/BAM FILE FORMAT: gen_chr, gen_start, gen_end
@@ -502,7 +494,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                 """
                 FOR SAM/BAM FILE FORMAT: gen_chr, gen_start, gen_end
                 """
-                bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ iso_cigar + "\t"+ gen_strand
+                # bam_can_dict[seq_m] = str(gen_chr) +"\t"+ str(gen_start) +"\t"+ iso_cigar + "\t"+ gen_strand
                 #print(seq_m+"\t"+ str(gen_chr) +"\t"+ str(gen_start) +"\t"+ iso_cigar+"\n")
 
                 #print("--**END**--")
@@ -613,7 +605,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
             #print(iso_data_js)
         html_data.closeisoHmapBottom()
 
-
+    """
     if args.bam_out:
         mirna_samFile = Path(workDir)/"miRge3_miRNA.sam"
         genC=0
@@ -648,6 +640,7 @@ def create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical, isomirs, 
                             xbam.close()
                 except KeyError:
                     pass
+    """
 
 def addDashNew(seq, totalLength, start, end):
     newSeq = '-'*(start-1)+seq+'-'*(totalLength-end)
@@ -727,6 +720,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     subpdMapped = pdMapped[(pdMapped['exact miRNA'].astype(bool) | pdMapped['isomiR miRNA'].astype(bool))]
     cannonical = pdMapped[pdMapped['exact miRNA'].astype(bool)]
     isomirs = pdMapped[pdMapped['isomiR miRNA'].astype(bool)]
+    cannonical_4bam = pdMapped[pdMapped['exact miRNA'].astype(bool)]
+    isomirs_4bam = pdMapped[pdMapped['isomiR miRNA'].astype(bool)]
     cannonical_4ie = cannonical
     isomirs_4ie = isomirs
     cannonical_4gff = cannonical
@@ -787,6 +782,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         bwtErr = bowtie.stderr
         lines = bwtOut.strip()
         for srow in lines.split('\n'):
+            if "segs:" in srow:
+                srow = srow.split(" ")[0]
             if srow not in mirMergedNameDic:
                 mirMergedDataframeDic.update({srow:"1"})
 
@@ -800,7 +797,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     mirCounts_completeSet.to_csv(miRgefileToCSV)
     mirRPM_completeSet.to_csv(miRgeRPMToCSV)
 
-    if args.gff_out or args.bam_out:
+    if args.gff_out:
+    #if args.gff_out or args.bam_out:
         pre_mirDict = dict()
         mirDict = dict()
         filenamegff = workDir/"sample_miRge3.gff"
@@ -841,6 +839,20 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         create_gff(args, pre_mirDict, mirDict, d, filenamegff, cannonical_4gff, isomirs_4gff, base_names, ref_db, annotation_lib, workDir, mirRPM_completeSet)
 
     if args.bam_out:
+    #if args.bam_out:
+        header = sam_header(args)
+        for names in base_names:
+            file_sam_nameH = str(names) +".sam"
+            sam_nameH = Path(workDir)/file_sam_nameH
+            with open(sam_nameH,"w+") as samH:
+                #samH.write("@HD\tVN:3.0\tSO:coordinate\n")
+                samH.write(header)
+        cols1 = ["Sequence","exact miRNA"] + base_names
+        cols2 = ["Sequence","isomiR miRNA"] + base_names
+        canonical_gff = pd.DataFrame(cannonical_4bam, columns= cols1).values.tolist() # Gives list of list containg Sequence, miRNA name, expression values for the samples - ref miRNA
+        isomir_gff = pd.DataFrame(isomirs_4bam, columns= cols2).values.tolist() # Gives list of list containg Sequence, miRNA name, expression values for the samples - isomiR
+        canonical_gff.extend(isomir_gff)  # APPENDING THE LIST OF ISOMIRS TO CANONICAL # Making one big list to get coordinates and anntations for GFF3 format of miRTop
+
         pd_frame = ['snoRNA','rRNA','ncrna others','mRNA']
         bwt_idx_prefname = ['snorna','rrna','ncrna_others','mrna']
         for igv_idx, igv_name in enumerate(pd_frame):
@@ -852,8 +864,20 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
             rna_type = args.organism_name + "_" + bwt_idx_prefname[igv_idx]
             index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
             bow2bam(args, workDir, ref_db, df_expr_list, base_names, index_file_name, rna_type, bwt_idx_prefname[igv_idx])
-            createBAM(args, workDir, base_names)
         #https://stackoverflow.com/questions/35125062/how-do-i-join-2-columns-of-a-pandas-data-frame-by-a-comma
+        rna_type = args.organism_name +"_mirna_"+ref_db
+        index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
+        bow2bam(args, workDir, ref_db, canonical_gff, base_names, index_file_name, rna_type, "mirna" )
+        # Create BAM for hairpin miRNA 
+        rna_type = args.organism_name +"_hairpin_"+ref_db
+        index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
+        hpin_exprn = pdMapped[pdMapped["hairpin miRNA"].astype(bool)]
+        cols_hpin = ["Sequence","hairpin miRNA"] + base_names
+        hpin_exlist = pd.DataFrame(hpin_exprn, columns=cols_hpin).values.tolist()
+        bow2bam(args, workDir, ref_db, hpin_exlist, base_names, index_file_name, rna_type, "hairpin_miRNA" )
+        # hairpin_miRNA
+        createBAM(args, workDir, base_names)
+
     miRNA_counts={}
     trimmed_counts={}
     for file_name in base_names:
