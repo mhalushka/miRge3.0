@@ -98,8 +98,18 @@ def parseArg():
     group1.add_argument("-M", "--maximum-length", default=None, type=int, metavar="LEN[:LEN2]", help=argparse.SUPPRESS)
     group1.add_argument("--numba-pll", default=None, action='store_false', help=argparse.SUPPRESS)
     group1.add_argument("--numba-cuda", default=None, action='store_false', help=argparse.SUPPRESS)
-
-    ## group - 3 ##
+    
+    group4 = parser.add_argument_group('miRNA Error Correction', description='''microRNA correction method for single base substitutions due to sequencing errors (Note: Refines reads at the expense of time)
+-mEC,  --miREC              Enable miRNA error correction (miREC)
+-kh,   --threshold          the value for frequency threshold τ (Default kh = 5)
+-ks,   --kmer-start         kmer range start value (k_1, default 15) 
+-ke,   --kmer-end           kmer range end value (k_end, default 20)
+''')
+    group4.add_argument('-mEC','--miREC', help=argparse.SUPPRESS, action='store_true')
+    group4.add_argument('-kh','--threshold', help=argparse.SUPPRESS, default='5', metavar='', type=int)
+    group4.add_argument('-ks','--kmer-start', help=argparse.SUPPRESS, default='15', metavar='', type=int)
+    group4.add_argument('-ke','--kmer-end', help=argparse.SUPPRESS, default='20', metavar='', type=int)
+    ## group - 2 ##
 
     group2 = parser.add_argument_group('Predicting novel miRNAs',description='''The predictive model for novel miRNA detection is trained on human and mouse!
 -nmir, --novel-miRNA        include prediction of novel miRNAs

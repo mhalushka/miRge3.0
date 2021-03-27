@@ -14,6 +14,7 @@ import pandas
 from mirge.libs.parse import parseArg
 from mirge.libs.miRgeEssential import check_dependencies, validate_files
 from mirge.libs.digest import baking 
+from mirge.libs.digestEC import bakingEC
 from mirge.libs.summary import summarize
 from mirge.libs.manifoldAlign import bwtAlign
 from mirge.libs.novel_mir import predict_nmir
@@ -90,7 +91,17 @@ def main():
         print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
     outlog.write(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n\n")
     outlog.close()
-    pdDataFrame,sampleReadCounts,trimmedReadCounts,trimmedReadCountsUnique = baking(args, fastq_fullPath, base_names, workDir)
+    if args.miREC:
+        if args.uniq_mol_ids:
+        #if args.umi:
+            print(f"\nCurrently, error correction does not apply for the data with UMI sequences\n")
+            outlog.write(f"\nCurrently, error correction does not apply for the data with UMI sequences\n")
+            outlog.close()
+        else:
+            pdDataFrame,sampleReadCounts,trimmedReadCounts,trimmedReadCountsUnique = bakingEC(args, fastq_fullPath, base_names, workDir)
+    else:
+        pdDataFrame,sampleReadCounts,trimmedReadCounts,trimmedReadCountsUnique = baking(args, fastq_fullPath, base_names, workDir)
+
     pdDataFrame = bwtAlign(args,pdDataFrame,workDir,ref_db)
     outlog = open(str(runlogFile),"a+")
     if not args.quiet:
