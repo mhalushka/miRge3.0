@@ -867,7 +867,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         #https://stackoverflow.com/questions/35125062/how-do-i-join-2-columns-of-a-pandas-data-frame-by-a-comma
         rna_type = args.organism_name +"_mirna_"+ref_db
         index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
-        bow2bam(args, workDir, ref_db, canonical_gff, base_names, index_file_name, rna_type, "mirna" )
+        bow2bam(args, workDir, ref_db, canonical_gff, base_names, index_file_name, rna_type, "miRNA" )
+        #bow2bam(args, workDir, ref_db, canonical_gff, base_names, index_file_name, rna_type, "mirna" )
         # Create BAM for hairpin miRNA 
         rna_type = args.organism_name +"_hairpin_"+ref_db
         index_file_name = Path(args.libraries_path)/args.organism_name/"index.Libs"/rna_type
