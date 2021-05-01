@@ -5,7 +5,7 @@ with open("README.rst", "r") as fh:
 
 setup(
         name='mirge3',
-        version='0.0.7',
+        version='0.0.8',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
         url='https://github.com/mhalushka/miRge3.0/',
@@ -15,7 +15,7 @@ setup(
         license='MIT',
         package_dir={'mirge': 'mirge'},
         packages=find_packages(),
-        package_data = {'':['models/*.pkl', 'models/*.txt', 'rScripts/*.R']},
+        package_data = {'':['models/*.pkl', 'models/*.txt', 'rScripts/*.R', 'libs/kmc', 'libs/kmc_dump', 'libs/miREC_fq']},
         install_requires=['biopython==1.78','cutadapt','future>=0.18.2','joblib>=0.15.1','matplotlib>=3.2.1','pandas>=1.0.3','reportlab>=3.5.42','scikit-learn==0.23.1','scipy>=1.4.1'],
         entry_points={'console_scripts': ['miRge3.0 = mirge.__main__:main']},
         classifiers=[
