@@ -5,7 +5,7 @@ with open("README.rst", "r") as fh:
 
 setup(
         name='mirge3',
-        version='0.0.8',
+        version='0.0.9',
         author='Arun Patil and Marc Halushka',
         author_email='mhalush1@jhmi.edu',
         url='https://github.com/mhalushka/miRge3.0/',
