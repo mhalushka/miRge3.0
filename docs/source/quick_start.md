@@ -41,7 +41,7 @@ Data pre-processing:
                               modifications are applied after adapter trimming
   -NX,   --trim-n             Trim N's on ends of reads
   -m,    --minimum-length     Discard reads shorter than LEN. (Default: 16)
-  -umi,  --uniq-mol-ids       Removes PCR duplicates and trim UMI of length by specifying two comma-separated cutoffs as 5’ cutoff,3’ bp from both ends of the read. eg: 4,4 or 0,4
+  -umi,  --uniq-mol-ids       Trim nucleotides of specific length at 5’ and 3’ ends of the read, after adapter trimming. eg: 4,4 or 0,4. (Use -udd to remove PCR duplicates)
   -udd,  --umiDedup           Specifies argument to removes PCR duplicates (Default: False); if TRUE it will remove UMI and remove PCR duplicates otherwise it only remove UMI and keep the raw counts
   -qumi, --qiagenumi          Removes PCR duplicates of reads obtained from Qiagen platform (Default: Illumina; "-umi x,y " Required)
 
