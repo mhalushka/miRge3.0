@@ -164,7 +164,7 @@ wget -O SRR772403.fastq.gz "https://sourceforge.net/projects/mirge3/files/test/S
 ```
 miRge3.0 -s SRR772403.fastq.gz -lib /mnt/d/Halushka_lab/Arun/miRge3_Lib -a illumina -on human -db mirbase -o output_dir -gff -cpu 8
 ```
-- Output folder
+- Output folder, sample output can be accessed [here](https://sourceforge.net/projects/mirge3/files/test/output_dir/)
 ```
 miRge creates a subfolder inside the folder "output_dir" and all the files will be stored there. The test output can be accessed at the following link:
 https://sourceforge.net/projects/mirge3/files/test/output_dir/miRge.2021-06-25_15-16-58/
