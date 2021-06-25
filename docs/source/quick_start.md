@@ -144,6 +144,32 @@ Prediction of novel miRNAs Completed (104.83 sec)
 
 The analysis completed in 222.2487 second(s)
 ```
+### Test 
+The test case illustrates the usage of miRge3.0 with a sample dataset, mapping to human reference libraries. 
+- First download human miRge libraries as shown below: 
+```
+mkdir miRge3_Lib
+cd miRge3_Lib
+wget -O human.tar.gz "https://sourceforge.net/projects/mirge3/files/miRge3_Lib/human.tar.gz/download"
+tar -xzf human.tar.gz
+cd ..
+```
+
+- Download the sample file from Source Forge, [SRR772403](https://sourceforge.net/projects/mirge3/files/test/SRR772403.fastq.gz/download)
+```
+You can download to your working directory as shown below:
+wget -O SRR772403.fastq.gz "https://sourceforge.net/projects/mirge3/files/test/SRR772403.fastq.gz/download"
+```
+- Run basic miRge3.0 command to annotate and report isomiRs
+```
+miRge3.0 -s SRR772403.fastq.gz -lib /mnt/d/Halushka_lab/Arun/miRge3_Lib -a illumina -on human -db mirbase -o output_dir -gff -cpu 8
+```
+- Output folder
+```
+miRge creates a subfolder inside the folder "output_dir" and all the files will be stored there. The test output can be accessed at the following link:
+https://sourceforge.net/projects/mirge3/files/test/output_dir/miRge.2021-06-25_15-16-58/
+```
+
 
 ## miRge3.0 GUI 
 
