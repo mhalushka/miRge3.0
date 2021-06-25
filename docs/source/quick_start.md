@@ -163,6 +163,29 @@ wget -O SRR772403.fastq.gz "https://sourceforge.net/projects/mirge3/files/test/S
 - Run basic miRge3.0 command to annotate and report isomiRs
 ```
 miRge3.0 -s SRR772403.fastq.gz -lib /mnt/d/Halushka_lab/Arun/miRge3_Lib -a illumina -on human -db mirbase -o output_dir -gff -cpu 8
+
+bowtie version: 1.3.0
+cutadapt version: 3.1
+Samtools version: 1.11
+Collecting and validating input files...
+
+miRge3.0 will process 1 out of 1 input file(s).
+
+Cutadapt finished for file SRR772403 in 3.4343 second(s)
+Collapsing finished for file SRR772403 in 0.0216 second(s)
+
+Matrix creation finished in 0.0263 second(s)
+
+Data pre-processing completed in 3.5111 second(s)
+
+Alignment in progress ...
+Alignment completed in 8.1488 second(s)
+
+Summarizing and tabulating results...
+Summary completed in 2.27 second(s)
+
+
+The analysis completed in 15.2276 second(s)
 ```
 - Output folder, sample output can be accessed [here](https://sourceforge.net/projects/mirge3/files/test/output_dir/)
 ```
