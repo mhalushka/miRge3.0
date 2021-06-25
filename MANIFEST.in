@@ -1,0 +1,6 @@
+include mirge/models/*.pkl
+include mirge/models/*.txt
+include mirge/rScripts/*.R
+include mirge/libs/kmc_dump
+include mirge/libs/kmc
+include mirge/libs/miREC_fq
