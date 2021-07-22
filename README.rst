@@ -32,3 +32,9 @@ Links
 * `Report an issue <https://github.com/mhalushka/mirge3.0/issues>`_
 * `Project page on PyPI <https://pypi.python.org/pypi/mirge3/>`_
 
+========
+Citation
+========
+
+Arun H Patil, Marc K Halushka. **miRge3.0: a comprehensive microRNA and tRF sequencing analysis pipeline**. `NAR Genomics and Bioinformatics  <https://academic.oup.com/nargab/article/3/3/lqab068/6325159>`_. 2021.
+
