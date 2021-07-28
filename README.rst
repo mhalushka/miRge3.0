@@ -12,11 +12,7 @@
     
 .. image:: https://camo.githubusercontent.com/ec0ce88c34009d95029a49d265b89d03d9357ed953885164d6e037c1ccb8892b/68747470733a2f2f696d672e736869656c64732e696f2f636f6e64612f646e2f62696f636f6e64612f6d69726765332e737667   
     :target: https://anaconda.org/bioconda/mirge3/files
-    
-.. image::
-https://img.shields.io/badge/publication-NARGAB-blue
-    :target: https://academic.oup.com/nargab/article/3/3/lqab068/6325159
-   
+       
 
     
 
