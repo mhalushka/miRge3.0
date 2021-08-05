@@ -13,9 +13,9 @@ optional arguments:
   --version   show program's version number and exit
 
 Options:
-  -s,    --samples            list of one or more samples separated by comma or a file with list of samples separated by new line (accepts *.fastq, *.fastq.gz)
-  -db,   --mir-DB             the reference database of miRNA. Options: miRBase and miRGeneDB (Default: miRBase)
-  -lib,  --libraries-path     the path to miRge libraries
+  -s,    --samples            list of one or more samples separated by comma or a file with list of samples separated by new line (accepts *.fastq, *.fastq.gz) 
+  -db,   --mir-DB             the reference database of miRNA. Options: miRBase and miRGeneDB (Default: miRBase) 
+  -lib,  --libraries-path     the path to miRge libraries 
   -on,   --organism-name      the organism name can be human, mouse, fruitfly, nematode, rat or zebrafish
   -ex,   --crThreshold        the threshold of the proportion of canonical reads for the miRNAs to retain. Range for ex (0 - 0.5), (Default: 0.1)
   -phr,  --phred64            phred64 format (Default: 33)
@@ -24,10 +24,13 @@ Options:
   -cpu,  --threads            the number of processors to use for trimming, qc, and alignment (Default: 1)
   -ai,   --AtoI               switch to calculate A to I editing (Default: off)
   -tcf   --tcf-out            switch to write trimmed and collapsed fasta file (Default: off)
-  -gff   --gff-out            switch to output isomiR results in gff format (Default: off)
-  -bam   --bam-out            switch to output results in bam format (Default: off)
+  -gff   --gff-out            switch to output isomiR results in gff format (Default: off) 
+  -bam   --bam-out            switch to output results in bam format (Default: off) 
   -trf   --tRNA-frag          switch to analyze tRNA fragment and halves (Default: off)
-  -o     --outDir             the directory of the outputs (Default: current directory)
+  -o     --outDir             the directory of the outputs (Default: current directory) 
+  -dex   --diffex             perform differential expression with DESeq2 (Default: off)
+  -mdt   --metadata           the path to metadata file (Default: off, require '.csv' file format if -dex is opted)
+  -cms   --chunkmbs           chunk memory in megabytes per thread to use during bowtie alignment (Default: 256)
   -shh   --quiet              enable quiet/silent mode, only show warnings and errors (Default: off)
 
 Data pre-processing:
@@ -41,9 +44,17 @@ Data pre-processing:
                               modifications are applied after adapter trimming
   -NX,   --trim-n             Trim N's on ends of reads
   -m,    --minimum-length     Discard reads shorter than LEN. (Default: 16)
-  -umi,  --uniq-mol-ids       Trim nucleotides of specific length at 5’ and 3’ ends of the read, after adapter trimming. eg: 4,4 or 0,4. (Use -udd to remove PCR duplicates)
-  -udd,  --umiDedup           Specifies argument to removes PCR duplicates (Default: False); if TRUE it will remove UMI and remove PCR duplicates otherwise it only remove UMI and keep the raw counts
+  -umi,  --uniq-mol-ids       Trim nucleotides of specific length at 5’ and 3’ ends of the read, after adapter trimming. eg: 4,4 or 0,4. (Use -udd to remove PCR duplicates)  
+  -udd,  --umiDedup           Specifies argument to removes PCR duplicates (Default: False); if TRUE it will remove UMI and remove PCR duplicates otherwise it only remove UMI and keep the raw counts (Require -umi option)
   -qumi, --qiagenumi          Removes PCR duplicates of reads obtained from Qiagen platform (Default: Illumina; "-umi x,y " Required)
+  
+  
+miRNA Error Correction:
+  microRNA correction method for single base substitutions due to sequencing errors (Note: Refines reads at the expense of time)
+  -mEC,  --miREC              Enable miRNA error correction (miREC)
+  -kh,   --threshold          the value for frequency threshold τ (Default kh = 5)
+  -ks,   --kmer-start         kmer range start value (k_1, default 15) 
+  -ke,   --kmer-end           kmer range end value (k_end, default 20)
 
 Predicting novel miRNAs:
   The predictive model for novel miRNA detection is trained on human and mouse!
@@ -53,7 +64,7 @@ Predicting novel miRNAs:
   -c,    --minReadCounts      the minimum read counts supporting novel miRNA detection (default: 2)
   -mloc, --maxMappingLoci     the maximum number of mapping loci for the retained reads for novel miRNA detection (default: 3)
   -sl,   --seedLength         the seed length when invoking Bowtie for novel miRNA detection (default: 25)
-  -olc,  --overlapLenCutoff   the length of overlapped seqence when joining reads into longer sequences based on the coordinate
+  -olc,  --overlapLenCutoff   the length of overlapped seqence when joining reads into longer sequences based on the coordinate 
                               on the genome for novel miRNA detection (default: 14)
   -clc,  --clusterLength      the maximum length of the clustered sequences for novel miRNA detection (default: 30)
 
@@ -61,7 +72,7 @@ Optional PATH arguments:
   -pbwt, --bowtie-path        the path to system's directory containing bowtie binary
   -psam, --samtools-path      the path to system's directory containing samtools binary
   -prf,  --RNAfold-path       the path to system's directory containing RNAfold binary
-    
+
 ```
 
 ## miRge3.0 libraries
