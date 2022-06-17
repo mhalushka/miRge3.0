@@ -80,16 +80,16 @@ def check_dependencies(args, runlogFile):
         rnafold = subprocess.run(str(rnaFoldCommand), shell=True, capture_output=True, text=True)
         if rnafold.returncode==0:
             if not int((rnafold.stdout.split('\n')[0].split(' ')[1]).split(".")[0]) >= 2:
-                print("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>")
-                outlog.write("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -pr <name of the directory>\n")
+                print("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -prf <name of the directory>")
+                outlog.write("RNAfold error!: Can't locate or version incorrect. Require - RNAfold = 2.4.14\nUse argument -prf <name of the directory>\n")
                 exit()
             else:
                 if not args.quiet:
                     print("RNAfold version: "+ str(rnafold.stdout.split('\n')[0].split(' ')[1]))
                 outlog.write("RNAfold version: "+ str(rnafold.stdout.split('\n')[0].split(' ')[1])+"\n")
         else:
-            print("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>")
-            outlog.write("RNAfold error!: RNAfold, command not found \nUse argument -pr <name of the directory>\n")
+            print("RNAfold error!: RNAfold, command not found \nUse argument -prf <name of the directory>")
+            outlog.write("RNAfold error!: RNAfold, command not found \nUse argument -prf <name of the directory>\n")
             exit()
         if args.organism_name  not in ['human', 'mouse']:
             if not args.quiet:
