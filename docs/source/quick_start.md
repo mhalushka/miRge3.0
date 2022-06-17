@@ -204,12 +204,19 @@ miRge creates a subfolder inside the folder "output_dir" and all the files will 
 https://sourceforge.net/projects/mirge3/files/test/output_dir/miRge.2021-06-25_15-16-58/
 ```
 ### Trimming both 5' and 3' adapters - Linked adapters 
-If the data contains adapters at both 5' and 3' ends of the reads and both the adapters need to be removed then you should perfomr linked adapter trimming. This is part of Cutadapt and more about linked adapters can be found [here](https://cutadapt.readthedocs.io/en/stable/guide.html#linked-adapters-combined-5-and-3-adapter). 
+If the data contains adapters at both 5' and 3' ends of the reads and both the adapters need to be removed then you should perform linked adapter trimming. This is part of Cutadapt and more about linked adapters can be found [here](https://cutadapt.readthedocs.io/en/stable/guide.html#linked-adapters-combined-5-and-3-adapter). 
 
 Example:
 ```
 miRge3.0 -s DRR013811.fastq -lib /mnt/d/Halushka_lab/Arun/GTF_Repeats_miRge2to3/miRge3_Lib/revised_hsa  -on human -db mirbase -o output_dir -g "TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"
 ```
+
+`"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"` => where `TTAGGC` is the 5' adapter and `TGGAATTCTCGGGTGCCAAGGAACTCCAGT`. 
+
+Note: Complete adapter sequence must be provided (mandatory) i.e., simply specifying illumina will not be decoded to its actual adapter sequence. 
+This will `NOT WORK`: -g `"TTAGGC...illumina"`
+This will `WORK`: -g `"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"` 
+
 
 ### Running samples with UMI
 #### Qiagen - based UMI
