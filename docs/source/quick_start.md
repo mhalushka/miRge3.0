@@ -211,10 +211,10 @@ Example:
 miRge3.0 -s DRR013811.fastq -lib /mnt/d/Halushka_lab/Arun/GTF_Repeats_miRge2to3/miRge3_Lib/revised_hsa  -on human -db mirbase -o output_dir -g "TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"
 ```
 
-`"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"` => where `TTAGGC` is the 5' adapter and `TGGAATTCTCGGGTGCCAAGGAACTCCAGT`. 
+Description of adapter: `"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"`, where `TTAGGC` is the 5' adapter and `TGGAATTCTCGGGTGCCAAGGAACTCCAGT` is the 3' adapter sequence. 
 
-Note: Complete adapter sequence must be provided (mandatory) i.e., simply specifying illumina will not be decoded to its actual adapter sequence. 
-This will `NOT WORK`: -g `"TTAGGC...illumina"`
+Note: Complete adapter sequence must be provided (mandatory) i.e., simply specifying illumina will not be decoded to its actual adapter sequence. <br>
+This will `NOT WORK`: -g `"TTAGGC...illumina"`<br>
 This will `WORK`: -g `"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"` 
 
 
