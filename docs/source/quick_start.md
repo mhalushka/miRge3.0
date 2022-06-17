@@ -203,6 +203,41 @@ The analysis completed in 15.2276 second(s)
 miRge creates a subfolder inside the folder "output_dir" and all the files will be stored there. The test output can be accessed at the following link:
 https://sourceforge.net/projects/mirge3/files/test/output_dir/miRge.2021-06-25_15-16-58/
 ```
+### Running samples with UMI
+#### Qiagen - based UMI
+Testing sample data run on UMI obtained from Qiagen platform. Important parameters are (`-umi`, `--qiagenumi` and `-udd`)
+```
+miRge3.0 -s SRR13077007.fastq -db miRBase -lib miRge3_Lib -on human -a AACTGTAGGCACCATCAAT --qiagenumi -umi 0,12 -o output_dir -cpu 10 -udd
+```
+
+Please note: As of July, 2021, the standard internal 3' adapter was AACTGTAGGCACCATCAAT ligated to 12 nucleotide UMI sequence followed by external 3' adapter sequence. If you have different internal adapter other than AACTGTAGGCACCATCAAT, then please provide that.
+
+Example of reads, UMI and adapters for hsa-let-7a (sequence left to right in the order mentioned below with angular brackets):
+
+<hsa-let-7a-5p: TGAGGTAGTAGGTTGTATAGTT><Internal 3' adapter:`AAACTGTAGGCACCATCAAT`><12 nt UMI><external 3' adapter `AGATCGGAAGAGCACACGTCT`>
+```
+TGAGGTAGTAGGTTGTATAGTTAACTGTAGGCACCATCAATGTTAGACCTGCAAGATCGGAAGAGCACACGTCTG
+TGAGGTAGTAGGTTGTATAGTTAACTGTAGGCACCATCAATCAATGACGATTTAGATCGGAAGAGCACACGTCTG
+TGAGGTAGTAGGTTGTATAGTTAACTGTAGGCACCATCAATAAACAAAGATCCAGATCGGAAGAGCACACGTCTG
+TGAGGTAGTAGGTTGTATAGTTAACTGTAGGCACCATCAATCGCATCGCCGACAGATCGGAAGAGCACACGTCTG
+TGAGGTAGTAGGTTGTATAGTTAACTGTAGGCACCATCAATTTTGCCATTACTAGATCGGAAGAGCACACGTCTG
+```
+
+#### Illumina - based UMI/4N method
+Testing sample data run on UMI/4N obtained from Illumina or similar platform. Important parameters are (`-umi` and `-udd`)
+```
+miRge3.0 -s SRR6379839.fastq -db miRBase -lib miRge3_Lib -on human -a illumina -umi 4,4 -o output_dir -cpu 10 -udd
+```
+
+<04 nt UMI><hsa-let-7a-5p: TGAGGTAGTAGGTTGTATAGTT><04 nt UMI><3' adapter:`TGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG`>
+
+```
+TACATGAGGTAGTAGGTTGTATAGTTCCTCTGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG
+TACCTGAGGTAGTAGGTTGTATAGTTACTATGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG
+CAGGTGAGGTAGTAGGTTGTATAGTTGGTATGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG
+AGAATGAGGTAGTAGGTTGTATAGTTACTATGGAATTCTCGGGTGACAAGGAACTCCAGTCACCGGAATATCTCG
+AGGTTGAGGTAGTAGGTTGTATAGTTACTATGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG
+```
 
 
 ## miRge3.0 GUI 
