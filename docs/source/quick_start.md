@@ -203,6 +203,14 @@ The analysis completed in 15.2276 second(s)
 miRge creates a subfolder inside the folder "output_dir" and all the files will be stored there. The test output can be accessed at the following link:
 https://sourceforge.net/projects/mirge3/files/test/output_dir/miRge.2021-06-25_15-16-58/
 ```
+### Trimming both 5' and 3' adapters - Linked adapters 
+If the data contains adapters at both 5' and 3' ends of the reads and both the adapters need to be removed then you should perfomr linked adapter trimming. This is part of Cutadapt and more about linked adapters can be found [here](https://cutadapt.readthedocs.io/en/stable/guide.html#linked-adapters-combined-5-and-3-adapter). 
+
+Example:
+```
+miRge3.0 -s DRR013811.fastq -lib /mnt/d/Halushka_lab/Arun/GTF_Repeats_miRge2to3/miRge3_Lib/revised_hsa  -on human -db mirbase -o output_dir -g "TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"
+```
+
 ### Running samples with UMI
 #### Qiagen - based UMI
 Testing sample data run on UMI obtained from Qiagen platform. Important parameters are (`-umi`, `--qiagenumi` and `-udd`)
@@ -212,7 +220,7 @@ miRge3.0 -s SRR13077007.fastq -db miRBase -lib miRge3_Lib -on human -a AACTGTAGG
 
 Please note: As of July, 2021, the standard internal 3' adapter was AACTGTAGGCACCATCAAT ligated to 12 nucleotide UMI sequence followed by external 3' adapter sequence. If you have different internal adapter other than AACTGTAGGCACCATCAAT, then please provide that.
 
-Example of reads, UMI and adapters for hsa-let-7a (sequence left to right in the order mentioned below with angular brackets):
+Example of reads, UMI and adapters for hsa-let-7a (sequence left to right in the order mentioned below with-in angular brackets):
 
 <hsa-let-7a-5p: TGAGGTAGTAGGTTGTATAGTT><Internal 3' adapter:`AAACTGTAGGCACCATCAAT`><12 nt UMI><external 3' adapter `AGATCGGAAGAGCACACGTCT`>
 ```
@@ -238,7 +246,6 @@ CAGGTGAGGTAGTAGGTTGTATAGTTGGTATGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG
 AGAATGAGGTAGTAGGTTGTATAGTTACTATGGAATTCTCGGGTGACAAGGAACTCCAGTCACCGGAATATCTCG
 AGGTTGAGGTAGTAGGTTGTATAGTTACTATGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG
 ```
-
 
 ## miRge3.0 GUI 
 
