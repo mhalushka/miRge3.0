@@ -2,7 +2,7 @@
 
 ## Frequent questions raised on GitHub:
 
-### 1. How to use Unique Molecular Identifiers (UMIs) 
+### How to use Unique Molecular Identifiers (UMIs) 
 
 <div style="background-color: #f8f8f8; border: 1px solid #e1e4e5; margin: 1px 0 24px; text-align: justify;">
 A detailed documentation for UMI test run is available [here](https://mirge3.readthedocs.io/en/latest/quick_start.html#running-samples-with-umi)<br>
