@@ -4,15 +4,15 @@
 
 1. How to use Unique Molecular Identifiers (UMIs) 
 
-<span style="background-color: #E5E4E2">
+<div style="background-color: #E5E4E2">
 A. A detailed documentation for UMI test run is available [here](https://mirge3.readthedocs.io/en/latest/quick_start.html#running-samples-with-umi) 
   miRge3.0 is designed to process UMIs for Illumina and Qiagen. The parameters to trim UMIs and removing PCR duplicates are different, and also, selecting Qiagen UMI needs an additional parameter. This following issues were raised:
 
-[#32 (comment)](https://github.com/mhalushka/miRge3.0/issues/32#issue-1149944971)
-[#46 (comment)](https://github.com/mhalushka/miRge3.0/issues/46#issue-1273723168)
-[#28 (comment)](https://github.com/mhalushka/miRge3.0/issues/28#issue-1077400071)
+[#32 (comment)](https://github.com/mhalushka/miRge3.0/issues/32#issue-1149944971)<br/>
+[#46 (comment)](https://github.com/mhalushka/miRge3.0/issues/46#issue-1273723168)<br/>
+[#28 (comment)](https://github.com/mhalushka/miRge3.0/issues/28#issue-1077400071)<br/>
 
-</span>
+</div>
 
 2. TypeError: Cannot interpret <attribute 'dtype' of 'numpy.generic' objects> as a data type
 
