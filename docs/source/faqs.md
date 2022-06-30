@@ -24,6 +24,7 @@ A. I suspect there is a conflict with pandas and numpy in your local machine, I 
 
 [#20 (comment)](https://github.com/mhalushka/miRge3.0/issues/20#issuecomment-942408755)
 [#47 (comment)](https://github.com/mhalushka/miRge3.0/issues/47#issue-1285035891)
+<a href="https://github.com/mhalushka/miRge3.0/issues/47#issue-1285035891" target="_blank">[#47 (comment)]</a>
 
 ```
 3. Is there any way to skip the adaptor trimming process? and how to determine adapter sequence of a Run?
