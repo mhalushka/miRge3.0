@@ -274,12 +274,12 @@ SRR8497654,treated
 miRge3.0 -s SRR8497647.fastq,SRR8497648.fastq,SRR8497649.fastq,SRR8497650.fastq,SRR8497651.fastq,SRR8497652.fastq,SRR8497653.fastq,SRR8497654.fastq -lib miRge3_Lib -on human -db miRGeneDB -o differential_Exp -a TGGAATTCTCGG -cpu 12 -dex -mdt DESmetadata.csv
 ```
 <br>
-Tutorial on how to download SRA files:
-This turorial is only brief introduction and doesn't cover all the details of downloading NCBI SRA files. You could find [YouTube turorials](https://www.youtube.com/results?search_query=download+SRA+files) on how to download SRA files. 
-1. Download and install NCBI SRA toolkit: You could refer to NCBI [SRA Handbook](https://www.ncbi.nlm.nih.gov/books/NBK242621/) or [GitHub](https://github.com/ncbi/sra-tools)
+Tutorial on how to download SRA files:<br>
+This turorial is only brief introduction and doesn't cover all the details of downloading NCBI SRA files. You could find [YouTube turorials](https://www.youtube.com/results?search_query=download+SRA+files) on how to download SRA files. <br>
+1. Download and install NCBI SRA toolkit: You could refer to NCBI [SRA Handbook](https://www.ncbi.nlm.nih.gov/books/NBK242621/) or [GitHub](https://github.com/ncbi/sra-tools)<br>
 2. Download command: <br/>
 One could use `fasterq-dump -t temp -e 10 SRR8497647` or simply `fastq-dump SRR8497647`. The only difference being that the fasterq-dump is faster. <br>
-Similarly, download all other Runs (i.e., SRR8497648, SRR8497649 etc.)
+Similarly, download all other Runs (i.e., SRR8497648, SRR8497649 etc.)<br>
 
 ## miRge3.0 GUI 
 
