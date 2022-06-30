@@ -4,7 +4,7 @@
 
 1. How to use Unique Molecular Identifiers (UMIs) 
 
-<div style="background-color: #E5E4E2">
+<div style="background-color: #f6f6f6">
 A. A detailed documentation for UMI test run is available [here](https://mirge3.readthedocs.io/en/latest/quick_start.html#running-samples-with-umi) 
   miRge3.0 is designed to process UMIs for Illumina and Qiagen. The parameters to trim UMIs and removing PCR duplicates are different, and also, selecting Qiagen UMI needs an additional parameter. This following issues were raised:
 
