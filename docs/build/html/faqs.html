@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="python" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Frequently asked question (FAQ) &mdash; miRge3 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MIT License" href="license.html" />
+    <link rel="prev" title="miRge3.0 output" href="mirge_output.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> miRge3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mirge_output.html">miRge3.0 output</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked question (FAQ)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#frequent-questions-raised-on-github">Frequent questions raised on GitHub:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">miRge3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Frequently asked question (FAQ)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/arunhpatil/miRge3.0/blob/master/docs/source/faqs.md" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frequently-asked-question-faq">
+<h1>Frequently asked question (FAQ)<a class="headerlink" href="#frequently-asked-question-faq" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="frequent-questions-raised-on-github">
+<h2>Frequent questions raised on GitHub:<a class="headerlink" href="#frequent-questions-raised-on-github" title="Permalink to this headline">¶</a></h2>
+<ol class="simple">
+<li><p>How to use Unique Molecular Identifiers (UMIs)</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span> <span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="ow">is</span> <span class="n">designed</span> <span class="n">to</span> <span class="n">process</span> <span class="n">UMIs</span> <span class="k">for</span> <span class="n">Illumina</span> <span class="ow">and</span> <span class="n">Qiagen</span><span class="o">.</span> <span class="n">The</span> <span class="n">parameters</span> <span class="n">to</span> <span class="n">trim</span> <span class="n">UMIs</span> <span class="ow">and</span> <span class="n">removing</span> <span class="n">PCR</span> <span class="n">duplicates</span> <span class="n">are</span> <span class="n">different</span><span class="p">,</span> <span class="ow">and</span> <span class="n">also</span><span class="p">,</span> <span class="n">selecting</span> <span class="n">Qiagen</span> <span class="n">UMI</span> <span class="n">needs</span> <span class="n">an</span> <span class="n">additional</span> <span class="n">parameter</span><span class="o">.</span> <span class="n">This</span> <span class="n">following</span> <span class="n">issues</span> <span class="n">were</span> <span class="n">raised</span><span class="p">:</span>
+
+<span class="p">[</span><span class="c1">#32 (comment)](https://github.com/mhalushka/miRge3.0/issues/32#issue-1149944971)</span>
+<span class="p">[</span><span class="c1">#46 (comment)](https://github.com/mhalushka/miRge3.0/issues/46#issue-1273723168)</span>
+<span class="p">[</span><span class="c1">#28 (comment)](https://github.com/mhalushka/miRge3.0/issues/28#issue-1077400071)</span>
+
+<span class="n">A</span> <span class="n">detailed</span> <span class="n">documentation</span> <span class="k">for</span> <span class="n">UMI</span> <span class="n">test</span> <span class="n">run</span> <span class="ow">is</span> <span class="n">available</span> <span class="p">[</span><span class="n">here</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mirge3</span><span class="o">.</span><span class="n">readthedocs</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">latest</span><span class="o">/</span><span class="n">quick_start</span><span class="o">.</span><span class="n">html</span><span class="c1">#running-samples-with-umi)</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>TypeError: Cannot interpret &lt;attribute 'dtype' of 'numpy.generic' objects&gt; as a data type</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span> <span class="n">I</span> <span class="n">suspect</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">conflict</span> <span class="k">with</span> <span class="n">pandas</span> <span class="ow">and</span> <span class="n">numpy</span> <span class="ow">in</span> <span class="n">your</span> <span class="n">local</span> <span class="n">machine</span><span class="p">,</span> <span class="n">I</span> <span class="n">want</span> <span class="n">you</span> <span class="n">to</span> <span class="n">upgrade</span> <span class="n">pandas</span> <span class="ow">and</span> <span class="k">try</span> <span class="n">the</span> <span class="n">command</span> <span class="n">again</span><span class="o">.</span> <span class="n">You</span> <span class="n">can</span> <span class="n">upgrade</span> <span class="n">it</span> <span class="k">as</span> <span class="n">shown</span> <span class="p">(</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="k">if</span> <span class="n">you</span> <span class="n">are</span> <span class="n">using</span> <span class="n">py37</span><span class="p">)</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">following</span> <span class="n">issues</span><span class="p">:</span>
+
+<span class="p">[</span><span class="c1">#20 (comment)](https://github.com/mhalushka/miRge3.0/issues/20#issuecomment-942408755)</span>
+<span class="p">[</span><span class="c1">#47 (comment)](https://github.com/mhalushka/miRge3.0/issues/47#issue-1285035891)</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Is there any way to skip the adaptor trimming process? and how to determine adapter sequence of a Run?</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span> <span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="n">allows</span> <span class="n">users</span> <span class="n">to</span> <span class="n">skip</span> <span class="n">the</span> <span class="n">adapter</span> <span class="n">trimming</span> <span class="n">step</span><span class="p">,</span> <span class="ow">and</span> <span class="n">there</span> <span class="n">are</span> <span class="n">several</span> <span class="n">options</span> <span class="n">on</span> <span class="n">how</span> <span class="n">to</span> <span class="n">provide</span> <span class="n">adapter</span> <span class="n">sequences</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">following</span> <span class="n">issue</span> <span class="n">provide</span> <span class="n">a</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">adapter</span> <span class="n">sequences</span> <span class="k">for</span> <span class="n">various</span> <span class="n">platforms</span><span class="o">.</span> <span class="p">[</span><span class="n">Curation</span> <span class="n">date</span><span class="p">:</span> <span class="n">January</span> <span class="mi">2020</span><span class="p">]</span><span class="o">.</span> 
+
+<span class="p">[</span><span class="c1">#20 (comment)](https://github.com/mhalushka/miRge3.0/issues/20#issue-1023411842)</span>
+<span class="p">[</span><span class="c1">#20 (looped - comment)](https://github.com/mhalushka/miRge3.0/issues/20#issuecomment-943970154)</span>
+
+<span class="n">Please</span> <span class="n">NOTE</span><span class="p">:</span> <span class="n">To</span> <span class="n">trim</span> <span class="n">adapter</span> <span class="n">sequences</span> <span class="n">at</span> <span class="n">both</span> <span class="n">ends</span> <span class="n">please</span> <span class="n">follow</span> <span class="n">the</span> <span class="n">documentation</span> <span class="p">[</span><span class="n">Linked</span><span class="o">-</span><span class="n">adapters</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mirge3</span><span class="o">.</span><span class="n">readthedocs</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">quick_start</span><span class="o">.</span><span class="n">html</span><span class="c1">#trimming-both-5-and-3-adapters-linked-adapters)</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>How to use and tweak data with Spike-in expirements?</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span> <span class="n">An</span> <span class="n">example</span> <span class="n">usage</span> <span class="n">of</span> <span class="n">spike</span><span class="o">-</span><span class="ow">in</span> <span class="n">libraries</span> <span class="ow">and</span> <span class="n">how</span> <span class="n">to</span> <span class="n">add</span><span class="o">/</span><span class="n">append</span> <span class="n">spike</span><span class="o">-</span><span class="ow">in</span> <span class="n">reads</span> <span class="n">of</span> <span class="n">interest</span> <span class="n">to</span> <span class="n">the</span> <span class="n">existing</span> <span class="n">libraries</span> <span class="ow">and</span> <span class="n">interpretation</span> <span class="ow">is</span> <span class="n">described</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">following</span> <span class="n">issues</span><span class="p">:</span>
+
+<span class="p">[</span><span class="c1">#27 (comment)](https://github.com/mhalushka/miRge3.0/issues/27#issue-1074611243) </span>
+<span class="p">[</span><span class="c1">#48 (comment)](https://github.com/mhalushka/miRge3.0/issues/48#issue-1288527770)</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>how to use -dex DESeq2 analysis?</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span> <span class="n">The</span> <span class="n">documentation</span> <span class="k">for</span> <span class="n">DESeq2</span> <span class="n">based</span> <span class="n">differentiall</span> <span class="n">expression</span> <span class="n">analysis</span> <span class="ow">is</span> <span class="n">available</span> <span class="p">[</span><span class="n">here</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mirge3</span><span class="o">.</span><span class="n">readthedocs</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">quick_start</span><span class="o">.</span><span class="n">html</span><span class="c1">#performing-differential-expression-analysis)</span>
+<span class="n">The</span> <span class="n">following</span> <span class="n">GitHub</span> <span class="n">issues</span> <span class="n">were</span> <span class="n">raised</span><span class="p">:</span>
+<span class="p">[</span><span class="c1">#41 (comment)](https://github.com/mhalushka/miRge3.0/issues/41#issue-1228345472)</span>
+<span class="p">[</span><span class="c1">#33 (comment)](https://github.com/mhalushka/miRge3.0/issues/33#issue-1157209493)</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>What is the threshold of the proportion of canonical reads (-ex, --crThreshold)?</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span> <span class="n">This</span> <span class="n">was</span> <span class="n">answered</span> <span class="n">to</span> <span class="n">an</span> <span class="n">issue</span> <span class="n">on</span> <span class="n">why</span> <span class="n">default</span> <span class="n">value</span> <span class="n">of</span> <span class="mf">0.1</span> <span class="n">was</span> <span class="n">chosen</span> <span class="k">for</span> <span class="o">--</span><span class="n">crThreshold</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">following</span> <span class="n">issue</span><span class="o">.</span>
+<span class="p">[</span><span class="c1">#23 (comment)](https://github.com/mhalushka/miRge3.0/issues/23#issue-1045291352)</span>
+<span class="p">[</span><span class="c1">#34 (comment)](https://github.com/mhalushka/miRge3.0/issues/34#issuecomment-1063675353)</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>How to input paired-end sequencing data?</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span> <span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="n">doesn</span><span class="s1">&#39;t annotate paired-end data. </span>
+<span class="p">[</span><span class="c1">#7 (comment)](https://github.com/mhalushka/miRge3.0/issues/7#issue-737411998)</span>
+</pre></div>
+</div>
+<p>Copyright (c) 2020 Arun H. Patil and Marc K. Halushka</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="license.html" class="btn btn-neutral float-right" title="MIT License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mirge_output.html" class="btn btn-neutral float-left" title="miRge3.0 output" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Arun H. Patil and Marc K. Halushka
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,860 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="python" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; miRge3 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User guide" href="quick_start.html" />
+    <link rel="prev" title="miRge3.0" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> miRge3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#linux-os">Linux OS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#welcome-to-installation-protocol-for-linux-os">Welcome to installation protocol for Linux OS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#install-python3-8-and-r">Install python3.8 and R</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-mirge3-0-with-conda">Installing miRge3.0 with conda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installing-mirge3-0-with-pypi">Installing miRge3.0 with PyPi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-additional-c-libraries-based-tools">Install additional C-libraries based tools</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#gui-requirements">GUI requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#downloading-fastq-files-from-ncbi">Downloading FASTQ files from NCBI:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#obtaining-and-installing-gui-application">Obtaining and installing GUI application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#uninstalling-mirge3-0">Uninstalling miRge3.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#macos">macOS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#welcome-to-installation-protocol-for-mac-os">Welcome to installation protocol for Mac OS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#system-prerequisites"><strong>System prerequisites</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-python3-7">Install python3.7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-r">Install R</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Installing miRge3.0 with conda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Installing miRge3.0 with PyPi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Install additional C-libraries based tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">Downloading FASTQ files from NCBI:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">GUI requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Obtaining and installing GUI application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Uninstalling miRge3.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#windows-os">Windows OS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#welcome-to-installation-protocol-for-windows-os">Welcome to installation protocol for Windows OS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id15"><strong>System prerequisites</strong></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-wsl">Install WSL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">Install python3.8 and R</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id17">Installing miRge3.0 with conda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id19">Installing miRge3.0 with PyPi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id23">Install additional C-libraries based tools</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">GUI requirements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#change-command-prompt-properties">Change Command Prompt Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">Obtaining and installing GUI application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Uninstalling miRge3.0</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mirge_output.html">miRge3.0 output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">Frequently asked question (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">miRge3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/arunhpatil/miRge3.0/blob/master/docs/source/installation.md" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="linux-os">
+<h2>Linux OS<a class="headerlink" href="#linux-os" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="welcome-to-installation-protocol-for-linux-os">
+<h3>Welcome to installation protocol for Linux OS<a class="headerlink" href="#welcome-to-installation-protocol-for-linux-os" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="install-python3-8-and-r">
+<h4>Install python3.8 and R<a class="headerlink" href="#install-python3-8-and-r" title="Permalink to this headline">¶</a></h4>
+<p>This installation protocol is based on Ubuntu, please use the commands that suit your Linux distribution. For example, <code class="docutils literal notranslate"><span class="pre">apt</span></code> should be replaced with <code class="docutils literal notranslate"><span class="pre">yum</span></code> in Fedora/CentOS.</p>
+<ul class="simple">
+<li><p>Search and start the terminal</p></li>
+<li><p>Follow the commands to update Ubuntu and install python 3.8<br/>
+A password will be prompted when you type <code class="docutils literal notranslate"><span class="pre">sudo</span></code>, use the one you have set during Ubuntu (or your distro) installation.<br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">software</span><span class="o">-</span><span class="n">properties</span><span class="o">-</span><span class="n">common</span>
+<span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">deadsnakes</span><span class="o">/</span><span class="n">ppa</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="o">.</span><span class="mi">8</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">r</span><span class="o">-</span><span class="n">base</span>
+</pre></div>
+</div>
+<p>Linux (Ubuntu 18.04) comes with python2.7 installed by default. To use python3.8, creating an alias in .bashrc would do the trick.<br/></p>
+<p>Use vim editor if you are familiar using this editor <code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">.bashrc</span></code> or open the .bashrc using text editor by <code class="docutils literal notranslate"><span class="pre">gedit</span> <span class="pre">.bashrc</span></code> and add the following line at the bottom of the text.<br/><br/>
+<code class="docutils literal notranslate"><span class="pre">alias</span> <span class="pre">python=python3.8</span></code></p>
+<p>Save and exit. After that type <code class="docutils literal notranslate"><span class="pre">bash</span></code> on the command line -Or- simply, close the terminal.</p>
+</div>
+<div class="section" id="installing-mirge3-0-with-conda">
+<h4>Installing miRge3.0 with conda<a class="headerlink" href="#installing-mirge3-0-with-conda" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">bioconda</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>If you want to use your own environment, please follow the instruction <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands">here</a>.</p>
+<div class="section" id="updating-mirge3-0-with-conda">
+<h5>Updating miRge3.0 with conda<a class="headerlink" href="#updating-mirge3-0-with-conda" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="installing-mirge3-0-with-pypi">
+<h4>Installing miRge3.0 with PyPi<a class="headerlink" href="#installing-mirge3-0-with-pypi" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="first-install-mirge-dependenceis">
+<h5>First install miRge dependenceis<a class="headerlink" href="#first-install-mirge-dependenceis" title="Permalink to this headline">¶</a></h5>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the command below: <br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">cutadapt</span> <span class="n">reportlab</span><span class="o">==</span><span class="mf">3.5</span><span class="o">.</span><span class="mi">42</span> <span class="n">biopython</span><span class="o">==</span><span class="mf">1.78</span>  <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span><span class="o">==</span><span class="mf">0.23</span><span class="o">.</span><span class="mi">1</span>  <span class="n">hypothesis</span><span class="o">==</span><span class="mf">5.15</span><span class="o">.</span><span class="mi">1</span> <span class="n">pytest</span><span class="o">==</span><span class="mf">5.4</span><span class="o">.</span><span class="mi">2</span>  <span class="n">scipy</span><span class="o">==</span><span class="mf">1.4</span><span class="o">.</span><span class="mi">1</span>  <span class="n">matplotlib</span><span class="o">==</span><span class="mf">3.2</span><span class="o">.</span><span class="mi">1</span>  <span class="n">joblib</span><span class="o">==</span><span class="mf">0.15</span><span class="o">.</span><span class="mi">1</span>  <span class="n">pandas</span><span class="o">==</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">3</span> <span class="n">future</span><span class="o">==</span><span class="mf">0.18</span><span class="o">.</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>If you encounter a <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span> <span class="n">The</span> <span class="n">script</span> <span class="n">cutadapt</span> <span class="ow">is</span> <span class="n">installed</span> <span class="ow">in</span> <span class="s1">&#39;/home/arun/.local/bin&#39;</span> <span class="n">which</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">on</span> <span class="n">PATH</span><span class="o">.</span>
+  <span class="n">Consider</span> <span class="n">adding</span> <span class="n">this</span> <span class="n">directory</span> <span class="n">to</span> <span class="n">PATH</span> <span class="ow">or</span><span class="p">,</span> <span class="k">if</span> <span class="n">you</span> <span class="n">prefer</span> <span class="n">to</span> <span class="n">suppress</span> <span class="n">this</span> <span class="n">warning</span><span class="p">,</span> <span class="n">use</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">warn</span><span class="o">-</span><span class="n">script</span><span class="o">-</span><span class="n">location</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Then, open a new terminal window or type <code class="docutils literal notranslate"><span class="pre">cd</span></code> to get to home directory. Add <code class="docutils literal notranslate"><span class="pre">bin</span></code> folder PATH to the .bashrc, as shown below:
+Example: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:&quot;/home/arun/.local/bin&quot;</span></code>
+Remeber to add your path <code class="docutils literal notranslate"><span class="pre">/PATH_TO_USERS/bin</span></code>.</p>
+</div>
+<div class="section" id="install-mirge3-0-by-this-simple-command">
+<h5>Install miRge3.0 by this simple command<a class="headerlink" href="#install-mirge3-0-by-this-simple-command" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="to-upgrade-mirge3-0">
+<h5>To upgrade miRge3.0<a class="headerlink" href="#to-upgrade-mirge3-0" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="o">--</span><span class="n">upgrade</span>  <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="install-additional-c-libraries-based-tools">
+<h4>Install additional C-libraries based tools<a class="headerlink" href="#install-additional-c-libraries-based-tools" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="install-bowtie">
+<h5><strong>Install Bowtie</strong><a class="headerlink" href="#install-bowtie" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>Search and start the terminal<br/></p></li>
+<li><p>Download bowtie</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">zip</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">sourceforge</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">bio</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">bowtie</span><span class="o">/</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">zip</span><span class="o">/</span><span class="n">download</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unzip</span> <span class="pre">bowtie-1.3.0-linux-x86_64.zip</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">bowtie-1.3.0-linux-x86_64</span></code></p></li>
+<li><p><code class="docutils literal notranslate"> <span class="pre">pwd</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">/home/arun/software/bowtie-1.3.0-linux-x86_64</span></code></p></li>
+</ul>
+</li>
+<li><p>Add these bowtie binaries to .bashrc as shown below:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=$PATH:&quot;/home/arun/software/bowtie-1.3.0-linux-x86_64&quot;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>After that type <code class="docutils literal notranslate"><span class="pre">bash</span></code> on the command line -Or- simply, close the terminal.</p></li>
+</ul>
+<div class="section" id="install-samtools">
+<h5><strong>Install Samtools</strong><a class="headerlink" href="#install-samtools" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the below command: <br/>
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">samtools</span></code></p></li>
+</ul>
+<div class="section" id="install-rna-fold">
+<h5><strong>Install RNA Fold</strong><a class="headerlink" href="#install-rna-fold" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following commands: <br/></p></li>
+<li><p>wget &quot;https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.16.tar.gz&quot;</p></li>
+<li><p>cd ViennaRNA-2.4.16</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">configure</span> 
+<span class="n">sudo</span> <span class="n">make</span> 
+<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="gui-requirements">
+<h3>GUI requirements<a class="headerlink" href="#gui-requirements" title="Permalink to this headline">¶</a></h3>
+<p>Providing system wide access to miRge3.0, cutadapt, bowtie and bowtie-build, please type or (copy and paste) and submit each of the following commands on the terminal:<br/>
+<strong>NOTE:</strong> Make sure to change your path to python bin folder; Replace <code class="docutils literal notranslate"><span class="pre">/home/arun/.local/</span></code> with <code class="docutils literal notranslate"><span class="pre">/Path</span> <span class="pre">on</span> <span class="pre">your</span> <span class="pre">computer/</span></code>.</p>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following commands:<br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cutadapt</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cutadapt</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">build</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">build</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">inspect</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">inspect</span>
+</pre></div>
+</div>
+<div class="section" id="downloading-fastq-files-from-ncbi">
+<h4>Downloading FASTQ files from NCBI:<a class="headerlink" href="#downloading-fastq-files-from-ncbi" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Search and start the terminal, follow the commands below: <br/></p></li>
+<li><p>wget -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.8/sratoolkit.2.10.8-ubuntu64.tar.gz</p></li>
+<li><p>tar -xvzf sratoolkit.2.10.8-ubuntu64.tar.gz</p></li>
+<li><p>cd sratoolkit.2.10.8-ubuntu64/bin</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pwd</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">/home/arun/software/sratoolkit.2.10.8-ubuntu64/bin</span></code></p></li>
+</ul>
+</li>
+<li><p>Add to .bashrc</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> </code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">gedit</span> <span class="pre">.bashrc</span></code> and add the following line at the bottom of the page</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:&quot;/home/arun/software/sratoolkit.2.10.8-ubuntu64/bin&quot;</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>Save and exit. After that type <code class="docutils literal notranslate"><span class="pre">bash</span></code> on the command line -Or- simply, close the terminal.</p>
+<p><strong>vdb-config</strong> <br/>
+Please follow these instructions for <code class="docutils literal notranslate"><span class="pre">vdb-config</span></code> <a class="reference external" href="https://ncbi.github.io/sra-tools/install_config.html">here</a></p>
+<p>Downloading FASTQ files, please type the following:<br/>
+<code class="docutils literal notranslate"><span class="pre">fastq-dump</span> <span class="pre">[options]</span> <span class="pre">&lt;</span> <span class="pre">accession</span> <span class="pre">&gt;</span></code><br/>
+Example: fastq-dump SRR772403 SRR772404<br/></p>
+</div>
+</div>
+<div class="section" id="obtaining-and-installing-gui-application">
+<h3>Obtaining and installing GUI application<a class="headerlink" href="#obtaining-and-installing-gui-application" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Download GUI for <a class="reference external" href="https://sourceforge.net/projects/mirge3/files/">Linux</a></p></li>
+</ul>
+</div>
+<div class="section" id="uninstalling-mirge3-0">
+<h3>Uninstalling miRge3.0<a class="headerlink" href="#uninstalling-mirge3-0" title="Permalink to this headline">¶</a></h3>
+<p>To uninstall open the terminal and type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">uninstall</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>Conda uninstall:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">remove</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>For more details on conda uninstallation process, click <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages">here</a></p>
+<hr style="border:2px solid black"></div>
+</div>
+<div class="section" id="macos">
+<h2>macOS<a class="headerlink" href="#macos" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="welcome-to-installation-protocol-for-mac-os">
+<h3>Welcome to installation protocol for Mac OS<a class="headerlink" href="#welcome-to-installation-protocol-for-mac-os" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="system-prerequisites">
+<h4><strong>System prerequisites</strong><a class="headerlink" href="#system-prerequisites" title="Permalink to this headline">¶</a></h4>
+</div>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following commands <br/></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ruby</span> <span class="pre">-e</span> <span class="pre">&quot;$(curl</span> <span class="pre">-fsSL</span> <span class="pre">https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">update</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">wget</span></code></p></li>
+</ul>
+<div class="section" id="install-python3-7">
+<h4>Install python3.7<a class="headerlink" href="#install-python3-7" title="Permalink to this headline">¶</a></h4>
+<p>Please note, any version other than py3.7 causes error in Mac with multiprocessing, <a class="reference external" href="https://github.com/darkskyapp/forecast-ruby/issues/13">issues-1</a>, <a class="reference external" href="https://stackoverflow.com/questions/50168647/multiprocessing-causes-python-to-crash-and-gives-an-error-may-have-been-in-progr">issues-2</a>.<br/>
+Download python 3.7.5 from <a class="reference external" href="https://www.python.org/downloads/release/python-375/">python.org</a></p>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following commands <br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">ftp</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="mf">3.7</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.7</span><span class="o">.</span><span class="mi">5</span><span class="o">-</span><span class="n">macosx10</span><span class="o">.</span><span class="mf">9.</span><span class="n">pkg</span>
+<span class="n">sudo</span> <span class="n">installer</span> <span class="o">-</span><span class="n">pkg</span> <span class="n">python</span><span class="o">-</span><span class="mf">3.7</span><span class="o">.</span><span class="mi">5</span><span class="o">-</span><span class="n">macosx10</span><span class="o">.</span><span class="mf">9.</span><span class="n">pkg</span> <span class="o">-</span><span class="n">target</span> <span class="o">/</span>
+</pre></div>
+</div>
+<p>Mac comes with python2.7 installed by default. To use python3.7, creating an alias in .bash_profile would do the trick<br/>
+Open a new terminal window. Use vim editor if you are familiar using this editor <code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">.bash_profile</span></code> or open the .bash_profile using text editor by <code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">-e</span> <span class="pre">.bash_profile</span></code> and add the following line at the bottom of the text.</p>
+<p><code class="docutils literal notranslate"><span class="pre">alias</span> <span class="pre">python=python3.7</span></code></p>
+<p>Save and exit. After that type <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bash_profile</span></code> on the command line -Or- simply, close the terminal. <br/><br/></p>
+</div>
+<div class="section" id="install-r">
+<h4>Install R<a class="headerlink" href="#install-r" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following command <br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">r</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h4>Installing miRge3.0 with conda<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">bioconda</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>If you want to use your own environment, please follow the instruction <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands">here</a>.</p>
+<p>Error: Type <code class="docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">--version</span></code> and make sure you don't encounter any <code class="docutils literal notranslate"><span class="pre">libcrypto.so</span></code> errors. If you do encounter, simply reinstall samtools with conda as shown below:
+<code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">samtools</span></code>. If the error still persists, please let us know.</p>
+<div class="section" id="id2">
+<h5>Updating miRge3.0 with conda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id3">
+<h4>Installing miRge3.0 with PyPi<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id4">
+<h5>First install miRge dependenceis<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h5>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following command <br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">cutadapt</span> <span class="n">reportlab</span><span class="o">==</span><span class="mf">3.5</span><span class="o">.</span><span class="mi">42</span> <span class="n">biopython</span><span class="o">==</span><span class="mf">1.78</span>  <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span><span class="o">==</span><span class="mf">0.23</span><span class="o">.</span><span class="mi">1</span>  <span class="n">hypothesis</span><span class="o">==</span><span class="mf">5.15</span><span class="o">.</span><span class="mi">1</span> <span class="n">pytest</span><span class="o">==</span><span class="mf">5.4</span><span class="o">.</span><span class="mi">2</span>  <span class="n">scipy</span><span class="o">==</span><span class="mf">1.4</span><span class="o">.</span><span class="mi">1</span>  <span class="n">matplotlib</span><span class="o">==</span><span class="mf">3.2</span><span class="o">.</span><span class="mi">1</span>  <span class="n">joblib</span><span class="o">==</span><span class="mf">0.15</span><span class="o">.</span><span class="mi">1</span>  <span class="n">pandas</span><span class="o">==</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">3</span> <span class="n">future</span><span class="o">==</span><span class="mf">0.18</span><span class="o">.</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>If you encounter a <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span> <span class="n">The</span> <span class="n">script</span> <span class="n">cutadapt</span> <span class="ow">is</span> <span class="n">installed</span> <span class="ow">in</span> <span class="s1">&#39;/Users/loaneruser/Library/Python/3.7/bin&#39;</span> <span class="n">which</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">on</span> <span class="n">PATH</span><span class="o">.</span>
+  <span class="n">Consider</span> <span class="n">adding</span> <span class="n">this</span> <span class="n">directory</span> <span class="n">to</span> <span class="n">PATH</span> <span class="ow">or</span><span class="p">,</span> <span class="k">if</span> <span class="n">you</span> <span class="n">prefer</span> <span class="n">to</span> <span class="n">suppress</span> <span class="n">this</span> <span class="n">warning</span><span class="p">,</span> <span class="n">use</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">warn</span><span class="o">-</span><span class="n">script</span><span class="o">-</span><span class="n">location</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Then, open a new terminal window or type <code class="docutils literal notranslate"><span class="pre">cd</span></code> to get to home directory. Add <code class="docutils literal notranslate"><span class="pre">bin</span></code> folder PATH to the .bash_profile, as shown below:
+Example: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:&quot;/Users/loaneruser/Library/Python/3.7/bin/&quot;</span></code>
+Remeber to add your path <code class="docutils literal notranslate"><span class="pre">/PATH_TO_USERS/Python/3.7/bin</span></code>.</p>
+</div>
+<div class="section" id="id5">
+<h5>Install miRge3.0 by this simple command<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span>  <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h5>To upgrade miRge3.0<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="o">--</span><span class="n">upgrade</span>  <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h4>Install additional C-libraries based tools<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id8">
+<h5><strong>Install Bowtie</strong><a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following command <br/></p></li>
+<li><p>Download bowtie</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">macos</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">zip</span>  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">sourceforge</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">bio</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">bowtie</span><span class="o">/</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">macos</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">zip</span><span class="o">/</span><span class="n">download</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unzip</span> <span class="pre">bowtie-1.3.0-macos-x86_64.zip</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">bowtie-1.3.0-macos-x86_64</span> </code></p></li>
+<li><p><code class="docutils literal notranslate"> <span class="pre">pwd</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Users/loaneruser/Software/bowtie-1.3.0-macos-x86_64</span></code></p></li>
+</ul>
+</li>
+<li><p>Add these bowtie binaries to .bash_profile as shown below:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=$PATH:&quot;/Users/loaneruser/Software/bowtie-1.3.0-macos-x86_64/&quot;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>After that type <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bash_profile</span></code> on the command line -Or- simply, close the terminal.</p></li>
+</ul>
+<div class="section" id="id9">
+<h5><strong>Install Samtools</strong><a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following command <br/>
+<code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">samtools</span></code></p></li>
+</ul>
+<div class="section" id="id10">
+<h5><strong>Install RNA Fold</strong><a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>wget https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.16.tar.gz</p></li>
+<li><p>tar -xvzf ViennaRNA-2.4.16.tar.gz</p></li>
+<li><p>cd ViennaRNA-2.4.16</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">configure</span> 
+<span class="n">sudo</span> <span class="n">make</span> 
+<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id11">
+<h4>Downloading FASTQ files from NCBI:<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following command <br/></p></li>
+<li><p>wget -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.8/sratoolkit.2.10.8-mac64.tar.gz</p></li>
+<li><p>tar -xvzf sratoolkit.2.10.8-mac64.tar.gz</p></li>
+<li><p>cd sratoolkit.2.10.8-mac64/bin</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pwd</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Users/loaneruser/Software/sratoolkit.2.10.8-mac64/bin</span></code></p></li>
+</ul>
+</li>
+<li><p>Add to .bash_profile</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> </code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">.bash_profile</span></code> or <code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">-e</span> <span class="pre">.bash_profile</span></code> and add the following line at the bottom of the page</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:&quot;/Users/loaneruser/Software/sratoolkit.2.10.8-mac64/bin&quot;</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>Save and exit. After that type <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bash_profile</span></code> on the command line -Or- simply, close the terminal.</p>
+<p><strong>vdb-config</strong> <br/>
+Please follow these instructions for <code class="docutils literal notranslate"><span class="pre">vdb-config</span></code> <a class="reference external" href="https://ncbi.github.io/sra-tools/install_config.html">here</a></p>
+<p>Downloading FASTQ files, please type the following:<br/>
+<code class="docutils literal notranslate"><span class="pre">fastq-dump</span> <span class="pre">[options]</span> <span class="pre">&lt;</span> <span class="pre">accession</span> <span class="pre">&gt;</span></code><br/>
+Example: fastq-dump SRR772403 SRR772404<br/></p>
+</div>
+</div>
+<div class="section" id="id12">
+<h3>GUI requirements<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>Providing system wide access to miRge3.0, cutadapt, bowtie and bowtie-build, please type or (copy and paste) and submit each of the following commands on the terminal:<br/>
+<strong>NOTE:</strong> Make sure to change your path to python bin folder; Replace <code class="docutils literal notranslate"><span class="pre">/Users/loaneruser/Library/</span></code> with <code class="docutils literal notranslate"><span class="pre">/Path</span> <span class="pre">on</span> <span class="pre">your</span> <span class="pre">computer/</span></code>. <br/></p>
+<ul class="simple">
+<li><p>Search and start the terminal, execute the following command <br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">loaneruser</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.7</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">loaneruser</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.7</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cutadapt</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cutadapt</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">loaneruser</span><span class="o">/</span><span class="n">Software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">macos</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">loaneruser</span><span class="o">/</span><span class="n">Software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">macos</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">build</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">build</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">loaneruser</span><span class="o">/</span><span class="n">Software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">macos</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">inspect</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">inspect</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id13">
+<h3>Obtaining and installing GUI application<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Download GUI for <a class="reference external" href="https://sourceforge.net/projects/mirge3/files/">OSX</a></p></li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h3>Uninstalling miRge3.0<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<p>To uninstall open the terminal and type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">uninstall</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>Conda uninstall:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">remove</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>For more details on conda uninstallation process, click <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages">here</a><br></p>
+<hr style="border:2px solid black"></div>
+</div>
+<div class="section" id="windows-os">
+<h2>Windows OS<a class="headerlink" href="#windows-os" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="welcome-to-installation-protocol-for-windows-os">
+<h3>Welcome to installation protocol for Windows OS<a class="headerlink" href="#welcome-to-installation-protocol-for-windows-os" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id15">
+<h4><strong>System prerequisites</strong><a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Require</span> <span class="pre">Windows</span> <span class="pre">10</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Require</span> <span class="pre">WSL</span> <span class="pre">and</span> <span class="pre">Ubuntu</span> <span class="pre">18</span></code></p></li>
+</ul>
+<div class="section" id="install-wsl">
+<h4>Install WSL<a class="headerlink" href="#install-wsl" title="Permalink to this headline">¶</a></h4>
+<p>Please follow one of the following guidlines for installing WSL and Ubuntu 18.04 (recommended Ubuntu distribution)</p>
+<ul class="simple">
+<li><p>Quick and easy way</p>
+<ul>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=5RTSlby-l9w">TopTechSkills</a>: Watch the first 1:30 seconds, <a class="reference external" href="https://www.toptechskills.com/windows-10-tutorials-courses/how-to-install-enable-windows-subsystem-for-linux-wsl-windows-10/">more info</a>.</p></li>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=xzgwDbe7foQ&amp;t=172s">Patreon</a>: Watch the first 4:04 seconds.</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Official windows page</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Please</span> <span class="pre">remember</span> <span class="pre">the</span> <span class="pre">password</span> <span class="pre">prompted</span> <span class="pre">during</span> <span class="pre">ubuntu</span> <span class="pre">installation</span></code> and use when prompted.</p></li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h4>Install python3.8 and R<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Search and start Ubuntu
+<img alt="Ubuntu" src="_images/Ubuntu.png" /><br/><br/></p></li>
+<li><p>Follow the commands to update ubuntu and install python 3.8<br/>
+A password will be prompted when you type <code class="docutils literal notranslate"><span class="pre">sudo</span></code>, use the one you have set during Ubuntu installation.<br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">software</span><span class="o">-</span><span class="n">properties</span><span class="o">-</span><span class="n">common</span>
+<span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">deadsnakes</span><span class="o">/</span><span class="n">ppa</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="o">.</span><span class="mi">8</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">r</span><span class="o">-</span><span class="n">base</span>
+</pre></div>
+</div>
+<p>Linux (Ubuntu 18.04) comes with python2.7 installed by default. To use python3.8, creating an alias in .bashrc would do the trick<br/></p>
+<p>Use vim editor if you are familiar using this editor <code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">.bashrc</span></code> or open the .bashrc using text editor by <code class="docutils literal notranslate"><span class="pre">gedit</span> <span class="pre">.bashrc</span></code> and add the following line at the bottom of the text.<br/><br/>
+<code class="docutils literal notranslate"><span class="pre">alias</span> <span class="pre">python=python3.8</span></code></p>
+<p>Save and exit. After that type <code class="docutils literal notranslate"><span class="pre">bash</span></code> on the command line -Or- simply, close the terminal.</p>
+</div>
+<div class="section" id="id17">
+<h4>Installing miRge3.0 with conda<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">bioconda</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>If you want to use your own environment, please follow the instruction <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands">here</a>.</p>
+<div class="section" id="id18">
+<h5>Updating miRge3.0 with conda<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id19">
+<h4>Installing miRge3.0 with PyPi<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id20">
+<h5>First install miRge dependenceis<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h5>
+<ul class="simple">
+<li><p>Search and start Ubuntu, execute the following command <br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">cutadapt</span> <span class="n">reportlab</span><span class="o">==</span><span class="mf">3.5</span><span class="o">.</span><span class="mi">42</span> <span class="n">biopython</span><span class="o">==</span><span class="mf">1.78</span>  <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span><span class="o">==</span><span class="mf">0.23</span><span class="o">.</span><span class="mi">1</span>  <span class="n">hypothesis</span><span class="o">==</span><span class="mf">5.15</span><span class="o">.</span><span class="mi">1</span> <span class="n">pytest</span><span class="o">==</span><span class="mf">5.4</span><span class="o">.</span><span class="mi">2</span>  <span class="n">scipy</span><span class="o">==</span><span class="mf">1.4</span><span class="o">.</span><span class="mi">1</span>  <span class="n">matplotlib</span><span class="o">==</span><span class="mf">3.2</span><span class="o">.</span><span class="mi">1</span>  <span class="n">joblib</span><span class="o">==</span><span class="mf">0.15</span><span class="o">.</span><span class="mi">1</span>  <span class="n">pandas</span><span class="o">==</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">3</span> <span class="n">future</span><span class="o">==</span><span class="mf">0.18</span><span class="o">.</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>If you encounter a <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span> <span class="n">The</span> <span class="n">script</span> <span class="n">cutadapt</span> <span class="ow">is</span> <span class="n">installed</span> <span class="ow">in</span> <span class="s1">&#39;/home/arun/.local/bin&#39;</span> <span class="n">which</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">on</span> <span class="n">PATH</span><span class="o">.</span>
+  <span class="n">Consider</span> <span class="n">adding</span> <span class="n">this</span> <span class="n">directory</span> <span class="n">to</span> <span class="n">PATH</span> <span class="ow">or</span><span class="p">,</span> <span class="k">if</span> <span class="n">you</span> <span class="n">prefer</span> <span class="n">to</span> <span class="n">suppress</span> <span class="n">this</span> <span class="n">warning</span><span class="p">,</span> <span class="n">use</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">warn</span><span class="o">-</span><span class="n">script</span><span class="o">-</span><span class="n">location</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Then, open a new terminal window or type <code class="docutils literal notranslate"><span class="pre">cd</span> </code> to get to home directory. Add <code class="docutils literal notranslate"><span class="pre">bin</span></code> folder PATH to the .bashrc, as shown below:
+Example: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:&quot;/home/arun/.local/bin&quot;</span></code>
+Remeber to add your path <code class="docutils literal notranslate"><span class="pre">/PATH_TO_USERS/bin</span></code>.</p>
+</div>
+<div class="section" id="id21">
+<h5>Install miRge3.0 by this simple command<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id22">
+<h5>To upgrade miRge3.0<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="o">--</span><span class="n">upgrade</span>  <span class="n">mirge3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id23">
+<h4>Install additional C-libraries based tools<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id24">
+<h5><strong>Install Bowtie</strong><a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>Search and start Ubuntu, execute the following command <br/></p></li>
+<li><p>Download bowtie</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">zip</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">sourceforge</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">bio</span><span class="o">/</span><span class="n">files</span><span class="o">/</span><span class="n">bowtie</span><span class="o">/</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">zip</span><span class="o">/</span><span class="n">download</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unzip</span> <span class="pre">bowtie-1.3.0-linux-x86_64.zip</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">bowtie-1.3.0-linux-x86_64.zip</span></code></p></li>
+<li><p><code class="docutils literal notranslate"> <span class="pre">pwd</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">/home/arun/software/bowtie-1.3.0-linux-x86_64</span></code></p></li>
+</ul>
+</li>
+<li><p>Add these bowtie binaries to .bashrc as shown below:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=$PATH:&quot;/home/arun/software/bowtie-1.3.0-linux-x86_64&quot;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>After that type <code class="docutils literal notranslate"><span class="pre">bash</span></code> on the command line -Or- simply, close the terminal.</p></li>
+</ul>
+<div class="section" id="id25">
+<h5><strong>Install Samtools</strong><a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>Search and start Ubuntu, execute the following command <br/>
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">samtools</span></code></p></li>
+</ul>
+<div class="section" id="id26">
+<h5><strong>Install RNA Fold</strong><a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h5>
+</div>
+<ul class="simple">
+<li><p>wget &quot;https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.16.tar.gz&quot;</p></li>
+<li><p>cd ViennaRNA-2.4.16</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">./</span><span class="n">configure</span> 
+<span class="n">sudo</span> <span class="n">make</span> 
+<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id27">
+<h3>GUI requirements<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h3>
+<p>Providing system wide access to miRge3.0, cutadapt, bowtie and bowtie-build, please type or (copy and paste) and submit each of the following commands on the terminal:<br/>
+<strong>NOTE:</strong> Make sure to change your path to python bin folder; Replace <code class="docutils literal notranslate"><span class="pre">/home/arun/.local/</span></code> with <code class="docutils literal notranslate"><span class="pre">/Path</span> <span class="pre">on</span> <span class="pre">your</span> <span class="pre">computer/</span></code>.</p>
+<ul class="simple">
+<li><p>Search and start Ubuntu, execute the following command <br/></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cutadapt</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">cutadapt</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">build</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">build</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">arun</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">inspect</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bowtie</span><span class="o">-</span><span class="n">inspect</span>
+</pre></div>
+</div>
+<div class="section" id="change-command-prompt-properties">
+<h4>Change Command Prompt Properties<a class="headerlink" href="#change-command-prompt-properties" title="Permalink to this headline">¶</a></h4>
+<p>One last thing to avoid an error <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">directory</span> <span class="pre">name</span> <span class="pre">is</span> <span class="pre">invalid</span></code>:</p>
+<ul class="simple">
+<li><p>Type cmd in Windows search box, right-click on Command Prompt and select Open file location.
+<img alt="_images/cmd_prompt.png" src="_images/cmd_prompt.png" /><br/><br/></p></li>
+<li><p>Right-click on Command Prompt and click on Properties.
+<img alt="_images/cmd_prop.png" src="_images/cmd_prop.png" /><br/><br/></p></li>
+<li><p>Under the Shortcut tab, replace <code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">in</span></code> option by changing the value <code class="docutils literal notranslate"><span class="pre">%HOMEDRIVE%%HOMEPATH%</span></code> to <code class="docutils literal notranslate"><span class="pre">%WINDIR%</span></code>. Click OK.<br/><br/>
+<img alt="_images/cmd_windir.png" src="_images/cmd_windir.png" /><br/><br/></p>
+<ul>
+<li><p>Reference<br/>
+<a class="reference external" href="https://www.stellarinfo.com/blog/directory-name-invalid-windows-10/">1. Stellarinfo</a><br/>
+<a class="reference external" href="https://support.microsoft.com/en-us/help/832434/the-directory-name-is-invalid-error-message-when-you-start-cmd-exe-or">2. Microsoft</a><br/></p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id28">
+<h3>Obtaining and installing GUI application<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Download GUI for <a class="reference external" href="https://sourceforge.net/projects/mirge3/files/">Windows 10</a></p></li>
+<li><p>Double click miRge3.0.exe to install miRge3.0 windows GUI application.
+<img alt="_images/Win_installer_starter.png" src="_images/Win_installer_starter.png" /><br/><br/></p></li>
+<li><p>Click Next to complete miRge3.0 installation
+<img alt="_images/Win_installer.png" src="_images/Win_installer.png" /><br/></p></li>
+</ul>
+</div>
+<div class="section" id="id29">
+<h3>Uninstalling miRge3.0<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Step 1:
+To uninstall open the terminal and type:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">uninstall</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>Conda uninstall:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">remove</span> <span class="n">mirge3</span>
+</pre></div>
+</div>
+<p>For more details on conda uninstallation process, click <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#removing-packages">here</a><br></p>
+<ul class="simple">
+<li><p>Step 2:</p>
+<ul>
+<li><p>Search miRge3.0, right click and select uninstall
+<img alt="_images/uninstall1.png" src="_images/uninstall1.png" /><br/><br/></p></li>
+<li><p>Under <code class="docutils literal notranslate"><span class="pre">Programs</span> <span class="pre">and</span> <span class="pre">Features</span></code>, select miRge3.0 and click <code class="docutils literal notranslate"><span class="pre">Uninstall</span></code>
+<img alt="_images/uninstall2.png" src="_images/uninstall2.png" /><br/><br/></p></li>
+<li><p>Then select <code class="docutils literal notranslate"><span class="pre">Uninstall</span></code> by clicking <code class="docutils literal notranslate"><span class="pre">Ok</span></code>. Done.
+<img alt="_images/uninstall3.png" src="_images/uninstall3.png" /><br/><br/></p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="quick_start.html" class="btn btn-neutral float-right" title="User guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="miRge3.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Arun H. Patil and Marc K. Halushka
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="python" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>miRge3.0 output &mdash; miRge3 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently asked question (FAQ)" href="faqs.html" />
+    <link rel="prev" title="User guide" href="quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> miRge3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">User guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">miRge3.0 output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#command-and-sample-run-with-umi-datasets">Command and sample run with UMI datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-tree-structure">Output tree structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mirge-interactive-visualization">miRge - interactive visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resources">Resources:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">Frequently asked question (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">miRge3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>miRge3.0 output</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/arunhpatil/miRge3.0/blob/master/docs/source/mirge_output.md" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mirge3-0-output">
+<h1>miRge3.0 output<a class="headerlink" href="#mirge3-0-output" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="command-and-sample-run-with-umi-datasets">
+<h2>Command and sample run with UMI datasets<a class="headerlink" href="#command-and-sample-run-with-umi-datasets" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="o">-</span><span class="n">s</span> <span class="n">SRR8557389</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span><span class="n">SRR8557396</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span><span class="n">SRR8557398</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span><span class="n">SRR8557399</span><span class="o">.</span><span class="n">fastq</span> <span class="o">-</span><span class="n">lib</span> <span class="n">miRge3_Lib</span> <span class="o">-</span><span class="n">on</span> <span class="n">human</span> <span class="o">-</span><span class="n">db</span> <span class="n">miRGeneDB</span> \ 
+         <span class="o">-</span><span class="n">o</span> <span class="n">temp</span> <span class="o">-</span><span class="n">a</span> <span class="n">AACTGTAGGCACCATCAAT</span> <span class="o">-</span><span class="n">udd</span> <span class="o">--</span><span class="n">qiagenumi</span> <span class="o">-</span><span class="n">umi</span> <span class="mi">0</span><span class="p">,</span><span class="mi">12</span> <span class="o">-</span><span class="n">cpu</span> <span class="mi">12</span> <span class="o">-</span><span class="n">q</span> <span class="mi">20</span> <span class="o">-</span><span class="n">NX</span> <span class="o">-</span><span class="n">nmir</span> <span class="o">-</span><span class="n">minl</span> <span class="mi">16</span> <span class="o">-</span><span class="n">maxl</span> <span class="mi">25</span> <span class="o">-</span><span class="n">c</span> <span class="mi">2</span> \
+         <span class="o">-</span><span class="n">mloc</span> <span class="mi">3</span> <span class="o">-</span><span class="n">sl</span> <span class="mi">25</span> <span class="o">-</span><span class="n">olc</span> <span class="mi">14</span> <span class="o">-</span><span class="n">clc</span> <span class="mi">30</span> <span class="o">-</span><span class="n">gff</span> 
+            
+<span class="n">bowtie</span> <span class="n">version</span><span class="p">:</span> <span class="mf">1.2</span><span class="o">.</span><span class="mi">3</span>
+<span class="n">cutadapt</span> <span class="n">version</span><span class="p">:</span> <span class="mf">2.7</span>
+<span class="n">Samtools</span> <span class="n">version</span><span class="p">:</span> <span class="mf">1.7</span>
+<span class="n">RNAfold</span> <span class="n">version</span><span class="p">:</span> <span class="mf">2.4</span><span class="o">.</span><span class="mi">14</span>
+<span class="n">Collecting</span> <span class="ow">and</span> <span class="n">validating</span> <span class="nb">input</span> <span class="n">files</span><span class="o">...</span>
+
+<span class="n">miRge3</span><span class="o">.</span><span class="mi">0</span> <span class="n">will</span> <span class="n">process</span> <span class="mi">4</span> <span class="n">out</span> <span class="n">of</span> <span class="mi">4</span> <span class="nb">input</span> <span class="n">file</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span>
+
+<span class="n">Cutadapt</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557389</span> <span class="ow">in</span> <span class="mf">21.0854</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Collapsing</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557389</span> <span class="ow">in</span> <span class="mf">0.0699</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Cutadapt</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557396</span> <span class="ow">in</span> <span class="mf">10.305</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Collapsing</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557396</span> <span class="ow">in</span> <span class="mf">0.6016</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Cutadapt</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557398</span> <span class="ow">in</span> <span class="mf">10.891</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Collapsing</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557398</span> <span class="ow">in</span> <span class="mf">0.911</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Cutadapt</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557399</span> <span class="ow">in</span> <span class="mf">14.2126</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Collapsing</span> <span class="n">finished</span> <span class="k">for</span> <span class="n">file</span> <span class="n">SRR8557399</span> <span class="ow">in</span> <span class="mf">1.1292</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Matrix</span> <span class="n">creation</span> <span class="n">finished</span> <span class="ow">in</span> <span class="mf">0.4788</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">Data</span> <span class="n">pre</span><span class="o">-</span><span class="n">processing</span> <span class="n">completed</span> <span class="ow">in</span> <span class="mf">62.762</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">Alignment</span> <span class="ow">in</span> <span class="n">progress</span> <span class="o">...</span>
+<span class="n">Alignment</span> <span class="n">completed</span> <span class="ow">in</span> <span class="mf">16.9863</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">Summarizing</span> <span class="ow">and</span> <span class="n">tabulating</span> <span class="n">results</span><span class="o">...</span>
+<span class="n">Summary</span> <span class="n">completed</span> <span class="ow">in</span> <span class="mf">7.8131</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Predicting</span> <span class="n">novel</span> <span class="n">miRNAs</span>
+
+<span class="n">Performing</span> <span class="n">prediction</span> <span class="n">of</span> <span class="n">novel</span> <span class="n">miRNAs</span><span class="o">...</span><span class="n">Start</span> <span class="n">to</span> <span class="n">predictPrediction</span> <span class="n">of</span> <span class="n">novel</span> <span class="n">miRNAs</span> <span class="n">Completed</span> <span class="p">(</span><span class="mf">220.35</span> <span class="n">sec</span><span class="p">)</span>
+<span class="n">The</span> <span class="n">analysis</span> <span class="n">completed</span> <span class="ow">in</span> <span class="mf">310.7281</span> <span class="n">second</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="output-tree-structure">
+<h2>Output tree structure<a class="headerlink" href="#output-tree-structure" title="Permalink to this headline">¶</a></h2>
+<p>An output directory is created for each run such as <code class="docutils literal notranslate"><span class="pre">miRge.2020-10-9_1-35-53</span></code>, where the name is followed by date time format <code class="docutils literal notranslate"><span class="pre">miRge.yy-dd-mm-hr-mm-ss</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The following output is in general, however, the resultant output files are based on the options selected during miRge3.0 execution.
+
+miRge.2020-10-9_1-35-53 
+├── run.log (Gives the detailed log of miRge3.0 execution)
+├── unmapped.log (Gives the detailed log of novel miRNA prediction) 
+├── mapped.csv (CSV file with read counts across each smallRNA library) 
+├── unmapped.csv (CSV file with unaligned/mapped reads) 
+├── annotation.report.csv (Basic annotation report with small RNA distribution in CSV format) 
+├── annotation.report.html (Basic annotation report with small RNA distribution in HTML format) 
+├── sample_miRge3.gff (GFF file with reads with isomiRs across one or more samples, if -gff option selected) 
+├── miR.Counts.csv (miRNA raw read counts across samples) 
+├── miR.RPM.csv (miRNA Read Per Million - RPM counts across samples) 
+├── *_umiCounts.csv (Counts for each unique UMI for each sample) 
+├── index_data.js (Javascript file with data generated for visualization) 
+├── miRge3_visualization.html (HTML for data visualization) 
+├── FOLDER_novel_miRNAs
+│   ├── *.pdf (novel miRNA structure in PDF format for each miRNA)
+│   └── sample_novel_miRNAs_report.csv (Contains list of identified novel miRNAs in CSV format)
+├── a2IEditing.detail.txt
+├── a2IEditing.report.csv
+├── a2IEditing.report.newform.csv
+├── tRFs.potential.report.tsv
+├── tRF.Counts.csv
+├── tRF.RP100K.csv
+├── tRFs.potential.report.tsv
+├── discarded.reads.summary.assigningtRFs.csv
+└── tRFs.samples.tmp
+    └── *.tRFs.* (Detailed summary of tRFs from each sample)
+</pre></div>
+</div>
+</div>
+<div class="section" id="mirge-interactive-visualization">
+<h2>miRge - interactive visualization<a class="headerlink" href="#mirge-interactive-visualization" title="Permalink to this headline">¶</a></h2>
+<p>miRge3.0 produces several interactive visualization graphics as follows</p>
+<ul class="simple">
+<li><p>Screenshot of the miRge visualization HTML tab <br>
+<img alt="_images/overall.png" src="_images/overall.png" /><br/><br/></p></li>
+<li><p>Chart view and download options <br>
+<img alt="_images/download_options.png" src="_images/download_options.png" /><br/><br/></p></li>
+<li><p>Screenshot of the smallRNA read distribution for each sample
+<img alt="_images/read-distribution.png" src="_images/read-distribution.png" /><br/><br/></p></li>
+<li><p>Screenshot of the read length distribution for each sample
+<img alt="_images/read-length.png" src="_images/read-length.png" /><br/><br/></p></li>
+<li><p>Screenshot of the tile map representing top 40 high abundant miRNAs for each study
+<img alt="_images/sample_abundance2.png" src="_images/sample_abundance2.png" /><br/><br/></p></li>
+<li><p>Screenshot of the variant distribution for all samples combined (isomiRs)
+<img alt="_images/isomiR_variants.png" src="_images/isomiR_variants.png" /><br/><br/></p></li>
+<li><p>Screenshot of the heatmap representing variants for each sample for the top 20 high abundant miRNAs (isomiRs)
+<img alt="_images/sample_isomir.png" src="_images/sample_isomir.png" /><br/><br/></p></li>
+<li><p>Screenshot of the histogram representing UMI counts across each sample
+<img alt="_images/umi-distribut.png" src="_images/umi-distribut.png" /><br/><br/></p></li>
+<li><p>Screenshot of a list of novel miRNAs identified across samples
+<img alt="_images/nmiR.PNG" src="_images/nmiR.PNG" /><br/><br/></p></li>
+</ul>
+</div>
+<div class="section" id="resources">
+<h2>Resources:<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<p>The graphics for miRge3.0 visualization is enabled with javascripts and CSS obtained from the following:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.highcharts.com/">Interactive charts from HighCharts</a></p></li>
+<li><p><a class="reference external" href="https://fontawesome.com/">Icons from Font Awesome</a></p></li>
+<li><p><a class="reference external" href="https://datatables.net/">Interactive HTML table</a></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="faqs.html" class="btn btn-neutral float-right" title="Frequently asked question (FAQ)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="User guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Arun H. Patil and Marc K. Halushka
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

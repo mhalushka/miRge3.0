@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="python" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>miRge3.0 &mdash; miRge3 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> miRge3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mirge_output.html">miRge3.0 output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">Frequently asked question (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">miRge3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>miRge3.0</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/arunhpatil/miRge3.0/blob/master/docs/source/index.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <a class="reference external image-reference" href="https://pypi.python.org/pypi/mirge3"><img alt="" src="https://img.shields.io/pypi/v/mirge3.svg?branch=master" /></a>
+<a class="reference external image-reference" href="http://bioconda.github.io/recipes/mirge3/README.html"><img alt="install with bioconda" src="https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat" /></a>
+<a class="reference external image-reference" href="https://anaconda.org/bioconda/mirge3"><img alt="https://anaconda.org/bioconda/mirge3/badges/latest_release_date.svg" src="https://anaconda.org/bioconda/mirge3/badges/latest_release_date.svg" /></a>
+<a class="reference external image-reference" href="https://anaconda.org/bioconda/mirge3/files"><img alt="https://camo.githubusercontent.com/ec0ce88c34009d95029a49d265b89d03d9357ed953885164d6e037c1ccb8892b/68747470733a2f2f696d672e736869656c64732e696f2f636f6e64612f646e2f62696f636f6e64612f6d69726765332e737667" src="https://camo.githubusercontent.com/ec0ce88c34009d95029a49d265b89d03d9357ed953885164d6e037c1ccb8892b/68747470733a2f2f696d672e736869656c64732e696f2f636f6e64612f646e2f62696f636f6e64612f6d69726765332e737667" /></a>
+<div class="section" id="mirge3-0">
+<h1>miRge3.0<a class="headerlink" href="#mirge3-0" title="Permalink to this headline">¶</a></h1>
+<p>An update to Python package to perform comprehensive analysis of small RNA sequencing data, including miRNA annotation, A-to-I editing, novel miRNA detection, isomiR analysis, visualization through IGV, processing Unique Molecular Identifieres (UMI), tRF detection and producing interactive graphical output.</p>
+<p>miRge3.0 is developed in python v3.8 and is a recent update of our previous version <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/30153801">miRge2.0</a>. This build includes command line interface (CLI) and cross-platform Graphical User Interface (GUI). For more details refer to documentation link below.</p>
+<div class="section" id="links">
+<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://mirge3.readthedocs.io/en/master/">Documentation</a></p></li>
+<li><p><a class="reference external" href="https://mirge3.readthedocs.io/en/latest/quick_start.html#mirge3-0-libraries">miRge3.0 Libraries</a></p></li>
+<li><p><a class="reference external" href="https://github.com/mhalushka/mirge3.0/">Source code</a></p></li>
+<li><p><a class="reference external" href="https://github.com/mhalushka/mirge3.0/issues">Report an issue</a></p></li>
+<li><p><a class="reference external" href="https://pypi.python.org/pypi/mirge3/">Project page on PyPI</a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="citation">
+<h1>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h1>
+<p>Arun H Patil, Marc K Halushka. <strong>miRge3.0: a comprehensive microRNA and tRF sequencing analysis pipeline</strong>. <a class="reference external" href="https://academic.oup.com/nargab/article/3/3/lqab068/6325159">NAR Genomics and Bioinformatics</a>. 2021.</p>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#linux-os">Linux OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#macos">macOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#windows-os">Windows OS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#mirge3-0-libraries">miRge3.0 libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#cli-example-usage">CLI - Example usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#mirge3-0-gui">miRge3.0 GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#resources">Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mirge_output.html">miRge3.0 output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mirge_output.html#command-and-sample-run-with-umi-datasets">Command and sample run with UMI datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mirge_output.html#output-tree-structure">Output tree structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mirge_output.html#mirge-interactive-visualization">miRge - interactive visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mirge_output.html#resources">Resources:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">Frequently asked question (FAQ)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faqs.html#frequent-questions-raised-on-github">Frequent questions raised on GitHub:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Arun H. Patil and Marc K. Halushka
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
