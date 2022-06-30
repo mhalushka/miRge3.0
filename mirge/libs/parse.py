@@ -101,7 +101,7 @@ def parseArg():
     
     group4 = parser.add_argument_group('miRNA Error Correction', description='''microRNA correction method for single base substitutions due to sequencing errors (Note: Refines reads at the expense of time)
 -mEC,  --miREC              Enable miRNA error correction (miREC)
--kh,   --threshold          the value for frequency threshold τ (Default kh = 5)
+-kh,   --threshold          the value for frequency threshold T (Default kh = 5)
 -ks,   --kmer-start         kmer range start value (k_1, default 15) 
 -ke,   --kmer-end           kmer range end value (k_end, default 20)
 ''')
