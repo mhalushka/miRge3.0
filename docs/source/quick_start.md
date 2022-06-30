@@ -275,8 +275,8 @@ miRge3.0 -s SRR8497647.fastq,SRR8497648.fastq,SRR8497649.fastq,SRR8497650.fastq,
 ```
 
 Tutorial on how to download SRA files:
-This turorial is only brief introduction and doesn't cover all the details of downloading NCBI SRA files. You could find [YouTube turorials](https://www.youtube.com/results?search_query=download+SRA+files) on how to download SRA files. 
-1. Download and install NCBI SRA toolkit: You could refer to NCBI [SRA Handbook](https://www.ncbi.nlm.nih.gov/books/NBK242621/) or [GitHub](https://github.com/ncbi/sra-tools)
+This turorial is only brief introduction and doesn't cover all the details of downloading NCBI SRA files. You could find [YouTube](https://www.youtube.com/results?search_query=download+SRA+files) tutorials on how to download SRA files. 
+1. Download and install NCBI SRA toolkit: You could refer to NCBI [SRA-Handbook](https://www.ncbi.nlm.nih.gov/books/NBK242621/) or [GitHub](https://github.com/ncbi/sra-tools)
 2. Download command: 
 One could use `fasterq-dump -t temp -e 10 SRR8497647` or simply `fastq-dump SRR8497647`. The only difference being that the fasterq-dump is faster. 
 Similarly, download all other Runs (i.e., SRR8497648, SRR8497649 etc.)
