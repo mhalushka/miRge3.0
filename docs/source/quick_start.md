@@ -254,6 +254,33 @@ AGAATGAGGTAGTAGGTTGTATAGTTACTATGGAATTCTCGGGTGACAAGGAACTCCAGTCACCGGAATATCTCG
 AGGTTGAGGTAGTAGGTTGTATAGTTACTATGGAATTCTCGGGTGCCAAGGAACTCCAGTCACCGGAATATCTCG
 ```
 
+### Performing differential expression analysis
+
+1. Download example datasets from NCBI [SRA](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=SRP182725) (Note: Tutorial on how to download SRA files is below). 
+2. Prepare metadata information in CSV format as shown below. For this tutorial, download the file from [here](https://sourceforge.net/projects/mirge3/files/test/DESmetadata.csv/download). 
+```
+id,group
+SRR8497647,Control
+SRR8497648,Control
+SRR8497649,Control
+SRR8497650,Control
+SRR8497651,treated
+SRR8497652,treated
+SRR8497653,treated
+SRR8497654,treated
+```
+3. Execute the following command:
+```
+miRge3.0 -s SRR8497647.fastq,SRR8497648.fastq,SRR8497649.fastq,SRR8497650.fastq,SRR8497651.fastq,SRR8497652.fastq,SRR8497653.fastq,SRR8497654.fastq -lib miRge3_Lib -on human -db miRGeneDB -o differential_Exp -a TGGAATTCTCGG -cpu 12 -dex -mdt DESmetadata.csv
+```
+<br>
+Tutorial on how to download SRA files:
+This turorial is only brief introduction and doesn't cover all the details of downloading NCBI SRA files. You could find [YouTube turorials](https://www.youtube.com/results?search_query=download+SRA+files) on how to download SRA files. 
+1. Download and install NCBI SRA toolkit: You could refer to NCBI [SRA Handbook](https://www.ncbi.nlm.nih.gov/books/NBK242621/) or [GitHub](https://github.com/ncbi/sra-tools)
+2. Download command: <br/>
+One could use `fasterq-dump -t temp -e 10 SRR8497647` or simply `fastq-dump SRR8497647`. The only difference being that the fasterq-dump is faster. <br>
+Similarly, download all other Runs (i.e., SRR8497648, SRR8497649 etc.)
+
 ## miRge3.0 GUI 
 
 - The application is cross platform, the image below is a screenshot of the software from MacOS
