@@ -1,4 +1,4 @@
-# Frequently asked question (FAQ) 
+# Frequently asked questions (FAQ) 
 
 
 _We are very greatful and also thankful to all the users of miRge3.0 who rasied GitHub issues in the past that helped us solve few technical problems and improve miRge3.0 functionality further. We expect continued support towards this project. Here we have gathered a few frequently asked questions over the period regarding technical as well as biological/scientific questions. I hope this documentation will be useful as a ready response/solution for your queries._
