@@ -273,6 +273,8 @@ SRR8497654,treated
 ```
 miRge3.0 -s SRR8497647.fastq,SRR8497648.fastq,SRR8497649.fastq,SRR8497650.fastq,SRR8497651.fastq,SRR8497652.fastq,SRR8497653.fastq,SRR8497654.fastq -lib miRge3_Lib -on human -db miRGeneDB -o differential_Exp -a TGGAATTCTCGG -cpu 12 -dex -mdt DESmetadata.csv
 ```
+The result files for the above miRge3.0 run can be found at [SourceForge](https://sourceforge.net/projects/mirge3/files/test/DE_output/)
+
 
 Tutorial on how to download SRA files:<br/>
 This turorial is only brief introduction and doesn't cover all the details of downloading NCBI SRA files. You could find [YouTube tutorials](https://www.youtube.com/results?search_query=download+SRA+files) on how to download SRA files. 
