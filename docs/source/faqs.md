@@ -1,7 +1,7 @@
 # Frequently asked question (FAQ) 
 
 
-_We are very greatful and also thankful to all the users of miRge3.0 who rasied GitHub issues in the past that helped us solve few technical problems and improve miRge3.0 functionality further. We expect continued support towards this project. Here we have gathered few frequently asked questions over the period regarding technical as well as biological/scientific questions. I hope this documentation will be useful as a ready response/solution for your queries._
+_We are very greatful and also thankful to all the users of miRge3.0 who rasied GitHub issues in the past that helped us solve few technical problems and improve miRge3.0 functionality further. We expect continued support towards this project. Here we have gathered a few frequently asked questions over the period regarding technical as well as biological/scientific questions. I hope this documentation will be useful as a ready response/solution for your queries._
 
 *Before getting started please note; if you don't find a solution to your query in this page then create a new issue and we will get back to you at the earliest. Describe the `Title` to include the error you are facing e.g., `numbpy type error` and in the `Comment` section, it would be best if you could put the command line used, followed by the whole error. (You can delete your file names if you prefer).*
 
