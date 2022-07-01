@@ -11,7 +11,7 @@ _We are very greatful and also thankful to all the users of miRge3.0 who rasied 
 
 ## Frequent questions raised on GitHub:
 
-1. [How to use Unique Molecular Identifiers (UMIs)](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-unique-molecular-identifiers-umis)
+1. [How to use Unique Molecular Identifiers (UMIs)?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-unique-molecular-identifiers-umis)
 2. [TypeError: Cannot interpret <attribute 'dtype' of 'numpy.generic' objects> as a data type](https://mirge3.readthedocs.io/en/latest/faqs.html#typeerror-cannot-interpret-attribute-dtype-of-numpy-generic-objects-as-a-data-type)
 3. [Is there any way to skip the adaptor trimming process? and how to determine adapter sequence of a Run?](https://mirge3.readthedocs.io/en/latest/faqs.html#is-there-any-way-to-skip-the-adaptor-trimming-process-and-how-to-determine-adapter-sequence-of-a-run)
 4. [How to use and tweak data with Spike-in expirements?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-and-tweak-data-with-spike-in-expirements)
@@ -20,7 +20,7 @@ _We are very greatful and also thankful to all the users of miRge3.0 who rasied 
 7. [How to input paired-end sequencing data?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-input-paired-end-sequencing-data)
 
 
-##### ***How to use Unique Molecular Identifiers (UMIs)*** 
+##### ***How to use Unique Molecular Identifiers (UMIs)?*** 
 
 >A detailed documentation for UMI test run is available [here](https://mirge3.readthedocs.io/en/latest/quick_start.html#running-samples-with-umi). miRge3.0 is designed to process UMIs for Illumina and Qiagen. The parameters to trim UMIs and removing PCR duplicates are different, and also, selecting Qiagen UMI needs an additional parameter. 
 >
