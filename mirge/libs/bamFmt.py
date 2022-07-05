@@ -4,6 +4,7 @@ import pandas as pd
 from pathlib import Path
 import subprocess
 import os, sys
+from Bio.Seq import Seq
 
 def fetchGenCor(args, index_file_name, dict_gen_coordinates):
     bwtCommand = Path(args.bowtie_path)/"bowtie-inspect" if args.bowtie_path else "bowtie-inspect"
@@ -139,6 +140,7 @@ def bow2bam(args, workDir, ref_db, df_list, base_names, index_file_name, rna_typ
                     strand = str(dict_genCors[mi_sam_list[2]+"#strand"])
                     if strand == "+":
                         start, cigar = fetch_pos_coordinate(mi_sam_list[3], dict_genCors[mi_sam_list[2]+"#segs"], dict_genCors[mi_sam_list[2]+"#cds"], len(mi_sam_list[9]))
+                        mi_sam_list[1] = "0"
                         sequence = mi_sam_list[9]
                         # Returned CIGAR is 0 or spliced alignment 
                         if cigar == 0:
@@ -146,7 +148,8 @@ def bow2bam(args, workDir, ref_db, df_list, base_names, index_file_name, rna_typ
                             cigar = str(mi_sam_list[5])
                     else:
                         start, cigar = fetch_neg_coordinate(mi_sam_list[3], dict_genCors[mi_sam_list[2]+"#segs"], dict_genCors[mi_sam_list[2]+"#cds"], len(mi_sam_list[9]))
-                        sequence = mi_sam_list[9][::-1]
+                        mi_sam_list[1] = "16"
+                        sequence = str(Seq(mi_sam_list[9][::-1]).complement())
                         if cigar == 0:
                             cigar = str(mi_sam_list[5])
 
