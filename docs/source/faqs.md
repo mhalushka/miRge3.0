@@ -13,11 +13,12 @@ _We are very greatful and also thankful to all the users of miRge3.0 who rasied 
 
 1. [How to use Unique Molecular Identifiers (UMIs)?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-unique-molecular-identifiers-umis)
 2. [TypeError: Cannot interpret <attribute 'dtype' of 'numpy.generic' objects> as a data type](https://mirge3.readthedocs.io/en/latest/faqs.html#typeerror-cannot-interpret-attribute-dtype-of-numpy-generic-objects-as-a-data-type)
-3. [Is there any way to skip the adaptor trimming process? and how to determine adapter sequence of a Run?](https://mirge3.readthedocs.io/en/latest/faqs.html#is-there-any-way-to-skip-the-adaptor-trimming-process-and-how-to-determine-adapter-sequence-of-a-run)
-4. [How to use and tweak data with Spike-in expirements?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-and-tweak-data-with-spike-in-expirements)
-5. [How to use -dex DESeq2 analysis?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-dex-deseq2-analysis)
-6. [What is the threshold of the proportion of canonical reads (-ex, --crThreshold)?](https://mirge3.readthedocs.io/en/latest/faqs.html#what-is-the-threshold-of-the-proportion-of-canonical-reads-ex-crthreshold)
-7. [How to input paired-end sequencing data?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-input-paired-end-sequencing-data)
+3. [UnsatisfiableError: bowtie=1.3.0 -> libgcc-ng[version='>=9.3.0'] -> __glibc[version='>=2.17']](https://mirge3.readthedocs.io/en/latest/faqs.html#typeerror-cannot-interpret-attribute-dtype-of-numpy-generic-objects-as-a-data-type)
+4. [Is there any way to skip the adaptor trimming process? and how to determine adapter sequence of a Run?](https://mirge3.readthedocs.io/en/latest/faqs.html#is-there-any-way-to-skip-the-adaptor-trimming-process-and-how-to-determine-adapter-sequence-of-a-run)
+5. [How to use and tweak data with Spike-in expirements?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-and-tweak-data-with-spike-in-expirements)
+6. [How to use -dex DESeq2 analysis?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-dex-deseq2-analysis)
+7. [What is the threshold of the proportion of canonical reads (-ex, --crThreshold)?](https://mirge3.readthedocs.io/en/latest/faqs.html#what-is-the-threshold-of-the-proportion-of-canonical-reads-ex-crthreshold)
+8. [How to input paired-end sequencing data?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-input-paired-end-sequencing-data)
 
 
 ##### ***How to use Unique Molecular Identifiers (UMIs)?*** 
@@ -38,6 +39,21 @@ _We are very greatful and also thankful to all the users of miRge3.0 who rasied 
 >
 >[#20 (comment)](https://github.com/mhalushka/miRge3.0/issues/20#issuecomment-942408755)
 >[#47 (comment)](https://github.com/mhalushka/miRge3.0/issues/47#issue-1285035891)
+
+##### ***UnsatisfiableError: bowtie=1.3.0 -> libgcc-ng[version='>=9.3.0'] -> __glibc[version='>=2.17']***
+
+> The discussion on this issue is available in the following GitHub issue. Thank you [@asucrer](https://github.com/asucrer), for providing solution.
+> 
+> [#31 (comment)](https://github.com/mhalushka/miRge3.0/issues/31#issuecomment-1027858446) 
+```
+Solution suggested by the user @asucrer, please follow the steps:
+
+conda create -n mirge     # IMPORTANT to not specify the python version in this step 
+source activate mirge
+conda install -c bioconda mirge3   # Every dependency (including python) is installed
+conda install -c bioconda tbb=2020.2    # Solves issue associated to Bowtie installation
+conda install -c bioconda openssl=1.0   # Solves issue associated to Samtools installation
+```
 
 ##### ***Is there any way to skip the adaptor trimming process? and how to determine adapter sequence of a Run?*** 
 
