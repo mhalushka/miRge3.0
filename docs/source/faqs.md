@@ -13,7 +13,7 @@ _We are very greatful and also thankful to all the users of miRge3.0 who rasied 
 
 1. [How to use Unique Molecular Identifiers (UMIs)?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-unique-molecular-identifiers-umis)
 2. [TypeError: Cannot interpret <attribute 'dtype' of 'numpy.generic' objects> as a data type](https://mirge3.readthedocs.io/en/latest/faqs.html#typeerror-cannot-interpret-attribute-dtype-of-numpy-generic-objects-as-a-data-type)
-3. [UnsatisfiableError: bowtie=1.3.0 -> libgcc-ng[version='>=9.3.0'] -> __glibc[version='>=2.17']](https://mirge3.readthedocs.io/en/latest/faqs.html#typeerror-cannot-interpret-attribute-dtype-of-numpy-generic-objects-as-a-data-type)
+3. [UnsatisfiableError: bowtie=1.3.0 -> libgcc-ng[version='>=9.3.0'] -> __glibc[version='>=2.17']](https://mirge3.readthedocs.io/en/latest/faqs.html#unsatisfiableerror-bowtie-1-3-0-libgcc-ng-version-9-3-0-glibc-version-2-17)
 4. [Is there any way to skip the adaptor trimming process? and how to determine adapter sequence of a Run?](https://mirge3.readthedocs.io/en/latest/faqs.html#is-there-any-way-to-skip-the-adaptor-trimming-process-and-how-to-determine-adapter-sequence-of-a-run)
 5. [How to use and tweak data with Spike-in expirements?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-and-tweak-data-with-spike-in-expirements)
 6. [How to use -dex DESeq2 analysis?](https://mirge3.readthedocs.io/en/latest/faqs.html#how-to-use-dex-deseq2-analysis)
