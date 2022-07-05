@@ -43,6 +43,15 @@ def main():
     if args.tRNA_frag and args.organism_name != "human":
         outlog.write("ERROR: Detection of tRF(tRNA fragments) is only supported for human.\n")
         sys.exit("ERROR: Detection of tRF(tRNA fragments) is only supported for human.")
+    
+    indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"
+    isExist = os.path.exists(indexFiles)
+    if not isExist:
+        print("\n ERROR: The path to miRge libraries is incorrect or does not exist!\n")
+        outlog = open(str(runlogFile),"a+")
+        outlog.write("\n ERROR: The path to miRge libraries is incorrect or does not exist!\n")
+        outlog.close()
+        exit()
 
     if args.threads == 0:
         args.threads = multiprocessing.cpu_count()
@@ -184,7 +193,10 @@ def main():
 
     globalend_time = time.perf_counter()
     if not args.quiet:
+        resultsDir = str(Path(workDir).absolute())
+        print(f'\nThe path to ourput directory: {resultsDir}')
         print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     
+    outlog.write(f"\nThe path to ourput directory: {resultsDir}")
     outlog.write(f"\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n")
     outlog.close()
 
