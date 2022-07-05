@@ -14,7 +14,7 @@ def check_dependencies(args, runlogFile):
     outlog = open(str(runlogFile),"a+")
     # Checking bowtie version #
     bowtie = subprocess.run(str(bwtCommand), shell=True, capture_output=True, text=True)
-    bwtver = ["1.2.1", "1.2.2", "1.2.3", "1.3.0"]
+    bwtver = ["1.2.1", "1.2.2", "1.2.3", "1.3.0", "1.3.1", "1.3.2"]
     if bowtie.returncode==0:
         if not (bowtie.stdout.split('\n')[0].split(' ')[2]) in bwtver:
             print("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3 or 1.3.0) \nUse argument -pbwt <name of the directory>")
