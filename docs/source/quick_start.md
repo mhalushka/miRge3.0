@@ -219,8 +219,8 @@ Note: Complete adapter sequence must be provided (mandatory) i.e., simply specif
 This will `NOT WORK`: -g `"TTAGGC...illumina"`<br>
 This will `WORK`: -g `"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"` 
 
-## Save and resume functions
-### Saving collapsed reads and accessiory files in binary (pickle) format
+### Save and resume functions
+#### Saving collapsed reads and accessiory files in binary (pickle) format
 The parameter `-spl`/`--save-pkl` (save pickle) should be specified to save the pickle files. By default the internal variables such as Pandas dataframe containing collapsed reads before alignment, read summary and sample information is saved as two different pickle files namely `collapsed.pkl` for collapsed read counts and `collapsed_accessories.pkl` for accessory files (read summary, sample information etc). An example usage is described below:
 
 ```
@@ -254,7 +254,7 @@ The path to ourput directory: /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge
 The analysis completed in 43.278 second(s)
 ```
 
-### Resuming from collapsed reads and try out different miRge3.0 parameters 
+#### Resuming from collapsed reads and try out different miRge3.0 parameters 
 The sample execution previously run with `-spl` option can only be used to resume miRge3.0 with different parameters. The sample parameter `-s` takes the path to the previous output folder (specified earlier as `-o`). Include `-rr`/`--resume` (re-run or resume) parameter to indicate that you want to re-run miRge3.0 with different parameters. An example usage is described below:
 
 ```
