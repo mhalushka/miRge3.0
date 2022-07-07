@@ -138,7 +138,6 @@ def main():
         pickleFile = str(Path(workDir)/'collapsed.pkl')
         pickleFile_acc = str(Path(workDir)/'collapsed_accessories.pkl')
         pdDataFrame.to_pickle(pickleFile)
-        print(args) # Arun
         a = [sampleReadCounts, trimmedReadCounts,trimmedReadCountsUnique,fastq_fullPath, base_names]
         with open(pickleFile_acc, 'wb') as pklac:
             pickle.dump(a, pklac, protocol=pickle.HIGHEST_PROTOCOL)
