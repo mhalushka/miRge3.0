@@ -31,6 +31,8 @@ Options:
   -dex   --diffex             perform differential expression with DESeq2 (Default: off)
   -mdt   --metadata           the path to metadata file (Default: off, require '.csv' file format if -dex is opted)
   -cms   --chunkmbs           chunk memory in megabytes per thread to use during bowtie alignment (Default: 256)
+  -spl   --save-pkl           save collapsed reads in binary format for later runs (Default: off)
+  -rr    --resume             resume from collapsed reads (Default: off)
   -shh   --quiet              enable quiet/silent mode, only show warnings and errors (Default: off)
 
 Data pre-processing:
@@ -217,6 +219,64 @@ Note: Complete adapter sequence must be provided (mandatory) i.e., simply specif
 This will `NOT WORK`: -g `"TTAGGC...illumina"`<br>
 This will `WORK`: -g `"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"` 
 
+## Save and resume functions
+### Saving collapsed reads and accessiory files in binary (pickle) format
+The parameter `-spl`/`--save-pkl` (save pickle) should be specified to save the pickle files. By default the internal variables such as Pandas dataframe containing collapsed reads before alignment, read summary and sample information is saved as two different pickle files namely `collapsed.pkl` for collapsed read counts and `collapsed_accessories.pkl` for accessory files (read summary, sample information etc). An example usage is described below:
+
+```
+miRge3.0 -s SRR772403.fastq,SRR772404.fastq -a illumina -lib miRge3_Lib -on human -db mirbase -o output_dir -spl
+bowtie version: 1.3.0
+cutadapt version: 4.1
+Samtools version: 1.3.1
+Collecting and validating input files...
+
+miRge3.0 will process 2 out of 2 input file(s).
+
+Cutadapt finished for file SRR772403 in 3.8598 second(s)
+Collapsing finished for file SRR772403 in 0.0259 second(s)
+
+Cutadapt finished for file SRR772404 in 13.5832 second(s)
+Collapsing finished for file SRR772404 in 0.3531 second(s)
+
+Matrix creation finished in 0.1652 second(s)
+
+Data pre-processing completed in 18.113 second(s)
+
+Alignment in progress ...
+Alignment completed in 20.1637 second(s)
+
+Summarizing and tabulating results...
+Summary completed in 1.9921 second(s)
+
+
+The path to ourput directory: /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_13-59-51
+
+The analysis completed in 43.278 second(s)
+```
+
+### Resuming from collapsed reads and try out different miRge3.0 parameters 
+The sample execution previously run with `-spl` option can only be used to resume miRge3.0 with different parameters. The sample parameter `-s` takes the path to the previous output folder (specified earlier as `-o`). Include `-rr`/`--resume` (re-run or resume) parameter to indicate that you want to re-run miRge3.0 with different parameters. An example usage is described below:
+
+```
+miRge3.0 -s /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_13-59-51 -lib miRge3_Lib -on human -db mirbase -o output_dir -rr -gff
+bowtie version: 1.3.0
+cutadapt version: 4.1
+Samtools version: 1.3.1
+Collecting and validating input files...
+
+miRge3.0 will process 2 out of 1 input file(s).
+
+Alignment in progress ...
+Alignment completed in 19.9428 second(s)
+
+Summarizing and tabulating results...
+Summary completed in 7.6734 second(s)
+
+
+The path to ourput directory: /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_14-12-03
+
+The analysis completed in 30.6275 second(s)
+```
 
 ### Running samples with UMI
 #### Qiagen - based UMI
