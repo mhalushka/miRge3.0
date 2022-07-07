@@ -6,9 +6,10 @@ import time
 import sys
 import os
 import multiprocessing
+import pickle
 
 # GitHub libraries
-import pandas
+import pandas as pd
 
 #Custom miRge libraries 
 from mirge.libs.parse import parseArg
@@ -43,7 +44,7 @@ def main():
     if args.tRNA_frag and args.organism_name != "human":
         outlog.write("ERROR: Detection of tRF(tRNA fragments) is only supported for human.\n")
         sys.exit("ERROR: Detection of tRF(tRNA fragments) is only supported for human.")
-    
+
     indexFiles = Path(args.libraries_path)/args.organism_name/"index.Libs"
     isExist = os.path.exists(indexFiles)
     if not isExist:
@@ -80,16 +81,35 @@ def main():
         elif somewhere[0] == "front" and somewhere[1] == "illumina": 
             somewhere[1] = 'GTTCAGAGTTCTACAGTCCGACGATC'
             args.adapters[0] = tuple(somewhere)
-
+    #print(args.adapters)
     if not args.quiet:
         print("Collecting and validating input files...")
     outlog.write("Collecting and validating input files...\n")
     file_exts = ['.txt', '.csv']
     file_list = samples[0].split(',')
     if Path(file_list[0]).is_dir():
-        file_list = [str(x) for x in Path(file_list[0]).iterdir() if x.is_file()]
-        file_list = sorted(file_list)
-        fastq_fullPath,base_names = validate_files(args, file_list, str(runlogFile))
+        if args.resume:
+            rootToPKL = str(Path(file_list[0]).absolute())
+            pdf = str(Path(rootToPKL)/'collapsed.pkl')
+            pdfacc = str(Path(rootToPKL)/'collapsed_accessories.pkl')
+            if not Path(pdf).exists() and not Path(pdfacc).exists():
+                print("\nERROR: The provided path doesn't contain pickle files with .pkl extensions! Please refer to documentation.\n")
+                outlog.write("\nERROR: The provided path doesn't contain pickle files with .pkl extensions! Please refer to documentation.\n")
+                outlog.close()
+                exit()
+            else:
+                pdDataFrame = pd.read_pickle(pdf)
+                with open(pdfacc, 'rb') as pklin:
+                    bpkl = pickle.load(pklin)
+                sampleReadCounts = bpkl[0]
+                trimmedReadCounts = bpkl[1]
+                trimmedReadCountsUnique = bpkl[2]
+                fastq_fullPath = bpkl[3]
+                base_names = bpkl[4]
+        else:
+            file_list = [str(x) for x in Path(file_list[0]).iterdir() if x.is_file()]
+            file_list = sorted(file_list)
+            fastq_fullPath,base_names = validate_files(args, file_list, str(runlogFile))
     elif Path(file_list[0]).exists() and Path(file_list[0]).suffix in file_exts: # READ TXT OR CSV FILE HERE
         with open(file_list[0]) as file:
             lines = [line.strip() for line in file]
@@ -100,16 +120,35 @@ def main():
         print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
     outlog.write(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n\n")
     outlog.close()
-    if args.miREC:
+
+    if args.miREC and not args.resume:
         if args.uniq_mol_ids:
         #if args.umi:
+            outlog = open(str(runlogFile),"a+")
             print(f"\nCurrently, error correction does not apply for the data with UMI sequences\n")
             outlog.write(f"\nCurrently, error correction does not apply for the data with UMI sequences\n")
             outlog.close()
+            exit()
         else:
             pdDataFrame,sampleReadCounts,trimmedReadCounts,trimmedReadCountsUnique = bakingEC(args, fastq_fullPath, base_names, workDir)
-    else:
+    elif not args.resume:
         pdDataFrame,sampleReadCounts,trimmedReadCounts,trimmedReadCountsUnique = baking(args, fastq_fullPath, base_names, workDir)
+
+    if args.save_pkl:
+        pickleFile = str(Path(workDir)/'collapsed.pkl')
+        pickleFile_acc = str(Path(workDir)/'collapsed_accessories.pkl')
+        pdDataFrame.to_pickle(pickleFile)
+        print(args) # Arun
+        a = [sampleReadCounts, trimmedReadCounts,trimmedReadCountsUnique,fastq_fullPath, base_names]
+        with open(pickleFile_acc, 'wb') as pklac:
+            pickle.dump(a, pklac, protocol=pickle.HIGHEST_PROTOCOL)
+
+    if args.save_pkl == args.resume:
+        outlog = open(str(runlogFile),"a+")
+        print(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation\n" )
+        outlog.write(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation\n")
+        outlog.close()
+        exit()
 
     pdDataFrame = bwtAlign(args,pdDataFrame,workDir,ref_db)
     outlog = open(str(runlogFile),"a+")
