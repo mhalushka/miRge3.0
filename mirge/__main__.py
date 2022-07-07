@@ -144,8 +144,8 @@ def main():
 
     if args.save_pkl == args.resume:
         outlog = open(str(runlogFile),"a+")
-        print(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation\n" )
-        outlog.write(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation\n")
+        print(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation.\n" )
+        outlog.write(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation.\n")
         outlog.close()
         exit()
 
@@ -232,9 +232,9 @@ def main():
     globalend_time = time.perf_counter()
     if not args.quiet:
         resultsDir = str(Path(workDir).absolute())
-        print(f'\nThe path to ourput directory: {resultsDir}')
+        print(f'\nThe path to output directory: {resultsDir}')
         print(f'\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n')     
-    outlog.write(f"\nThe path to ourput directory: {resultsDir}")
+    outlog.write(f"\nThe path to output directory: {resultsDir}")
     outlog.write(f"\nThe analysis completed in {round(globalend_time-globalstart, 4)} second(s)\n")
     outlog.close()
 
