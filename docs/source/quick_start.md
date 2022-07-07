@@ -264,7 +264,7 @@ cutadapt version: 4.1
 Samtools version: 1.3.1
 Collecting and validating input files...
 
-miRge3.0 will process 2 out of 1 input file(s).
+miRge3.0 will process 2 saved run(s) from binary pickle file.
 
 Alignment in progress ...
 Alignment completed in 19.9428 second(s)
