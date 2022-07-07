@@ -116,10 +116,15 @@ def main():
             fastq_fullPath, base_names = validate_files(args, lines, str(runlogFile))
     else:  # READ FASTQ OR FASTQ.gz FILES HERE
         fastq_fullPath, base_names = validate_files(args, file_list, str(runlogFile))
-    if not args.quiet:
+    if not args.quiet and not args.resume:
         print(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n")
-    outlog.write(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n\n")
-    outlog.close()
+        outlog.write(f"\nmiRge3.0 will process {len(fastq_fullPath)} out of {len(file_list)} input file(s).\n\n")
+        outlog.close()
+    elif args.resume:
+        print(f"\nmiRge3.0 will process {len(fastq_fullPath)} saved run(s) from binary pickle file.\n")
+        outlog.write(f"\nmiRge3.0 will process {len(fastq_fullPath)} saved run(s) from binary pickle file.\n\n")
+        outlog.close()
+
 
     if args.miREC and not args.resume:
         if args.uniq_mol_ids:
