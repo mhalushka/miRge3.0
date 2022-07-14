@@ -220,8 +220,8 @@ This will `NOT WORK`: -g `"TTAGGC...illumina"`<br>
 This will `WORK`: -g `"TTAGGC...TGGAATTCTCGGGTGCCAAGGAACTCCAGT"` 
 
 ### Save and resume functions
-#### Saving collapsed reads and accessiory files in binary (pickle) format
-The parameter `-spl`/`--save-pkl` (save pickle) should be specified to save the pickle files. By default the internal variables such as Pandas dataframe containing collapsed reads before alignment, read summary and sample information is saved as two different pickle files namely `collapsed.pkl` for collapsed read counts and `collapsed_accessories.pkl` for accessory files (read summary, sample information etc). An example usage is described below:
+#### Saving collapsed reads and accessory files in binary (pickle) format
+For researchers interested in trying different parameters without redoing the entire run, the post-collapsed reads datafile can be saved. The parameter `-spl`/`--save-pkl` (save pickle) should be specified to save the pickle files. By default the internal variables such as the Pandas dataframe containing collapsed reads before alignment, read summary and sample information is saved as two different pickle files namely `collapsed.pkl` for collapsed read counts and `collapsed_accessories.pkl` for accessory files (read summary, sample information etc). An example usage is described below:
 
 ```
 miRge3.0 -s SRR772403.fastq,SRR772404.fastq -a illumina -lib miRge3_Lib -on human -db mirbase -o output_dir -spl
@@ -249,13 +249,13 @@ Summarizing and tabulating results...
 Summary completed in 1.9921 second(s)
 
 
-The path to ourput directory: /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_13-59-51
+The path to output directory: /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_13-59-51
 
 The analysis completed in 43.278 second(s)
 ```
 
 #### Resuming from collapsed reads and try out different miRge3.0 parameters 
-The sample execution previously run with `-spl` option can only be used to resume miRge3.0 with different parameters. The sample parameter `-s` takes the path to the previous output folder (specified earlier as `-o`). Include `-rr`/`--resume` (re-run or resume) parameter to indicate that you want to re-run miRge3.0 with different parameters. An example usage is described below:
+The sample execution previously run with `-spl` option can only be used to resume miRge3.0 with different parameters. The sample parameter `-s` takes the path to the previous output folder (specified earlier as `-o`). Include the `-rr`/`--resume` (re-run or resume) parameter to indicate that you want to re-run miRge3.0 with different parameters. An example usage is described below:
 
 ```
 miRge3.0 -s /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_13-59-51 -lib miRge3_Lib -on human -db mirbase -o output_dir -rr -gff
@@ -273,7 +273,7 @@ Summarizing and tabulating results...
 Summary completed in 7.6734 second(s)
 
 
-The path to ourput directory: /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_14-12-03
+The path to output directory: /mnt/d/Halushka_lab/Arun/datasets/output_dir/miRge.2022-07-07_14-12-03
 
 The analysis completed in 30.6275 second(s)
 ```
