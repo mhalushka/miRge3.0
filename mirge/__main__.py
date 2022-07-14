@@ -146,8 +146,8 @@ def main():
         a = [sampleReadCounts, trimmedReadCounts,trimmedReadCountsUnique,fastq_fullPath, base_names]
         with open(pickleFile_acc, 'wb') as pklac:
             pickle.dump(a, pklac, protocol=pickle.HIGHEST_PROTOCOL)
-
-    if args.save_pkl == args.resume:
+    
+    if args.save_pkl == args.resume and not args.save_pkl != "False":
         outlog = open(str(runlogFile),"a+")
         print(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation\n" )
         outlog.write(f"\nERROR: The arguments -pkl and -rr are mutually exclusive! Please refer to documentation\n")
