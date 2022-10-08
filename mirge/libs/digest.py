@@ -8,7 +8,8 @@ from pathlib import Path
 import numpy as np
 
 from cutadapt.adapters import warn_duplicate_adapters
-from cutadapt.parser import AdapterParser
+#from cutadapt.parser import AdapterParser
+from cutadapt.parser import make_adapters_from_specifications
 from cutadapt.modifiers import (LengthTagModifier, SuffixRemover, PrefixSuffixAdder,
         ZeroCapper, QualityTrimmer, UnconditionalCutter, NEndTrimmer, AdapterCutter,
         PairedAdapterCutterError, PairedAdapterCutter, NextseqQualityTrimmer, Shortener)
@@ -62,6 +63,7 @@ def stipulate(args):
     modifiers=[]
     pipeline_add = modifiers.append
     if int(args.cutadaptVersion[0]) < 3:
+        pass
         adapter_parser = AdapterParser(
             max_error_rate=args.error_rate,
             min_overlap=args.overlap,
@@ -70,13 +72,21 @@ def stipulate(args):
             indels=args.indels,
          )
     else:
-        adapter_parser = AdapterParser(
-            min_overlap=args.overlap,
-            read_wildcards=args.match_read_wildcards,
-            adapter_wildcards=args.match_adapter_wildcards,
-            indels=args.indels,
-         )
-    adapters = adapter_parser.parse_multi(args.adapters)
+        search_parameters = dict(
+                max_errors=args.error_rate,
+                min_overlap=args.overlap,
+                read_wildcards=args.match_read_wildcards,
+                adapter_wildcards=args.match_adapter_wildcards,
+                indels=args.indels,
+                )
+        #adapter_parser = AdapterParser(
+        #    min_overlap=args.overlap,
+        #    read_wildcards=args.match_read_wildcards,
+        #    adapter_wildcards=args.match_adapter_wildcards,
+        #    indels=args.indels,
+        # )
+    adapters = make_adapters_from_specifications(args.adapters, search_parameters)    
+    #adapters = adapter_parser.parse_multi(args.adapters)
     warn_duplicate_adapters(adapters)
 
     if args.nextseq_trim is not None:
@@ -92,7 +102,7 @@ def stipulate(args):
     if args.trim_n:
         pipeline_add(NEndTrimmer())
     add_unconditional_cutters(pipeline_add, args.cut)
-        
+    #print(modifiers)    
     return modifiers
 
 
@@ -361,6 +371,7 @@ def cutadapt(fq):
                 else:
                     fqreads = modifier(fqreads, matches)
             if int(len(fqreads.sequence)) >= int(min_len):
+                #print(fqreads.sequence)
                 if str(fqreads.sequence) in readDict:
                     readDict[str(fqreads.sequence)]+=1
                 else:
