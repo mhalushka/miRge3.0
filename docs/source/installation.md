@@ -1,5 +1,8 @@
 # Installation
 
+## Docker - biocontainers
+For users who prefer docker, can obtain a docker image at [Biocontainers](https://quay.io/repository/biocontainers/mirge3?tab=info)
+
 ## Linux OS 
 
 ### Welcome to installation protocol for Linux OS
