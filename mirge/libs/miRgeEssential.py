@@ -14,14 +14,14 @@ def check_dependencies(args, runlogFile):
     outlog = open(str(runlogFile),"a+")
     # Checking bowtie version #
     bowtie = subprocess.run(str(bwtCommand), shell=True, capture_output=True, text=True)
-    bwtver = ["1.2.1", "1.2.2", "1.2.3", "1.3.0", "1.3.1", "1.3.2"]
+    bwtver = ["1.0.0","1.2.1", "1.2.2", "1.2.3", "1.3.0", "1.3.1", "1.3.2"]
     if bowtie.returncode==0:
         if not (bowtie.stdout.split('\n')[0].split(' ')[2]) in bwtver:
-            print("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3, 1.3.0 or 1.3.1) \nUse argument -pbwt <name of the directory>")
-            outlog.write("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3, 1.3.0 or 1.3.1 ) \nUse argument -pbwt <name of the directory>\n")
+            print("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3, 1.3.0 or >1.3.1) \nUse argument -pbwt <name of the directory>")
+            outlog.write("bowtie error!: incorrect version. Require - bowtie (1.2.1, 1.2.2, 1.2.3, 1.3.0 or >1.3.1 ) \nUse argument -pbwt <name of the directory>\n")
             exit()
         else:
-            if str(bowtie.stdout.split('\n')[0].split(' ')[2]) in ["1.2.1", "1.2.2", "1.2.3"]:
+            if str(bowtie.stdout.split('\n')[0].split(' ')[2]) in ["1.0.0","1.2.1", "1.2.2", "1.2.3", "1.3.0", "1.3.1", "1.3.2"]:
                 args.bowtieVersion = "True"
             else:
                 args.bowtieVersion = "False"
