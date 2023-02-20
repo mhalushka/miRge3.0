@@ -93,8 +93,8 @@ def main():
             pdf = str(Path(rootToPKL)/'collapsed.pkl')
             pdfacc = str(Path(rootToPKL)/'collapsed_accessories.pkl')
             if not Path(pdf).exists() and not Path(pdfacc).exists():
-                print("\nERROR: The provided path doesn't contain pickle files with .pkl extensions! Please refer to documentation.\n")
-                outlog.write("\nERROR: The provided path doesn't contain pickle files with .pkl extensions! Please refer to documentation.\n")
+                print("\nERROR: The provided path doesn't contain pickle files with .pkl extensions! Please refer to documentation.\nhttps://mirge3.readthedocs.io/en/master/quick_start.html#save-and-resume-functions\n")
+                outlog.write("\nERROR: The provided path doesn't contain pickle files with .pkl extensions! Please refer to documentation.\nhttps://mirge3.readthedocs.io/en/master/quick_start.html#save-and-resume-functions\n")
                 outlog.close()
                 exit()
             else:
