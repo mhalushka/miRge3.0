@@ -1,5 +1,18 @@
+# Check if ggplot2 is installed, if not installed create a personal library and install there, first time installation may take time!.
+dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE, showWarnings = FALSE)  # create personal library
+.libPaths(Sys.getenv("R_LIBS_USER"))  # add to the path
+packages <- c("ggplot2")
+install.packages(setdiff(packages, rownames(installed.packages())))
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+if (!require("DESeq2", quietly = TRUE))
+	BiocManager::install("DESeq2")
+
 library(ggplot2)
-suppressMessages(library(DESeq2, quietly = T))
+#suppressMessages(library(DESeq2, quietly = T))
+suppressMessages(library(DESeq2))
+#suppressPackageStartupMessages(library(DESeq2, quietly = T))
 options(warn=-1)
 args <- commandArgs(TRUE)
 countData <- read.csv(file=args[1], header = TRUE, sep = ",")
@@ -21,7 +34,10 @@ with(subset(res, padj<.01 & abs(log2FoldChange)>2), points(log2FoldChange, -log1
 garbage <- dev.off()
 
 vsdata <- varianceStabilizingTransformation(dds, blind=FALSE)
-write.table(res, file=args[5], sep="\t")
+res$miRNA <- row.names(res)
+col_order <- c("miRNA","baseMean","log2FoldChange","lfcSE","stat","pvalue","padj")
+res2 <- res[,col_order]
+write.table(res2, file=args[5], sep="\t", row.names = FALSE)
 #write.table(res, "deseq_output.txt", sep="\t")
 
 pdf(file=args[4], width=8,height=8)
