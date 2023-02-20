@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import dnaio
+import io
+from xopen import xopen
 import os
 import time
 import concurrent.futures
@@ -159,7 +161,6 @@ def bakingEC(args, inFileArray, inFileBaseArray, workDir):
     cu_ver = int(args.cutadaptVersion[0]) # Cutadapt version (cu_ver)
     if int(args.cutadaptVersion[0]) >= 3:
         from cutadapt.modifiers import ModificationInfo
-    numlines=10000
     umi = args.uniq_mol_ids
     qiagenumi = args.qiagenumi
     fasta = args.fasta
@@ -184,30 +185,15 @@ def bakingEC(args, inFileArray, inFileBaseArray, workDir):
     for index, FQfile in enumerate(inFileArray):
         start = time.perf_counter()
         finish2=finish3=finish4=finish5=0
-        with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
-            with dnaio.open(FQfile, mode='r') as readers:
-                readobj=[]
-                completeDict = {}
-                for reads in readers:
-                    readobj.append(reads)
-                    if len(readobj) == 1000000:
-                        future = [executor.submit(cutadapt, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)] # sending bunch of reads (#1000000) for parallel execution
-                        for fqres_pairs in concurrent.futures.as_completed(future): 
-                            for each_list in fqres_pairs.result(): # retreving results from parallel execution
-                                varx = list(each_list)
-                                try:
-                                    visual_treat['rlen'][str(inFileBaseArray[index])].append(len(varx[0]))
-                                except KeyError:
-                                    visual_treat['rlen'][str(inFileBaseArray[index])]= [len(varx[0])]
-                                if varx[0] in completeDict: # Collapsing, i.e., counting the occurance of each read for each data 
-                                    completeDict[varx[0]] += int(varx[1])
-                                else:
-                                    completeDict[varx[0]] = int(varx[1])
-                        readobj=[]
-                future=[]
-                future.extend([executor.submit(cutadapt, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)]) # sending remaining reads for parallel execution
+        with xopen(FQfile, "rb") as f:
+            count=trimmed=0
+            completeDict = {}
+            with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
+                future = [executor.submit(cutadapt, bytes(i)) for i in dnaio.read_chunks(f, buffer_size)]
                 for fqres_pairs in concurrent.futures.as_completed(future):
-                    for each_list in fqres_pairs.result(): # retreving results from parallel execution
+                    a , b = fqres_pairs.result()
+                    count+= a
+                    for each_list in b:
                         varx = list(each_list)
                         try:
                             visual_treat['rlen'][str(inFileBaseArray[index])].append(len(varx[0]))
@@ -217,7 +203,7 @@ def bakingEC(args, inFileArray, inFileBaseArray, workDir):
                             completeDict[varx[0]] += int(varx[1])
                         else:
                             completeDict[varx[0]] = int(varx[1])
-                readobj=[]
+        
         #####  RUN miREC here  ######
         sorted_exprn = list( sorted(completeDict.items(), key=operator.itemgetter(1),reverse=True))
         tempEC_cor = open("expreLevel_cor.txt", "a+")
@@ -234,35 +220,13 @@ def bakingEC(args, inFileArray, inFileBaseArray, workDir):
         else:
             for i in range(int(args.kmer_start),int(args.kmer_end)+1):
                 run_merEC(args, kmc_exe, kmc_dump_exe, miREC_fq_exe, i)
-        
-        with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
-            with dnaio.open("correct_read.fastq", mode='r') as readers:
-                readobj=[]
-                count=trimmed=0
-                completeDict = {}
-                for reads in readers:
-                    count+=1
-                    readobj.append(reads)
-                    if len(readobj) == 1000000:
-                        future = [executor.submit(cutadaptEC, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)] # sending bunch of reads (#1000000) for parallel execution
-                        for fqres_pairs in concurrent.futures.as_completed(future): 
-                            for each_list in fqres_pairs.result(): # retreving results from parallel execution
-                                varx = list(each_list)
-                                try:
-                                    visual_treat['rlen'][str(inFileBaseArray[index])].append(len(varx[0]))
-                                except KeyError:
-                                    visual_treat['rlen'][str(inFileBaseArray[index])]= [len(varx[0])]
-                                if varx[0] in completeDict: # Collapsing, i.e., counting the occurance of each read for each data 
-                                    completeDict[varx[0]] += int(varx[1])
-                                    trimmed+=int(varx[1])
-                                else:
-                                    completeDict[varx[0]] = int(varx[1])
-                                    trimmed+=int(varx[1])
-                        readobj=[]
-                future=[]
-                future.extend([executor.submit(cutadaptEC, readobj[i:i+numlines]) for i in range(0, len(readobj), numlines)]) # sending remaining reads for parallel execution
+        with xopen("correct_read.fastq", "rb") as f:
+            trimmed=0
+            completeDict = {}
+            with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as executor:
+                future = [executor.submit(cutadaptEC, bytes(i)) for i in dnaio.read_chunks(f, buffer_size)]
                 for fqres_pairs in concurrent.futures.as_completed(future):
-                    for each_list in fqres_pairs.result(): # retreving results from parallel execution
+                    for each_list in fqres_pairs.result():
                         varx = list(each_list)
                         try:
                             visual_treat['rlen'][str(inFileBaseArray[index])].append(len(varx[0]))
@@ -274,7 +238,7 @@ def bakingEC(args, inFileArray, inFileBaseArray, workDir):
                         else:
                             completeDict[varx[0]] = int(varx[1])
                             trimmed+=int(varx[1])
-                readobj=[]
+        
         #####  RUN miREC here  ######
         #os.system('rm -r %s %s %s %s %s %s'%("input.fq", "ID_read_quality_cor.txt", "expreLevel_cor.txt", "ID_read_quality_input.txt", "id_read.txt", "*.freq"))
         os.system('rm -r %s %s %s %s %s %s %s %s %s'%("correct_read.fastq", "input.fq", "ID_read_quality_cor.txt", "expreLevel_cor.txt", "ID_read_quality_input.txt", "id_read.txt", "*.freq", "changed_detail.txt", "changed_list.txt"))
@@ -438,76 +402,73 @@ def UMIParser(s, f, b):
     #return (front, center, end)
 
 
-def cutadaptEC(fq):
+def cutadaptEC(n):
+    z = io.BytesIO(n)
     readDict={}
-    for fqreads in fq:
-        if int(len(fqreads.sequence)) >= int(min_len):
-            if str(fqreads.sequence) in readDict:
-                readDict[str(fqreads.sequence)]+=1
-            else:
-                readDict[str(fqreads.sequence)]=1
-    trimmed_pairs = list(readDict.items())
+    with dnaio.open(z) as fq:
+        for fqreads in fq:
+            if int(len(fqreads.sequence)) >= int(min_len):
+                if str(fqreads.sequence) in readDict:
+                    readDict[str(fqreads.sequence)]+=1
+                else:
+                    readDict[str(fqreads.sequence)]=1
+        trimmed_pairs = list(readDict.items())
     return trimmed_pairs
 
 
 # THIS IS WHERE EVERYTHIHNG HAPPENS - Modifiers, filters etc...
-def cutadapt(fq):
-    #ourDir_n = str("miRge3_temp")
-    #tempDir = Path.cwd()/ourDir_n
-    #Path(tempDir).mkdir(exist_ok=True, parents=True)
-    #tempFile = Path(tempDir)/"input_EC.fastq"
+def cutadapt(n):
+    z = io.BytesIO(n)
+    readDict={}
+    count = 0
     in_fqfile = open("input.fq", "a+")
     in_fqfileCor = open("correct_read.fastq", "a+")
     id_read = open("id_read.txt", "a+")
     id_read_qc = open("ID_read_quality_cor.txt", "a+")
     id_read_qcin = open("ID_read_quality_input.txt", "a+")
-    readDict={}
-    for fqreads in fq:
-        if int(cu_ver) >= 3:
-            info = ModificationInfo(None)
-            info.matches=[]
-        else:
-            matches=[]
-        if qiagenumi:
-            currentSeq = fqreads.sequence
-            umi_seq = ""
-            for modifier in ingredients:
-                if int(cu_ver) >= 3:
-                    fqreads = modifier(fqreads, info)
-                else:
-                    fqreads = modifier(fqreads, matches)
-            try:
-                umi_seq = currentSeq.split(str(fqreads.sequence))[1]
-                umi_cut = umi.split(",")
-                max_ad = len(qiaAdapter) + int(umi_cut[1])
-                umi_seq = umi_seq[:max_ad][-int(umi_cut[1]):]
-            except ValueError:
+    with dnaio.open(z) as fq:
+        for fqreads in fq:
+            if int(cu_ver) >= 3:
+                info = ModificationInfo(None)
+                info.matches=[]
+            else:
+                matches=[]
+            if qiagenumi:
+                currentSeq = fqreads.sequence
                 umi_seq = ""
-            final_seq = fqreads.sequence + umi_seq
-            if int(len(final_seq)) >= int(min_len):
-                if str(final_seq) in readDict:
-                    readDict[str(final_seq)]+=1
-                else:
-                    readDict[str(final_seq)]=1
-        else:
-            for modifier in ingredients:
-                if int(cu_ver) >= 3:
-                    fqreads = modifier(fqreads, info)
-                else:
-                    fqreads = modifier(fqreads, matches)
-            if int(len(fqreads.sequence)) >= int(min_len):
-                in_fqfile.write("@"+str((fqreads.name).split(" ")[0])+ "\n" + str(fqreads.sequence) +"\n" + str("+") + "\n" + str((fqreads.qualities))+"\n")
-                in_fqfileCor.write("@"+str((fqreads.name).split(" ")[0])+ "\n" + str(fqreads.sequence) +"\n" + str("+") + "\n" + str((fqreads.qualities))+"\n")
-                id_read.write("@"+str((fqreads.name).split(" ")[0]) + " " + str(fqreads.sequence) + " " + str((fqreads.qualities)) + "\n")
-                id_read_qc.write("@"+str((fqreads.name).split(" ")[0]) + " " + str(fqreads.sequence) + " " + str((fqreads.qualities)) + "\n") 
-                id_read_qcin.write("@"+str((fqreads.name).split(" ")[0]) + " " + str(fqreads.sequence) + " " + str((fqreads.qualities)) + "\n")
-                if str(fqreads.sequence) in readDict:
-                    readDict[str(fqreads.sequence)]+=1
-                    #<Sequence(name='SRR772403.13 SN603_WA038_2_1102_1455.00_139.00_0 length=50', sequence='TACCCTGTAGAAACGAATTTGT', qualities='@@@DDDDDFFFF<+AFFGFEIF')>
-                    #<Sequence(name='SRR772403.133926 SN603_WA038_2_1205_884.60_9723.70_0 length=50', sequence='TGAGATGAAGCACTGTAGCT', qualities='CCCFFFFFHHHHHJJIIJJJ')>
-                else:
-                    readDict[str(fqreads.sequence)]=1
-
-    trimmed_pairs = list(readDict.items())
-    return trimmed_pairs
-
+                for modifier in ingredients:
+                    if int(cu_ver) >= 3:
+                        fqreads = modifier(fqreads, info)
+                    else:
+                        fqreads = modifier(fqreads, matches)
+                try:
+                    umi_seq = currentSeq.split(str(fqreads.sequence))[1]
+                    umi_cut = umi.split(",")
+                    max_ad = len(qiaAdapter) + int(umi_cut[1])
+                    umi_seq = umi_seq[:max_ad][-int(umi_cut[1]):]
+                except ValueError:
+                    umi_seq = ""
+                final_seq = fqreads.sequence + umi_seq
+                if int(len(final_seq)) >= int(min_len):
+                    if str(final_seq) in readDict:
+                        readDict[str(final_seq)]+=1
+                    else:
+                        readDict[str(final_seq)]=1
+            else:
+                for modifier in ingredients:
+                    if int(cu_ver) >= 3:
+                        fqreads = modifier(fqreads, info)
+                    else:
+                        fqreads = modifier(fqreads, matches)
+                if int(len(fqreads.sequence)) >= int(min_len):
+                    in_fqfile.write("@"+str((fqreads.name).split(" ")[0])+ "\n" + str(fqreads.sequence) +"\n" + str("+") + "\n" + str((fqreads.qualities))+"\n")
+                    in_fqfileCor.write("@"+str((fqreads.name).split(" ")[0])+ "\n" + str(fqreads.sequence) +"\n" + str("+") + "\n" + str((fqreads.qualities))+"\n")
+                    id_read.write("@"+str((fqreads.name).split(" ")[0]) + " " + str(fqreads.sequence) + " " + str((fqreads.qualities)) + "\n")
+                    id_read_qc.write("@"+str((fqreads.name).split(" ")[0]) + " " + str(fqreads.sequence) + " " + str((fqreads.qualities)) + "\n") 
+                    id_read_qcin.write("@"+str((fqreads.name).split(" ")[0]) + " " + str(fqreads.sequence) + " " + str((fqreads.qualities)) + "\n")
+                    if str(fqreads.sequence) in readDict:
+                        readDict[str(fqreads.sequence)]+=1
+                    else:
+                        readDict[str(fqreads.sequence)]=1
+        trimmed_pairs = list(readDict.items())
+    return (count, trimmed_pairs)
