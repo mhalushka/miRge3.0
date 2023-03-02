@@ -106,7 +106,7 @@ def validate_files(args, in_fileArray, runlogFile, fastq_fullPath=[], base_names
     outlog = open(str(runlogFile),"a+")
     for files in in_fileArray:
        filetype = ''.join(Path(files).suffixes) if Path(files).suffix == ".gz" else Path(files).suffix
-       if Path(files).exists() and (filetype.endswith(".fastq") or filetype.endswith(".fastq.gz") or filetype.endswith(".fq.gz")):
+       if Path(files).exists() and (filetype.endswith(".fastq") or filetype.endswith(".fastq.gz") or filetype.endswith(".fq") or filetype.endswith(".fq.gz")):
        #if Path(files).exists() and (filetype == ".fastq" or filetype == ".fastq.gz"):
            fastq_fullPath.append(str(Path(files).resolve()))
            files = Path(files).name
