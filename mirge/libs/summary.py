@@ -760,15 +760,12 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     
     #This gives the raw counts for each exact miRNA
     
-    print(args)
-    
-    print(args.exact)
+
 
     if args.exact == True:
         df_Exact = df
         ExactToCSV = Path(workDir)/"miRNA_exact.csv"
         df_Exact.to_csv(ExactToCSV)
-        print("Exact table printed")
     
     df['miRNA'] = df['exact miRNA'].map(mirMergedNameDic)
 
