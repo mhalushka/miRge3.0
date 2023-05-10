@@ -31,6 +31,7 @@ def parseArg():
 -spl   --save-pkl           save collapsed reads in binary format for later runs (Default: off)
 -rr    --resume             resume from collapsed reads (Default: off)
 -shh   --quiet              enable quiet/silent mode, only show warnings and errors (Default: off)
+--eo    --exact             output counts for exact miRNAs (Default: off)
 ''')
     group.add_argument('-s','--samples', nargs='*', required=True, help=argparse.SUPPRESS)
     group.add_argument('-db', '--mir-DB', default='miRBase', required=True, help=argparse.SUPPRESS) 
@@ -54,6 +55,7 @@ def parseArg():
     group.add_argument('-spl', '--save-pkl', action='store_true', default=False, help=argparse.SUPPRESS)
     group.add_argument('-rr', '--resume', action='store_true', default=False, help=argparse.SUPPRESS)
     group.add_argument('-shh',"--quiet", default=False, action='store_true', help=argparse.SUPPRESS)
+    group.add_argument('-eo',"--exact", default=False, action='store_true', help=argparse.SUPPRESS)
 
     group1 = parser.add_argument_group("Data pre-processing", description='''-a,    --adapter            Sequence of a 3' adapter. The adapter and subsequent bases are trimmed
 -g,    --front              Sequence of a 5' adapter. The adapter and any preceding bases are trimmed
@@ -152,3 +154,4 @@ def parseArg():
     
 
 #group.add_argument('-ad', default='none', dest='adapter', metavar='<string>', help='the adapter need to be removed which could be illumina, ion or a defined sequence (default: none)')
+

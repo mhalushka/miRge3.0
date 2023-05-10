@@ -682,6 +682,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     html_data = FormatJS(workDir) 
     ca_thr = float(args.crThreshold)
     mfname = args.organism_name + "_merges_" + ref_db + ".csv"
+    print(mfname)
     mergeFile = Path(args.libraries_path)/args.organism_name/"annotation.Libs"/mfname
     if args.spikeIn:
         col_headers = ['hairpin miRNA','mature tRNA','primary tRNA','snoRNA','rRNA','ncrna others','mRNA','spike-in']
@@ -713,6 +714,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     except FileNotFoundError:
         pass
     
+
     #allSequences = pdMapped.index.shape[0]
     #print(allSequences)
 
@@ -756,15 +758,36 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     for file_name in base_names:
         df = mirge_can(cann_collapse, iso_collapse, df, ca_thr, file_name)
     
+    #This gives the raw counts for each exact miRNA
+    
+    print(args)
+    
+    print(args.exact)
+
+    if args.exact == True:
+        df_Exact = df
+        ExactToCSV = Path(workDir)/"miRNA_exact.csv"
+        df_Exact.to_csv(ExactToCSV)
+        print("Exact table printed")
+    
     df['miRNA'] = df['exact miRNA'].map(mirMergedNameDic)
+
     df = df.fillna(0)
     df.loc[df.miRNA == 0, 'miRNA'] = df['exact miRNA']
     df.set_index('miRNA',inplace = True)
+
+
     df.drop(columns=['exact miRNA'])
+    #This is where miRNAs in the same miRNA group are grouped together and their values summed
     df = df.groupby(['miRNA']).sum()[base_names]
+
     #df = df.loc[(df.sum(axis=1) != 0)] # THIS WILL ELEMINATE ROWS ACCROSS SAMPLES WHO'S SUM IS ZERO
     Filtered_miRNA_Reads = df.sum(axis = 0, skipna = True)[base_names]
+
+
     Filtered_miRNA_Reads = Filtered_miRNA_Reads.to_dict()
+
+
     miR_RPM = (df.div(df.sum(axis=0))*1000000).round(4)
     miRNA_df = subpdMapped.groupby(['miRNA_cbind']).sum()[base_names]
     sumTotal = miRNA_df.sum(axis = 0, skipna = True)
@@ -789,7 +812,7 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
 
     mirMerged_df = pd.DataFrame(list(mirMergedDataframeDic.keys()),columns = ['miRNA']) #Contains all the miRNA including those that is not expressed
     mirMerged_df.set_index('miRNA',inplace = True)
-    
+
     mirCounts_completeSet = mirMerged_df.join(df, how='outer').fillna(0)
     mirRPM_completeSet = mirMerged_df.join(miR_RPM, how='outer').fillna(0)
     #df.to_csv(miRgefileToCSV)
@@ -886,6 +909,8 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
         mapped_rows = pdMapped.index[pdMapped[file_name] > 0].shape[0]
         mirna_dict = {file_name:numOfRows}
         miRNA_counts.update(mirna_dict)
+
+  
 
     """
     END OF WORKING AROUND WITH EXACT miRNA and isomiRs 
@@ -1289,3 +1314,4 @@ def summarize(args, workDir, ref_db,base_names, pdMapped, sampleReadCounts, trim
     data_in_html = data_in_html.replace("<td>", td)
     with open(report_html,'w') as f:
         f.write(data_in_html)
+
