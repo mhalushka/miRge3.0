@@ -24,9 +24,6 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
     outlog.write("Alignment starting for " + colnames[colToAct] + "..." + "\n")
     outlog.close()
 
-    #Generate a file for isomiR output
-    exact_alignment = Path(workDir)/"exact_miRNAs.csv"
-    isomir_alignment = Path(workDir)/"isomir_alignment.csv"
 
     bowtie = subprocess.run(str(bwtExec), shell=True, check=True, stdout=subprocess.PIPE, text=True, stderr=subprocess.PIPE, universal_newlines=True)
     if args.bam_out:
@@ -64,6 +61,9 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
     for srow in bwtOut.split('\n'):
         if not srow.startswith('@'):
             sam_line = srow.split('\t')
+            # full_file =  Path(workDir)/"BT_out.txt"
+            # with open(full_file, "a+") as f:
+            #     f.write(str(sam_line) + "\n")
             if sam_line != ['']:
                 if sam_line[2] != "*":
                     sub_dict = defaultdict(list)
@@ -73,6 +73,20 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
                         sub_dict[sam_line[2]] = sam_line
                         align_store[sam_line[0]] = sub_dict
                     #Code that needs to be kept in samline iteration
+                    #For extracting exact and  isomir alignment information and counts
+                    if iter_number ==8:
+                        seq_entry = pdDataFrame.loc[[sam_line[0]]]
+                        seq_selection = seq_entry.iloc[:,11:]
+                        seq_selection_dict = seq_selection.to_dict()
+                        count_dict = defaultdict(list)
+                        for keys,values in seq_selection_dict.items():
+                            filename = keys
+                            for k, v in values.items():
+                                count = v
+                                count_dict[filename] = count
+                        for keys, values in count_dict.items():
+                            sam_line.append(values)
+                            isomir_store[sam_line[0]] = sam_line
                     elif iter_number != 2 and iter_number != 3 and iter_number != 9: #tRNA and pre_tRNA and spike-ins are ignored
                         if args.bam_out:
                             bwto.write(srow+"\n")
@@ -125,6 +139,12 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
                 pdDataFrame.at[v[0], colnames[colToAct]] = v[2]
                 pdDataFrame.at[v[0], colnames[0]] = 1
 
+        #Output alignment information for isoMirs
+        if iter_number == 8:
+            with open(isomir_alignment_info, "a+") as f:
+                for v in values.values():
+                    iso_align = ','.join(str(i) for i in v)
+                    f.write(iso_align + "\n")
 
     if not args.quiet:
         print("Number of molecules with valid alternate alignments for " + colnames[colToAct] + ":" + str(multi_match_count))
@@ -141,7 +161,7 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
         outlog.close()
 
     if iter_number ==0:
-        pd_exact_file  = Path(workDir)/"exact_miRNA_counts.csv"
+        pd_exact_file  = Path(workDir)/"exact_miRNA.csv"
         pd_exact = pdDataFrame.copy(deep=True)
         pd_slice = pd_exact[pdDataFrame.annotFlag != 0]
         pd_exact_anno = pd_slice.iloc[:,[1]]
@@ -149,7 +169,7 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
         pd_exact_combine = pd.concat([pd_exact_anno, pd_exact_count], axis=1, join='inner')
         pd_exact_combine.to_csv(pd_exact_file)
     elif iter_number == 8:
-        pd_isomir = Path(workDir)/"isomir_miRNA_counts.csv"
+        pd_isomir = Path(workDir)/"isomir_miRNA.csv"
         #print(pdDataFrame.iloc[:,[9]])
         pd_iso_change = pdDataFrame.copy(deep=True)
         pd_iso_change['isomiR miRNA'].replace('', np.nan, inplace=True)
@@ -246,5 +266,10 @@ def bwtAlign(args,pdDataFrame,workDir,ref_db):
     outlog.write(f'Alignment completed in {round(finish-begningTime, 4)} second(s)\n')
     outlog.close()
 
+    full_pd = Path(workDir)/"pd_align.csv"
+
+    pd_slice = pdDataFrame[pdDataFrame.annotFlag != 0]
+    pd_slice.to_csv(full_pd)
     return pdDataFrame
+
 
