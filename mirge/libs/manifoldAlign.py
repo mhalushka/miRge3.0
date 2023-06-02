@@ -56,14 +56,10 @@ def alignPlusParse(bwtExec, iter_number, pdDataFrame, args, workDir):
         bwtOut = bowtie.stdout
         bwtErr = bowtie.stderr
     align_store = defaultdict(list)
-    exact_store = defaultdict(list)
     isomir_store = defaultdict(list)
     for srow in bwtOut.split('\n'):
         if not srow.startswith('@'):
             sam_line = srow.split('\t')
-            # full_file =  Path(workDir)/"BT_out.txt"
-            # with open(full_file, "a+") as f:
-            #     f.write(str(sam_line) + "\n")
             if sam_line != ['']:
                 if sam_line[2] != "*":
                     sub_dict = defaultdict(list)
