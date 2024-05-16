@@ -1,19 +1,20 @@
+|PyPi| |Bioconda| |Release| |Downloads| |Docker|
 
-.. image:: https://img.shields.io/pypi/v/mirge3.svg?branch=master
+.. |PyPi| image:: https://img.shields.io/pypi/v/mirge3.svg?branch=master
     :target: https://pypi.python.org/pypi/mirge3
-    :alt:
+    :alt: install with PyPi
     
-.. image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat
+.. |Bioconda| image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat
     :target: http://bioconda.github.io/recipes/mirge3/README.html
     :alt: install with bioconda
     
-.. image:: https://anaconda.org/bioconda/mirge3/badges/latest_release_date.svg   
+.. |Release| image:: https://anaconda.org/bioconda/mirge3/badges/latest_release_date.svg   
     :target: https://anaconda.org/bioconda/mirge3   
-    
-.. image:: https://anaconda.org/bioconda/mirge3/badges/downloads.svg   
+
+.. |Downloads| image:: https://anaconda.org/bioconda/mirge3/badges/downloads.svg   
     :target: https://anaconda.org/bioconda/mirge3/files
        
-.. image:: https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/915px-Docker_%28container_engine%29_logo.svg.png?20161017201350
+.. |Docker| image:: https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/915px-Docker_%28container_engine%29_logo.svg.png?20161017201350
     :width: 140    
     :target: https://quay.io/repository/biocontainers/mirge3?tab=info
     :alt: install with docker
