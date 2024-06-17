@@ -16,8 +16,8 @@ setup(
         package_dir={'mirge': 'mirge'},
         packages=find_packages(),
         package_data = {'':['models/*.pkl', 'models/*.txt', 'rScripts/*.R', 'libs/kmc', 'libs/kmc_dump', 'libs/miREC_fq']},
-        install_requires=['biopython>=1.78','cutadapt','future>=0.18.2','joblib>=0.15.1','matplotlib>=3.2.1','pandas>=1.0.3','reportlab>=3.5.42','scikit-learn==0.23.1','scipy>=1.4.1'],
-        #install_requires=['biopython==1.78','cutadapt','future>=0.18.2','joblib>=0.15.1','matplotlib>=3.2.1','pandas>=1.0.3','reportlab>=3.5.42','scikit-learn==0.23.1','scipy>=1.4.1'],
+        install_requires=['biopython>=1.78','cutadapt','future>=0.18.2','joblib>=0.15.1','matplotlib>=3.2.1','pandas>=1.0.3','reportlab>=3.5.42','scikit-learn==1.5.0','scipy>=1.4.1'],
+        #install_requires=['biopython==1.78','cutadapt','future>=0.18.2','joblib>=0.15.1','matplotlib>=3.2.1','pandas>=1.0.3','reportlab>=3.5.42','scikit-learn==1.5.0','scipy>=1.4.1'],
         entry_points={'console_scripts': ['miRge3.0 = mirge.__main__:main']},
         classifiers=[
             "Development Status :: 1 - Planning",
